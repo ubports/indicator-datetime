@@ -585,3 +585,77 @@ TEST_F(SnapFixture,Vibrate)
     EXPECT_EQ(test_case.expected_vibrate_called, vibrate_called);
   }
 }
+
+/***
+****
+***/
+
+namespace uin = unity::indicator::notifications;
+
+/**
+ * A DefaultSoundBuilder wrapper which remembers the parameters of the last sound created.
+ */
+SoundBuilder wrapper
+class TestSoundBuilder: public uin::SoundBuilder
+{
+public:
+    TestSoundBuilder() =default;
+    ~TestSoundBuilder() =default;
+
+    virtual std::shared_ptr<uin::Sound> create(const std::string& role, const std::string& uri, unsigned int volume, bool loop) override {
+        m_role = role;
+        m_uri = uri;
+        m_volume = volume;
+        m_loop = loop;
+        return m_impl.create(role, uri, volume, loop);
+    }
+
+    const std::string& role() { return m_role; }
+    const std::string& uri() { return m_uri; }
+    unsigned int volume() { return m_volume; }
+    bool loop() { return m_loop; }
+
+private:
+    std::string m_role;
+    std::string m_uri;
+    unsigned int m_volume;
+    bool m_loop;
+    uin::DefaultSoundBuilder m_impl;
+};
+
+std::string path_to_uri(const std::string& path)
+{
+  auto file = g_file_new_for_path(path.c_str());
+  auto uri_cstr = g_file_get_uri(file);
+  std::string uri = uri_cstr;
+  g_free(uri_cstr);
+  g_clear_pointer(&file, g_object_unref);
+  return uri;
+}
+
+TEST_F(SnapFixture,DefaultSounds)
+{
+  auto settings = std::make_shared<Settings>();
+  auto ne = std::make_shared<uin::Engine>(APP_NAME);
+  auto sb = std::make_shared<TestSoundBuilder>();
+  auto func = [this](const Appointment&, const Alarm&){g_idle_add(quit_idle, loop);};
+
+  const struct {
+      Appointment appointment;
+      std::string expected_role;
+      std::string expected_uri;
+  } test_cases[] = {
+      { ualarm, "alarm", path_to_uri(ALARM_DEFAULT_SOUND) },
+      { appt,   "alert", path_to_uri(CALENDAR_DEFAULT_SOUND) }
+  };
+
+  auto snap = std::make_shared<Snap>(ne, sb, settings);
+
+  for(const auto& test_case : test_cases)
+  {
+    (*snap)(test_case.appointment, test_case.appointment.alarms.front(), func, func);
+    wait_msec(100);
+    EXPECT_EQ(test_case.expected_uri, sb->uri());
+    EXPECT_EQ(test_case.expected_role, sb->role());
+  }
+}
