@@ -590,7 +590,6 @@ TEST_F(SnapFixture,Vibrate)
 ****
 ***/
 
-#if 0
 namespace uin = unity::indicator::notifications;
 
 /**
@@ -633,7 +632,7 @@ std::string path_to_uri(const std::string& path)
   return uri;
 }
 
-TEST_F(SnapFixture,DefaultSounds)
+TEST_F(SnapFixture,DISABLED_DefaultSounds)
 {
   auto settings = std::make_shared<Settings>();
   auto ne = std::make_shared<uin::Engine>(APP_NAME);
@@ -659,4 +658,3 @@ TEST_F(SnapFixture,DefaultSounds)
     EXPECT_EQ(test_case.expected_role, sb->role());
   }
 }
-#endif
