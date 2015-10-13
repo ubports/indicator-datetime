@@ -590,6 +590,7 @@ TEST_F(SnapFixture,Vibrate)
 ****
 ***/
 
+#if 0
 namespace uin = unity::indicator::notifications;
 
 /**
@@ -658,3 +659,4 @@ TEST_F(SnapFixture,DefaultSounds)
     EXPECT_EQ(test_case.expected_role, sb->role());
   }
 }
+#endif
