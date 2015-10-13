@@ -92,7 +92,8 @@ int main(int argc, const char* argv[])
     settings->alarm_volume.set(volume);
 
     auto notification_engine = std::make_shared<uin::Engine>("indicator-datetime-service");
-    Snap snap (notification_engine, settings);
+    auto sound_builder = std::make_shared<uin::DefaultSoundBuilder>();
+    Snap snap (notification_engine, sound_builder, settings);
     snap(a, a.alarms.front(), on_snooze, on_ok);
     g_main_loop_run(loop);
 

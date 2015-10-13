@@ -52,8 +52,10 @@ class Snap::Impl
 public:
 
     Impl(const std::shared_ptr<unity::indicator::notifications::Engine>& engine,
+         const std::shared_ptr<unity::indicator::notifications::SoundBuilder>& sound_builder,
          const std::shared_ptr<const Settings>& settings):
       m_engine(engine),
+      m_sound_builder(sound_builder),
       m_settings(settings),
       m_cancellable(g_cancellable_new())
     {
@@ -101,7 +103,7 @@ public:
             const auto uri = get_alarm_uri(alarm, m_settings, default_sound);
             const auto volume = m_settings->alarm_volume.get();
             const bool loop = interactive;
-            sound = std::make_shared<uin::Sound>(role, uri, volume, loop);
+            sound = m_sound_builder->create(role, uri, volume, loop);
         }
 
         // create the haptic feedback...
@@ -223,6 +225,7 @@ private:
     }
 
     const std::shared_ptr<unity::indicator::notifications::Engine> m_engine;
+    const std::shared_ptr<unity::indicator::notifications::SoundBuilder> m_sound_builder;
     const std::shared_ptr<const Settings> m_settings;
     std::set<int> m_notifications;
     GCancellable * m_cancellable {nullptr};
@@ -234,8 +237,9 @@ private:
 ***/
 
 Snap::Snap(const std::shared_ptr<unity::indicator::notifications::Engine>& engine,
+           const std::shared_ptr<unity::indicator::notifications::SoundBuilder>& sound_builder,
            const std::shared_ptr<const Settings>& settings):
-  impl(new Impl(engine, settings))
+  impl(new Impl(engine, sound_builder, settings))
 {
 }
 
