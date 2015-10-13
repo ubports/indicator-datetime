@@ -595,7 +595,6 @@ namespace uin = unity::indicator::notifications;
 /**
  * A DefaultSoundBuilder wrapper which remembers the parameters of the last sound created.
  */
-SoundBuilder wrapper
 class TestSoundBuilder: public uin::SoundBuilder
 {
 public:
