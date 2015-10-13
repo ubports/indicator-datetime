@@ -9,8 +9,10 @@ set (GETTEXT_PACKAGE "indicator-datetime")
 add_definitions (-DGETTEXT_PACKAGE="${GETTEXT_PACKAGE}"
                  -DGNOMELOCALEDIR="${CMAKE_INSTALL_FULL_LOCALEDIR}")
 
-set (ALARM_DEFAULT_SOUND "/usr/share/sounds/ubuntu/ringtones/Alarm clock.ogg")
-add_definitions (-DALARM_DEFAULT_SOUND="${ALARM_DEFAULT_SOUND}")
+set(ALARM_DEFAULT_SOUND    "/usr/share/sounds/ubuntu/ringtones/Alarm clock.ogg")
+set(CALENDAR_DEFAULT_SOUND "/usr/share/sounds/ubuntu/ringtones/Marimbach.ogg")
+add_definitions(-DALARM_DEFAULT_SOUND="${ALARM_DEFAULT_SOUND}"
+                -DCALENDAR_DEFAULT_SOUND="${CALENDAR_DEFAULT_SOUND}")
 
 
 option (enable_tests "Build the package's automatic tests." ON)
