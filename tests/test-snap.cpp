@@ -641,7 +641,7 @@ std::string path_to_uri(const std::string& path)
   return uri;
 }
 
-TEST_F(SnapFixture,DISABLED_DefaultSounds)
+TEST_F(SnapFixture,DefaultSounds)
 {
   auto settings = std::make_shared<Settings>();
   auto ne = std::make_shared<uin::Engine>(APP_NAME);
