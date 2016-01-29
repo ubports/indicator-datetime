@@ -136,7 +136,8 @@ main(int /*argc*/, char** /*argv*/)
     // set up the snap decisions
     auto snooze_planner = std::make_shared<SnoozePlanner>(state->settings, state->clock);
     auto notification_engine = std::make_shared<uin::Engine>("indicator-datetime-service");
-    std::unique_ptr<Snap> snap (new Snap(notification_engine, state->settings));
+    auto sound_builder = std::make_shared<uin::DefaultSoundBuilder>();
+    std::unique_ptr<Snap> snap (new Snap(notification_engine, sound_builder, state->settings));
     auto alarm_queue = create_simple_alarm_queue(state->clock, snooze_planner, engine, timezone_);
     auto on_snooze = [snooze_planner](const Appointment& appointment, const Alarm& alarm) {
         snooze_planner->add(appointment, alarm);

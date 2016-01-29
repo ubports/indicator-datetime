@@ -34,6 +34,8 @@
 
 using namespace unity::indicator::datetime;
 
+namespace uin = unity::indicator::notifications;
+
 #include "glib-fixture.h"
 
 /***
@@ -92,6 +94,7 @@ protected:
   static constexpr char const * PROP_SILENT_MODE      {"SilentMode"};
 
   Appointment appt;
+  Appointment ualarm;
   GDBusConnection * system_bus = nullptr;
   GDBusConnection * session_bus = nullptr;
   DbusTestService * service = nullptr;
@@ -113,15 +116,25 @@ protected:
 
     super::SetUp();
 
-    // init the Appointment
+    // init an Appointment
     appt.color = "green";
-    appt.summary = "Alarm";
+    appt.summary = "Christmas";
     appt.uid = "D4B57D50247291478ED31DED17FF0A9838DED402";
     appt.type = Appointment::EVENT;
     const auto christmas = DateTime::Local(2015,12,25,0,0,0);
     appt.begin = christmas.start_of_day();
     appt.end = christmas.end_of_day();
-    appt.alarms.push_back(Alarm{"Alarm Text", "", appt.begin});
+    appt.alarms.push_back(Alarm{"Ho Ho Ho!", "", appt.begin});
+
+    // init an Ubuntu Alarm
+    ualarm.color = "red";
+    ualarm.summary = "Wakeup";
+    ualarm.uid = "E4B57D50247291478ED31DED17FF0A9838DED403";
+    ualarm.type = Appointment::UBUNTU_ALARM;
+    const auto tomorrow = DateTime::NowLocal().add_days(1);
+    ualarm.begin = tomorrow;
+    ualarm.end = tomorrow;
+    ualarm.alarms.push_back(Alarm{"It's Tomorrow!", "", appt.begin});
 
     service = dbus_test_service_new(nullptr);
 
@@ -360,6 +373,15 @@ protected:
                                           &error);
     g_assert_no_error (error);
   }
+
+  std::shared_ptr<Snap> create_snap(const std::shared_ptr<uin::Engine>& ne,
+                                    const std::shared_ptr<uin::SoundBuilder>& sb,
+                                    const std::shared_ptr<Settings>& settings)
+  {
+    auto snap = std::make_shared<Snap>(ne, sb, settings);
+    wait_msec(100); // wait a moment for the Snap to finish its async dbus bootstrapping
+    return snap;
+  }
 };
 
 /***
@@ -381,13 +403,14 @@ TEST_F(SnapFixture, InteractiveDuration)
   auto settings = std::make_shared<Settings>();
   settings->alarm_duration.set(duration_minutes);
   auto ne = std::make_shared<unity::indicator::notifications::Engine>(APP_NAME);
-  Snap snap (ne, settings);
+  auto sb = std::make_shared<unity::indicator::notifications::DefaultSoundBuilder>();
+  auto snap = create_snap(ne, sb, settings);
 
   make_interactive();
 
   // call the Snap Decision
   auto func = [this](const Appointment&, const Alarm&){g_idle_add(quit_idle, loop);};
-  snap(appt, appt.alarms.front(), func, func);
+  (*snap)(appt, appt.alarms.front(), func, func);
 
   // confirm that Notify got called once
   guint len = 0;
@@ -431,7 +454,8 @@ TEST_F(SnapFixture, InhibitSleep)
 {
   auto settings = std::make_shared<Settings>();
   auto ne = std::make_shared<unity::indicator::notifications::Engine>(APP_NAME);
-  auto snap = new Snap (ne, settings);
+  auto sb = std::make_shared<unity::indicator::notifications::DefaultSoundBuilder>();
+  auto snap = create_snap(ne, sb, settings);
 
   make_interactive();
 
@@ -458,7 +482,7 @@ TEST_F(SnapFixture, InhibitSleep)
 
   // force-close the snap
   wait_msec(100);
-  delete snap;
+  snap.reset();
   wait_msec(100);
 
   // confirm that sleep got uninhibted
@@ -486,7 +510,8 @@ TEST_F(SnapFixture, ForceScreen)
 {
   auto settings = std::make_shared<Settings>();
   auto ne = std::make_shared<unity::indicator::notifications::Engine>(APP_NAME);
-  auto snap = new Snap (ne, settings);
+  auto sb = std::make_shared<unity::indicator::notifications::DefaultSoundBuilder>();
+  auto snap = create_snap(ne, sb, settings);
 
   make_interactive();
 
@@ -507,7 +532,7 @@ TEST_F(SnapFixture, ForceScreen)
 
   // force-close the snap
   wait_msec(100);
-  delete snap;
+  snap.reset();
   wait_msec(100);
 
   // confirm that sleep got uninhibted
@@ -527,6 +552,7 @@ TEST_F(SnapFixture,Vibrate)
 {
   auto settings = std::make_shared<Settings>();
   auto ne = std::make_shared<unity::indicator::notifications::Engine>(APP_NAME);
+  auto sb = std::make_shared<unity::indicator::notifications::DefaultSoundBuilder>();
   auto func = [this](const Appointment&, const Alarm&){g_idle_add(quit_idle, loop);};
   GError * error = nullptr;
 
@@ -541,7 +567,7 @@ TEST_F(SnapFixture,Vibrate)
       { true,  "pulse", true  }
   };
 
-  auto snap = std::make_shared<Snap>(ne, settings);
+  auto snap = create_snap(ne, sb, settings);
 
   for(const auto& test_case : test_cases)
   {
@@ -568,5 +594,76 @@ TEST_F(SnapFixture,Vibrate)
                                                                              &error);
     g_assert_no_error(error);
     EXPECT_EQ(test_case.expected_vibrate_called, vibrate_called);
+  }
+}
+
+/***
+****
+***/
+
+/**
+ * A DefaultSoundBuilder wrapper which remembers the parameters of the last sound created.
+ */
+class TestSoundBuilder: public uin::SoundBuilder
+{
+public:
+    TestSoundBuilder() =default;
+    ~TestSoundBuilder() =default;
+
+    virtual std::shared_ptr<uin::Sound> create(const std::string& role, const std::string& uri, unsigned int volume, bool loop) override {
+        m_role = role;
+        m_uri = uri;
+        m_volume = volume;
+        m_loop = loop;
+        return m_impl.create(role, uri, volume, loop);
+    }
+
+    const std::string& role() { return m_role; }
+    const std::string& uri() { return m_uri; }
+    unsigned int volume() { return m_volume; }
+    bool loop() { return m_loop; }
+
+private:
+    std::string m_role;
+    std::string m_uri;
+    unsigned int m_volume;
+    bool m_loop;
+    uin::DefaultSoundBuilder m_impl;
+};
+
+std::string path_to_uri(const std::string& path)
+{
+  auto file = g_file_new_for_path(path.c_str());
+  auto uri_cstr = g_file_get_uri(file);
+  std::string uri = uri_cstr;
+  g_free(uri_cstr);
+  g_clear_pointer(&file, g_object_unref);
+  return uri;
+}
+
+TEST_F(SnapFixture,DefaultSounds)
+{
+  auto settings = std::make_shared<Settings>();
+  auto ne = std::make_shared<uin::Engine>(APP_NAME);
+  auto sb = std::make_shared<TestSoundBuilder>();
+  auto func = [this](const Appointment&, const Alarm&){g_idle_add(quit_idle, loop);};
+
+  const struct {
+      Appointment appointment;
+      std::string expected_role;
+      std::string expected_uri;
+  } test_cases[] = {
+      { ualarm, "alarm", path_to_uri(ALARM_DEFAULT_SOUND) },
+      { appt,   "alert", path_to_uri(CALENDAR_DEFAULT_SOUND) }
+  };
+
+  auto snap = create_snap(ne, sb, settings);
+
+  for(const auto& test_case : test_cases)
+  {
+    (*snap)(test_case.appointment, test_case.appointment.alarms.front(), func, func);
+    wait_msec(100);
+    EXPECT_EQ(test_case.expected_uri, sb->uri());
+    EXPECT_EQ(test_case.expected_role, sb->role());
   }
 }

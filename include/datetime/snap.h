@@ -24,6 +24,7 @@
 #include <datetime/settings.h>
 
 #include <notifications/notifications.h>
+#include <notifications/sound.h>
 
 #include <functional>
 #include <memory>
@@ -39,6 +40,7 @@ class Snap
 {
 public:
     Snap(const std::shared_ptr<unity::indicator::notifications::Engine>& engine,
+         const std::shared_ptr<unity::indicator::notifications::SoundBuilder>& sound_builder,
          const std::shared_ptr<const Settings>& settings);
     virtual ~Snap();
 
