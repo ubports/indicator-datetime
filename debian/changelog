@@ -1,3 +1,19 @@
+indicator-datetime (15.10+16.04.20160129-0ubuntu1) xenial; urgency=medium
+
+  [ Charles Kerr ]
+  * Fixes tests to understand that calendar and location sections will
+    be visible in the Phone profile.
+  * Use a different default sound for alarms and calendar events. (LP:
+    #1505688)
+
+  [ Lukáš Tinkl ]
+  * Display calendar and timezone info in the phone mode as well
+
+  [ Richard Somlói ]
+  * Fix translator comment for strftime arguments
+
+ -- Charles Kerr <charles.kerr@canonical.com>  Fri, 29 Jan 2016 18:53:46 +0000
+
 indicator-datetime (15.10) wily; urgency=medium
 
   * Bump version to match the branch
