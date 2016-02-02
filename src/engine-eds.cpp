@@ -276,7 +276,9 @@ private:
             g_debug("%s connecting a client to source %s", G_STRFUNC, source_uid);
             e_cal_client_connect(source,
                                  source_type,
+#if EDS_CHECK_VERSION(3,13,90)
                                  -1,
+#endif
                                  self->m_cancellable.get(),
                                  on_client_connected,
                                  gself);
