@@ -123,7 +123,7 @@ public:
         const auto minutes = std::chrono::minutes(m_settings->alarm_duration.get());
         uin::Builder b;
         b.set_body (appointment.summary);
-        b.set_icon_name ("alarm-clock");
+        b.set_icon_name (appointment.is_ubuntu_alarm() ? "alarm-clock" : "reminder");
         b.add_hint (uin::Builder::HINT_NONSHAPED_ICON);
 
         const char * timefmt;
@@ -137,7 +137,11 @@ public:
             timefmt = _("%a, %H:%M");
         }
         const auto timestr = appointment.begin.format(timefmt);
-        auto title = g_strdup_printf(_("Alarm %s"), timestr.c_str());
+
+        const auto titlefmt = appointment.is_ubuntu_alarm()
+            ? _("Alarm %s")
+            : _("Event %s");
+        auto title = g_strdup_printf(titlefmt, timestr.c_str());
         b.set_title (title);
         g_free (title);
         b.set_timeout (std::chrono::duration_cast<std::chrono::seconds>(minutes));
