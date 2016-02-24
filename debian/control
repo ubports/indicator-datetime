@@ -40,7 +40,7 @@ Architecture: any
 Depends: ${shlibs:Depends}, 
          ${misc:Depends},
          systemd-services,
-         systemd-shim,
+         systemd | systemd-shim,
 Recommends: indicator-applet | indicator-renderer,
             evolution-data-server,
             geoclue-ubuntu-geoip | geoclue-provider,
