@@ -39,7 +39,6 @@ Package: indicator-datetime
 Architecture: any
 Depends: ${shlibs:Depends}, 
          ${misc:Depends},
-         systemd-services,
          systemd | systemd-shim,
 Recommends: indicator-applet | indicator-renderer,
             evolution-data-server,
