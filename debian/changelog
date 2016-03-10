@@ -1,3 +1,9 @@
+indicator-datetime (15.10+16.04.20160129-0ubuntu2) xenial; urgency=medium
+
+  * Don't pull systemd-shim on systems with systemd installed.
+
+ -- Stéphane Graber <stgraber@ubuntu.com>  Wed, 24 Feb 2016 12:40:28 -0500
+
 indicator-datetime (15.10+16.04.20160129-0ubuntu1) xenial; urgency=medium
 
   [ Charles Kerr ]
