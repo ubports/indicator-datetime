@@ -37,7 +37,7 @@ namespace
   {
     g_main_loop_quit(static_cast<GMainLoop*>(gloop));
     return G_SOURCE_REMOVE;
-  };
+  }
 }
 
 /***
@@ -58,11 +58,13 @@ TEST_F(NotificationFixture,Notification)
   // combinatorial factor #1: event type
   struct {
     Appointment appt;
+    const char* icon_name;
+    const char* prefix;
     bool expected_notify_called;
     bool expected_vibrate_called;
   } test_appts[] = {
-    { appt, true, true },
-    { ualarm, true, true }
+    { appt, "reminder", "Event", true, true },
+    { ualarm, "alarm-clock", "Alarm", true, true }
   };
 
   // combinatorial factor #2: indicator-datetime's haptic mode
@@ -90,11 +92,13 @@ TEST_F(NotificationFixture,Notification)
   const std::set<std::pair<std::string,std::string>> blacklist_empty;
   struct {
     std::set<std::pair<std::string,std::string>> muted_apps; // apps that should not trigger notifications
-    bool expected_notify_called; // do we expect the notification tho show?
-    bool expected_vibrate_called; // do we expect the phone to vibrate?
+    std::set<Appointment::Type> expected_notify_called; // do we expect the notification to show?
+    std::set<Appointment::Type> expected_vibrate_called; // do we expect the phone to vibrate?
   } test_muted_apps[] = {
-    { blacklist_calendar, false, false },
-    { blacklist_empty, true, true }
+    { blacklist_empty,    std::set<Appointment::Type>{ Appointment::Type::UBUNTU_ALARM, Appointment::Type::EVENT },
+                          std::set<Appointment::Type>{ Appointment::Type::UBUNTU_ALARM, Appointment::Type::EVENT } },
+    { blacklist_calendar, std::set<Appointment::Type>{ Appointment::Type::UBUNTU_ALARM },
+                          std::set<Appointment::Type>{ Appointment::Type::UBUNTU_ALARM } }
   };
 
   for (const auto& test_appt : test_appts)
@@ -105,57 +109,86 @@ TEST_F(NotificationFixture,Notification)
   {
   for (const auto& test_muted : test_muted_apps)
   {
-    auto snap = create_snap(ne, sb, settings);
-
     const bool expected_notify_called = test_appt.expected_notify_called
                                      && test_vibes.expected_notify_called
-                                     && test_muted.expected_notify_called
+                                     && (test_muted.expected_notify_called.count(test_appt.appt.type) > 0)
                                      && test_haptic.expected_notify_called;
 
     const bool expected_vibrate_called = test_appt.expected_vibrate_called
                                       && test_vibes.expected_vibrate_called
-                                      && test_muted.expected_vibrate_called
+                                      && (test_muted.expected_vibrate_called.count(test_appt.appt.type) > 0)
                                       && test_haptic.expected_vibrate_called;
 
-    // clear out any previous iterations' noise
-    GError * error = nullptr;
-    dbus_test_dbus_mock_object_clear_method_calls(haptic_mock, haptic_obj, &error);
-    g_assert_no_error(error);
-    dbus_test_dbus_mock_object_clear_method_calls(notify_mock, notify_obj, &error);
-    g_assert_no_error(error);
-
-    // set the properties to match the test case
+    // set test case properties: blacklist
     settings->muted_apps.set(test_muted.muted_apps);
+
+    // set test case properties: haptic mode
     settings->alarm_haptic.set(test_haptic.haptic_mode);
+
+    // set test case properties: other-vibrations flag
+    // (and wait for the PropertiesChanged signal so we know the dbusmock got it)
+    GError * error {};
     dbus_test_dbus_mock_object_update_property(as_mock,
                                                as_obj,
                                                PROP_OTHER_VIBRATIONS,
                                                g_variant_new_boolean(test_vibes.other_vibrations),
                                                &error);
     g_assert_no_error(error);
-    wait_msec(100);
+
+    // wait for previous iterations' bus noise to finish and reset the counters
+    wait_msec(500);
+    dbus_test_dbus_mock_object_clear_method_calls(haptic_mock, haptic_obj, &error);
+    dbus_test_dbus_mock_object_clear_method_calls(notify_mock, notify_obj, &error);
+    g_assert_no_error(error);
 
     // run the test
-    (*snap)(appt, appt.alarms.front(), func, func);
-    wait_msec(100);
+    auto snap = create_snap(ne, sb, settings);
+    (*snap)(test_appt.appt, appt.alarms.front(), func, func);
 
-    // test that the notification was as expected
-    const bool notify_called = dbus_test_dbus_mock_object_check_method_call(notify_mock,
-                                                                            notify_obj,
-                                                                            METHOD_NOTIFY,
-                                                                            nullptr,
-                                                                            &error);
-    g_assert_no_error(error);
-    EXPECT_EQ(expected_notify_called, notify_called);
+    // confirm that the notification was as expected
+    if (expected_notify_called) {
+      EXPECT_METHOD_CALLED_EVENTUALLY(notify_mock, notify_obj, METHOD_NOTIFY);
+    } else {
+      EXPECT_METHOD_NOT_CALLED_EVENTUALLY(notify_mock, notify_obj, METHOD_NOTIFY);
+    }
 
-    // test that the vibration was as expected
-    const bool vibrate_called = dbus_test_dbus_mock_object_check_method_call(haptic_mock,
-                                                                             haptic_obj,
-                                                                             HAPTIC_METHOD_VIBRATE_PATTERN,
-                                                                             nullptr,
-                                                                             &error);
+    // confirm that the vibration was as expected
+    if (expected_vibrate_called) {
+      EXPECT_METHOD_CALLED_EVENTUALLY(haptic_mock, haptic_obj, HAPTIC_METHOD_VIBRATE_PATTERN);
+    } else {
+      EXPECT_METHOD_NOT_CALLED_EVENTUALLY(haptic_mock, haptic_obj, HAPTIC_METHOD_VIBRATE_PATTERN);
+    }
+
+    // confirm that the notification was as expected
+    guint num_notify_calls = 0;
+    const auto notify_calls = dbus_test_dbus_mock_object_get_method_calls(notify_mock,
+                                                                          notify_obj,
+                                                                          METHOD_NOTIFY,
+                                                                          &num_notify_calls,
+                                                                          &error);
     g_assert_no_error(error);
-    EXPECT_EQ(expected_vibrate_called, vibrate_called);
+    if (num_notify_calls > 0)
+    {
+        // test that Notify was called with the app_name
+        const gchar* app_name {nullptr};
+        g_variant_get_child(notify_calls[0].params, 0, "&s", &app_name);
+        ASSERT_STREQ(APP_NAME, app_name);
+
+        // test that Notify was called with the type-appropriate icon
+        const gchar* icon_name {nullptr};
+        g_variant_get_child(notify_calls[0].params, 2, "&s", &icon_name);
+        ASSERT_STREQ(test_appt.icon_name, icon_name);
+
+        // test that the Notification title has the correct prefix
+        const gchar* title {nullptr};
+        g_variant_get_child(notify_calls[0].params, 3, "&s", &title);
+        ASSERT_TRUE(g_str_has_prefix(title, test_appt.prefix));
+
+        // test that Notify was called with the appointment's body
+        const gchar* body {nullptr};
+        g_variant_get_child(notify_calls[0].params, 4, "&s", &body);
+        ASSERT_STREQ(test_appt.appt.summary.c_str(), body);
+    }
   }
   }
   }
