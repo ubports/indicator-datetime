@@ -29,13 +29,16 @@ namespace datetime {
 
 LiveSettings::~LiveSettings()
 {
+    g_clear_object(&m_settings_cunh);
     g_clear_object(&m_settings);
 }
 
 LiveSettings::LiveSettings():
-    m_settings(g_settings_new(SETTINGS_INTERFACE))
+    m_settings(g_settings_new(SETTINGS_INTERFACE)),
+    m_settings_cunh(g_settings_new(SETTINGS_CUNH_SCHEMA_ID))
 {
-    g_signal_connect (m_settings, "changed", G_CALLBACK(on_changed), this);
+    g_signal_connect (m_settings,      "changed", G_CALLBACK(on_changed_ccid), this);
+    g_signal_connect (m_settings_cunh, "changed", G_CALLBACK(on_changed_cunh), this);
 
     // init the Properties from the GSettings backend
     update_custom_time_format();
@@ -58,11 +61,23 @@ LiveSettings::LiveSettings():
     update_alarm_duration();
     update_alarm_haptic();
     update_snooze_duration();
+    update_muted_apps();
 
     // now listen for clients to change the properties s.t. we can sync update GSettings
 
     custom_time_format.changed().connect([this](const std::string& value){
         g_settings_set_string(m_settings, SETTINGS_CUSTOM_TIME_FORMAT_S, value.c_str());
+    });
+
+    muted_apps.changed().connect([this](const std::set<std::pair<std::string,std::string>>& value){
+        GVariantBuilder builder;
+        g_variant_builder_init(&builder, G_VARIANT_TYPE("a(ss)"));
+        for(const auto& app : value){
+            const auto& pkgname {app.first};
+            const auto& appname {app.second};
+            g_variant_builder_add(&builder, "(ss)", pkgname.c_str(), appname.c_str());
+        }
+        g_settings_set_value(m_settings_cunh, SETTINGS_CUNH_BLACKLIST_S, g_variant_builder_end(&builder));
     });
 
     locations.changed().connect([this](const std::vector<std::string>& value){
@@ -166,6 +181,24 @@ void LiveSettings::update_locations()
         l.push_back(strv[i]);
     g_strfreev(strv);
     locations.set(l);
+}
+
+void LiveSettings::update_muted_apps()
+{
+    std::set<std::pair<std::string,std::string>> apps;
+
+    auto blacklist = g_settings_get_value(m_settings_cunh, SETTINGS_CUNH_BLACKLIST_S);
+    GVariantIter* iter {nullptr};
+    g_variant_get (blacklist, "a(ss)", &iter);
+    gchar* pkgname;
+    gchar* appname;
+    while (g_variant_iter_loop (iter, "(ss)", &pkgname, &appname)) {
+        apps.insert(std::make_pair(pkgname,appname));
+    }
+    g_variant_iter_free (iter);
+    g_clear_pointer(&blacklist, g_variant_unref);
+
+    muted_apps.set(apps);
 }
 
 void LiveSettings::update_show_calendar()
@@ -275,14 +308,31 @@ void LiveSettings::update_snooze_duration()
 ****
 ***/
 
-void LiveSettings::on_changed(GSettings* /*settings*/,
-                              gchar*       key,
-                              gpointer     gself)
+void LiveSettings::on_changed_cunh(GSettings* /*settings*/,
+                                   gchar*       key,
+                                   gpointer     gself)
 {
-    static_cast<LiveSettings*>(gself)->update_key(key);
+    static_cast<LiveSettings*>(gself)->update_key_cunh(key);
 }
 
-void LiveSettings::update_key(const std::string& key)
+void LiveSettings::update_key_cunh(const std::string& key)
+{
+    if (key == SETTINGS_CUNH_BLACKLIST_S)
+        update_muted_apps();
+}
+
+/***
+****
+***/
+
+void LiveSettings::on_changed_ccid(GSettings* /*settings*/,
+                                   gchar*       key,
+                                   gpointer     gself)
+{
+    static_cast<LiveSettings*>(gself)->update_key_ccid(key);
+}
+
+void LiveSettings::update_key_ccid(const std::string& key)
 {
     if (key == SETTINGS_SHOW_CLOCK_S)
         update_show_clock();
