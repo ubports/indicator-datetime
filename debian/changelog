@@ -1,3 +1,13 @@
+indicator-datetime (15.10+16.04.20160310-0ubuntu1) xenial; urgency=medium
+
+  [ Charles Kerr ]
+  * Don't show calendar notifications if the're blacklisted in system
+    settings (LP: #1474078)
+  * change packaging dependencies and add source #ifdefs to support the
+    versions of EDS that ship with vivid and xenial
+
+ -- David Barth <david.barth@canonical.com>  Thu, 10 Mar 2016 16:28:44 +0000
+
 indicator-datetime (15.10+16.04.20160129-0ubuntu2) xenial; urgency=medium
 
   * Don't pull systemd-shim on systems with systemd installed.
