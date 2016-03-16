@@ -826,6 +826,14 @@ private:
         if (uid != nullptr)
             baseline.uid = uid;
 
+        // get source uid
+        ESource *source = nullptr;
+        g_object_get(G_OBJECT(client), "source", &source, nullptr);
+        if (source != nullptr) {
+            baseline.source_uid = e_source_get_uid(source);
+            g_object_unref(source);
+        }
+
         // get appointment.summary
         ECalComponentText text {};
         e_cal_component_get_summary(component, &text);

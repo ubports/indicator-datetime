@@ -23,6 +23,8 @@
 
 #include <glib.h>
 
+#include <sstream>
+
 namespace unity {
 namespace indicator {
 namespace datetime {
@@ -145,15 +147,27 @@ void LiveActions::phone_open_appointment(const Appointment& appt)
             phone_open_alarm_app();
             break;
 
+        case Appointment::EVENT:
+            if (!appt.source_uid.empty() && !appt.uid.empty())
+            {
+                std::stringstream cmd;
+                // event-id format: <source-id>/<event-id>
+                cmd << "calendar://eventid="
+                    << appt.source_uid
+                    << "/"
+                    << appt.uid;
+                dispatch_url(cmd.str());
+                break;
+            }
         default:
             phone_open_calendar_app(appt.begin);
     }
 }
 
-void LiveActions::phone_open_calendar_app(const DateTime&)
+void LiveActions::phone_open_calendar_app(const DateTime& dt)
 {
-    // does calendar app have a mechanism for specifying dates?
-    dispatch_url("appid://com.ubuntu.calendar/calendar/current-user-version");
+    auto cmd = dt.format("calendar:///?startdate=%Y%m%dT%H%M%SZ");
+    dispatch_url(cmd);
 }
 
 void LiveActions::phone_open_settings_app()
