@@ -160,7 +160,7 @@ protected:
         for(const auto& a : m_state->calendar_upcoming->appointments().get())
             if (begin <= a.begin)
                 upcoming.push_back(a);
- 
+
         if (m_upcoming != upcoming)
         {
             m_upcoming.swap(upcoming);
@@ -329,9 +329,12 @@ private:
             if (!appt.color.empty())
                 g_menu_item_set_attribute (menu_item, "x-canonical-color", "s", appt.color.c_str());
 
-            if (action_name != nullptr)
+            if (action_name != nullptr) {
                 g_menu_item_set_action_and_target_value (menu_item, action_name,
-                                                         g_variant_new_string (appt.uid.c_str()));
+                                                         g_variant_new ("(sx)",
+                                                                        appt.uid.c_str(),
+                                                                        unix_time));
+            }
 
             g_menu_append_item (menu, menu_item);
             g_object_unref (menu_item);
@@ -590,7 +593,7 @@ MenuFactory::buildMenu(Menu::Profile profile)
         g_warn_if_reached();
         break;
     }
-    
+
     return menu;
 }
 
