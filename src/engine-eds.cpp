@@ -740,7 +740,10 @@ private:
         g_return_val_if_fail(in.value != nullptr, out);
 
         GTimeZone * gtz {};
-        if (in.tzid != nullptr)
+        if (icaltime_is_utc(*in.value)) {
+            gtz = g_time_zone_new_utc();
+        }
+        else if (in.tzid != nullptr)
         {
             auto itz = icaltimezone_get_builtin_timezone_from_tzid(in.tzid); // usually works
 
