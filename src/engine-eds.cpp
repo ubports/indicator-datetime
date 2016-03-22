@@ -27,6 +27,7 @@
 #include <algorithm> // std::sort()
 #include <array>
 #include <ctime> // time()
+#include <cstring> // strstr(), strlen()
 #include <map>
 #include <set>
 
@@ -740,10 +741,7 @@ private:
         g_return_val_if_fail(in.value != nullptr, out);
 
         GTimeZone * gtz {};
-        if (icaltime_is_utc(*in.value)) {
-            gtz = g_time_zone_new_utc();
-        }
-        else if (in.tzid != nullptr)
+        if (in.tzid != nullptr)
         {
             auto itz = icaltimezone_get_builtin_timezone_from_tzid(in.tzid); // usually works
 
@@ -753,18 +751,34 @@ private:
             if (itz == nullptr) // ok we have a strange tzid... ask EDS to look it up in VTIMEZONES
                 e_cal_client_get_timezone_sync(client, in.tzid, &itz, cancellable.get(), nullptr);
 
-            const char * tzid;
+            const char* identifier {};
+
             if (itz != nullptr)
             {
-                tzid = icaltimezone_get_location(itz);
-            }
-            else
-            {
-                g_warning("Unrecognized TZID: '%s'", in.tzid);
-                tzid = nullptr;
+                identifier = icaltimezone_get_display_name(itz);
+
+                if (identifier == nullptr)
+                    identifier = icaltimezone_get_location(itz);
             }
 
-            gtz = g_time_zone_new(tzid);
+            // handle the TZID /freeassociation.sourceforge.net/Tzfile/[Location] case
+            if (identifier != nullptr)
+            {
+                const char* pch;
+                const char* key = "/freeassociation.sourceforge.net/";
+                if ((pch = strstr(identifier, key)))
+                {
+                    identifier = pch + strlen(key);
+                    key = "Tzfile/"; // some don't have this, so check for it separately
+                    if ((pch = strstr(identifier, key)))
+                        identifier = pch + strlen(key);
+                }
+            }
+
+            if (identifier == nullptr)
+                g_warning("Unrecognized TZID: '%s'", in.tzid);
+
+            gtz = g_time_zone_new(identifier);
             g_debug("%s eccdt.tzid -> offset is %d", G_STRLOC, in.tzid, (int)g_time_zone_get_offset(gtz,0));
         }
         else
