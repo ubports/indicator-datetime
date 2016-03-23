@@ -1,3 +1,10 @@
+indicator-datetime (15.10+16.04.20160323-0ubuntu1) xenial; urgency=medium
+
+  [ Charles Kerr ]
+  * Remove the calendar from the phone profile. (LP: #1560188)
+
+ -- Michael Zanetti <michael.zanetti@canonical.com>  Wed, 23 Mar 2016 09:45:27 +0000
+
 indicator-datetime (15.10+16.04.20160310-0ubuntu1) xenial; urgency=medium
 
   [ Charles Kerr ]
