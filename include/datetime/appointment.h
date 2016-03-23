@@ -54,7 +54,8 @@ public:
     bool is_ubuntu_alarm() const { return type == UBUNTU_ALARM; }
 
     std::string uid;
-    std::string color; 
+    std::string source_uid;
+    std::string color;
     std::string summary;
     std::string activation_url;
     DateTime begin;

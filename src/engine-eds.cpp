@@ -110,7 +110,7 @@ public:
 
         auto gtz = default_timezone != nullptr
                  ? g_time_zone_new(icaltimezone_get_location(default_timezone))
-                 : g_time_zone_new_local(); 
+                 : g_time_zone_new_local();
         auto main_task = std::make_shared<Task>(this, func, default_timezone, gtz, begin, end);
 
         for (auto& kv : m_clients)
@@ -826,6 +826,14 @@ private:
         if (uid != nullptr)
             baseline.uid = uid;
 
+        // get source uid
+        ESource *source = nullptr;
+        g_object_get(G_OBJECT(client), "source", &source, nullptr);
+        if (source != nullptr) {
+            baseline.source_uid = e_source_get_uid(source);
+            g_object_unref(source);
+        }
+
         // get appointment.summary
         ECalComponentText text {};
         e_cal_component_get_summary(component, &text);
@@ -1028,7 +1036,7 @@ private:
     /***
     ****
     ***/
- 
+
     core::Signal<> m_changed;
     std::set<ESource*> m_sources;
     std::map<ESource*,ECalClient*> m_clients;

@@ -116,7 +116,7 @@ protected:
         m_mock_state->mock_range_planner->appointments().set(appointments);
 
         // activate the action
-        auto v = g_variant_new_string(appointments[0].uid.c_str());
+        auto v = g_variant_new("(sx)", appointments[0].uid.c_str(), 0);
         g_action_group_activate_action(action_group, action_name, v);
 
         // test the results
@@ -134,7 +134,7 @@ protected:
         EXPECT_TRUE(m_mock_actions->history().empty());
 
         // activate the action
-        v = g_variant_new_string("this-uid-is-not-one-that-we-have");
+        v = g_variant_new("(sx)", "this-uid-is-not-one-that-we-have", 0);
         g_action_group_activate_action(action_group, action_name, v);
 
         // test the results
@@ -263,13 +263,13 @@ TEST_F(ActionsFixture, SetCalendarDate)
     EXPECT_TRUE(DateTime::is_same_day (now, m_state->calendar_month->month().get()));
 
     // DST change in US
-    now = DateTime::Local(2015, 3, 8, 9, 0, 0); 
+    now = DateTime::Local(2015, 3, 8, 9, 0, 0);
     v = g_variant_new_int64(now.to_unix());
     g_action_group_activate_action (action_group, action_name, v);
     EXPECT_TRUE(DateTime::is_same_day (now, m_state->calendar_month->month().get()));
 
     // DST change in Europe
-    now = DateTime::Local(2015, 3, 29, 9, 0, 0); 
+    now = DateTime::Local(2015, 3, 29, 9, 0, 0);
     v = g_variant_new_int64(now.to_unix());
     g_action_group_activate_action (action_group, action_name, v);
     EXPECT_TRUE(DateTime::is_same_day (now, m_state->calendar_month->month().get()));

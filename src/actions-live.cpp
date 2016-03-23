@@ -23,6 +23,8 @@
 
 #include <glib.h>
 
+#include <sstream>
+
 namespace unity {
 namespace indicator {
 namespace datetime {
@@ -112,9 +114,9 @@ void LiveActions::desktop_open_alarm_app()
     execute_command("evolution -c calendar");
 }
 
-void LiveActions::desktop_open_appointment(const Appointment& appt)
+void LiveActions::desktop_open_appointment(const Appointment&, const DateTime& date)
 {
-    desktop_open_calendar_app(appt.begin);
+    desktop_open_calendar_app(date);
 }
 
 void LiveActions::desktop_open_calendar_app(const DateTime& dt)
@@ -133,7 +135,7 @@ void LiveActions::phone_open_alarm_app()
     dispatch_url("appid://com.ubuntu.clock/clock/current-user-version");
 }
 
-void LiveActions::phone_open_appointment(const Appointment& appt)
+void LiveActions::phone_open_appointment(const Appointment& appt, const DateTime& date)
 {
     if (!appt.activation_url.empty())
     {
@@ -145,15 +147,18 @@ void LiveActions::phone_open_appointment(const Appointment& appt)
             phone_open_alarm_app();
             break;
 
+        case Appointment::EVENT:
         default:
-            phone_open_calendar_app(appt.begin);
+            phone_open_calendar_app(date);
+            break;
     }
 }
 
-void LiveActions::phone_open_calendar_app(const DateTime&)
+void LiveActions::phone_open_calendar_app(const DateTime& dt)
 {
-    // does calendar app have a mechanism for specifying dates?
-    dispatch_url("appid://com.ubuntu.calendar/calendar/current-user-version");
+    const auto utc = dt.to_timezone("UTC");
+    auto cmd = utc.format("calendar://startdate=%Y-%m-%dT%H:%M:%S+00:00");
+    dispatch_url(cmd);
 }
 
 void LiveActions::phone_open_settings_app()

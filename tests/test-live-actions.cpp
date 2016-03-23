@@ -64,7 +64,7 @@ TEST_F(TimedateFixture, DesktopOpenAppointment)
     Appointment a;
     a.uid = "some-uid";
     a.begin = DateTime::NowLocal();
-    m_actions->desktop_open_appointment(a);
+    m_actions->desktop_open_appointment(a, a.begin);
     const std::string expected_substr = "evolution \"calendar:///?startdate=";
     EXPECT_NE(m_live_actions->last_cmd.find(expected_substr), std::string::npos);
 }
@@ -90,8 +90,6 @@ TEST_F(TimedateFixture, DesktopOpenSettingsApp)
 namespace
 {
     const std::string clock_app_url = "appid://com.ubuntu.clock/clock/current-user-version";
-
-    const std::string calendar_app_url = "appid://com.ubuntu.calendar/calendar/current-user-version";
 }
 
 TEST_F(TimedateFixture, PhoneOpenAlarmApp)
@@ -104,23 +102,28 @@ TEST_F(TimedateFixture, PhoneOpenAppointment)
 {
     Appointment a;
 
-    a.uid = "some-uid";
+    a.uid = "event-uid";
+    a.source_uid = "source-uid";
     a.begin = DateTime::NowLocal();
     a.type = Appointment::EVENT;
-    m_actions->phone_open_appointment(a);
-    EXPECT_EQ(calendar_app_url, m_live_actions->last_url);
+    auto ocurrenceDate = DateTime::Local(2014, 1, 1, 0, 0, 0);
+    m_actions->phone_open_appointment(a, ocurrenceDate);
+    const std::string appointment_app_url =  ocurrenceDate.to_timezone("UTC").format("calendar://startdate=%Y-%m-%dT%H:%M:%S+00:00");
+    EXPECT_EQ(appointment_app_url, m_live_actions->last_url);
 
     a.type = Appointment::UBUNTU_ALARM;
-    m_actions->phone_open_appointment(a);
+    m_actions->phone_open_appointment(a, a.begin);
     EXPECT_EQ(clock_app_url, m_live_actions->last_url);
 }
 
 TEST_F(TimedateFixture, PhoneOpenCalendarApp)
 {
-    m_actions->phone_open_calendar_app(DateTime::NowLocal());
-    const std::string expected = "appid://com.ubuntu.calendar/calendar/current-user-version";
+    auto now = DateTime::NowLocal();
+    m_actions->phone_open_calendar_app(now);
+    const std::string expected =  now.to_timezone("UTC").format("calendar://startdate=%Y-%m-%dT%H:%M:%S+00:00");
     EXPECT_EQ(expected, m_live_actions->last_url);
 }
+
 
 TEST_F(TimedateFixture, PhoneOpenSettingsApp)
 {
