@@ -66,15 +66,14 @@ class FormatterFixture: public GlibFixture
 
     bool SetLocale(const char* expected_locale, const char* name)
     {
-      setlocale(LC_TIME, expected_locale);
-      const auto actual_locale = setlocale(LC_TIME, nullptr);
-      if (!g_strcmp0(expected_locale, actual_locale))
+      if (setlocale(LC_TIME, expected_locale) != nullptr)
         {
           return true;
         }
       else
         {
-          g_warning("Unable to set locale to %s; skipping %s locale tests.", expected_locale, name);
+          g_warning("Unable to set locale to %s; skipping %s locale tests. (Current LC_TIME: %s)",
+                    expected_locale, name, setlocale(LC_TIME, nullptr));
           return false;
         }
     }
@@ -193,7 +192,7 @@ TEST_F(FormatterFixture, TestUpcomingTimes)
         {
             auto clock = std::make_shared<MockClock>(test_case.now);
             DesktopFormatter f(clock, m_settings);
-        
+
             const auto fmt = f.relative_format(test_case.then.get());
             ASSERT_EQ(test_case.expected_format_string, fmt);
         }
@@ -231,7 +230,7 @@ TEST_F(FormatterFixture, TestEventTimes)
         {
             auto clock = std::make_shared<MockClock>(test_case.now);
             DesktopFormatter f(clock, m_settings);
-          
+
             const auto fmt = f.relative_format(test_case.then.get(), test_case.then_end.get());
             ASSERT_STREQ(test_case.expected_format_string, fmt.c_str());
         }
