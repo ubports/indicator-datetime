@@ -1,3 +1,11 @@
+indicator-datetime (15.10+16.04.20160323.1-0ubuntu1) xenial; urgency=medium
+
+  * Correct translate events on UTC time to GDateTime. (LP: #1544030)
+  * [phone] calls 'calendar://startdate=<event-date>' when clicking on
+    an event in the indicator. (LP: #1439049)
+
+ -- Renato Araujo Oliveira Filho <renato.filho@canonical.com>  Wed, 23 Mar 2016 20:33:36 +0000
+
 indicator-datetime (15.10+16.04.20160323-0ubuntu1) xenial; urgency=medium
 
   [ Charles Kerr ]
