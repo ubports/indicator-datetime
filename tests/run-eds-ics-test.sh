@@ -6,6 +6,7 @@ TEST_EXEC=$2   # full executable path of test app
 TEST_NAME=$3   # test name
 CONFIG_DIR=$4  # config files
 ICS_FILE=$5    # ical file holding test data
+ACCOUNTS_DB=$6 # online account database
 
 echo "this script: ${SELF}"
 echo "test-runner: ${TEST_RUNNER}"
@@ -54,8 +55,15 @@ if [ -e ${ICS_FILE} ]; then
   cp --verbose --archive ${ICS_FILE} ${XDG_DATA_HOME}/evolution/tasks/system/tasks.ics
 fi
 
+# prepare online accounts database
+if [ -e ${ACCOUNTS_DB} ]; then
+  echo "copying ${ACCOUNTS_DB} into $HOME"
+  mkdir -p ${XDG_CONFIG_HOME}/libaccounts-glib/
+  cp --verbose --archive ${ACCOUNTS_DB} ${XDG_CONFIG_HOME}/libaccounts-glib/accounts.db
+fi
+
 # run the test
-${TEST_RUNNER} --keep-env --max-wait=90 --task ${TEST_EXEC} --task-name ${TEST_NAME} --wait-until-complete 
+${TEST_RUNNER} --keep-env --max-wait=90 --task ${TEST_EXEC} --task-name ${TEST_NAME} --wait-until-complete
 rv=$?
 
 # if the test passed, blow away the tmpdir
