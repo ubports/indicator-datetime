@@ -20,7 +20,7 @@ option (enable_lcov "Generate lcov code coverage reports." ON)
 
 ##
 ##  GNU standard installation directories
-## 
+##
 
 include (GNUInstallDirs)
 if (EXISTS "/etc/debian_version") # Workaround for libexecdir on debian
@@ -47,7 +47,8 @@ pkg_check_modules (SERVICE_DEPS REQUIRED
                    gstreamer-1.0>=1.2
                    libnotify>=0.7.6
                    url-dispatcher-1>=1
-                   properties-cpp>=0.0.1)
+                   properties-cpp>=0.0.1
+                   libaccounts-glib>=1.21)
 include_directories (SYSTEM ${SERVICE_DEPS_INCLUDE_DIRS})
 
 ##

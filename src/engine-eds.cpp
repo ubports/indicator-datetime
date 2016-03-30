@@ -18,6 +18,7 @@
  */
 
 #include <datetime/engine-eds.h>
+#include <datetime/myself.h>
 
 #include <libical/ical.h>
 #include <libical/icaltime.h>
@@ -56,8 +57,9 @@ public:
         };
 
         m_cancellable = std::shared_ptr<GCancellable>(g_cancellable_new(), cancellable_deleter);
-
         e_source_registry_new(m_cancellable.get(), on_source_registry_ready, this);
+
+        m_myself = std::unique_ptr<Myself>(new Myself());
     }
 
     ~Impl()
@@ -797,7 +799,7 @@ private:
         return out;
     }
 
-    static bool
+    bool
     is_component_interesting(ECalComponent * component)
     {
         // we only want calendar events and vtodos
@@ -823,6 +825,27 @@ private:
                 disabled = true;
         }
         e_cal_component_free_categories_list(categ_list);
+
+
+        // we don't want not attending alarms
+        // check if the user is part of attendee list if we found it check the status
+        GSList *attendeeList = nullptr;
+        e_cal_component_get_attendee_list(component, &attendeeList);
+
+        for (GSList *attendeeIter=attendeeList; attendeeIter != nullptr; attendeeIter = attendeeIter->next) {
+            ECalComponentAttendee *attendee = static_cast<ECalComponentAttendee *>(attendeeIter->data);
+            if (attendee->value) {
+                if (strncmp(attendee->value, "mailto:", 7) == 0) {
+                    if (m_myself->isMyEmail(attendee->value+7)) {
+                        disabled = (attendee->status == ICAL_PARTSTAT_DECLINED);
+                        break;
+                    }
+                }
+            }
+        }
+        if (attendeeList)
+            e_cal_component_free_attendee_list(attendeeList);
+
         if (disabled)
             return false;
 
@@ -916,7 +939,7 @@ private:
             return;
 
         // add it. simple, eh?
-        if (is_component_interesting(component))
+        if (subtask->task->p->is_component_interesting(component))
         {
             Appointment appointment = get_appointment(subtask->client, subtask->cancellable, component, gtz);
             appointment.color = subtask->color;
@@ -931,7 +954,7 @@ private:
     {
         auto& component = comp_alarms->comp;
 
-        if (!is_component_interesting(component))
+        if (!subtask->task->p->is_component_interesting(component))
             return;
 
         Appointment baseline = get_appointment(subtask->client, subtask->cancellable, component, gtz);
@@ -1062,6 +1085,7 @@ private:
     ESourceRegistry* m_source_registry {};
     guint m_rebuild_tag {};
     time_t m_rebuild_deadline {};
+    std::unique_ptr<Myself> m_myself;
 };
 
 /***
