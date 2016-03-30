@@ -607,7 +607,7 @@ private:
         }
     };
 
-    static std::string get_alarm_text(ECalComponentAlarm * alarm)
+    static std::string get_alarm_text(ECalComponentAlarm * alarm, bool * hasText)
     {
         std::string ret;
 
@@ -615,6 +615,7 @@ private:
         e_cal_component_alarm_get_action(alarm, &action);
         if (action == E_CAL_COMPONENT_ALARM_DISPLAY)
         {
+            *hasText = true;
             ECalComponentText text {};
             e_cal_component_alarm_get_description(alarm, &text);
             if (text.value)
@@ -624,7 +625,7 @@ private:
         return ret;
     }
 
-    static std::string get_alarm_sound_url(ECalComponentAlarm * alarm)
+    static std::string get_alarm_sound_url(ECalComponentAlarm * alarm, bool * hasSound)
     {
         std::string ret;
 
@@ -632,6 +633,7 @@ private:
         e_cal_component_alarm_get_action(alarm, &action);
         if (action == E_CAL_COMPONENT_ALARM_AUDIO)
         {
+            *hasSound = true;
             icalattach* attach = nullptr;
             e_cal_component_alarm_get_attach(alarm, &attach);
             if (attach != nullptr)
@@ -990,13 +992,20 @@ private:
             auto trigger_time = DateTime{gtz, ai->trigger};
 
             auto& alarm = alarms[instance_time][trigger_time];
+            bool hasText = false;
+            bool hasSound = false;
 
             if (alarm.text.empty())
-                alarm.text = get_alarm_text(a);
+                alarm.text = get_alarm_text(a, &hasText);
             if (alarm.audio_url.empty())
-                alarm.audio_url = get_alarm_sound_url(a);
+                alarm.audio_url = get_alarm_sound_url(a, &hasSound);
             if (!alarm.time.is_set())
                 alarm.time = trigger_time;
+
+            if (hasText)
+                alarm.type = alarm.type | Alarm::TEXT;
+            if (hasSound)
+                alarm.type = alarm.type | Alarm::SOUND;
 
             e_cal_component_alarm_free(a);
         }
@@ -1008,7 +1017,10 @@ private:
             appointment.end = i.first.second;
             appointment.alarms.reserve(i.second.size());
             for (auto& j : i.second)
-                appointment.alarms.push_back(j.second);
+            {
+                if ((j.second.type & Alarm::TEXT) || (j.second.type & Alarm::SOUND))
+                    appointment.alarms.push_back(j.second);
+            }
             subtask->task->appointments.push_back(appointment);
         }
     }
