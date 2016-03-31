@@ -66,21 +66,21 @@ TEST_F(VAlarmFixture, MultipleAppointments)
         constexpr int max_wait_sec = 10;
         wait_msec(max_wait_sec * G_TIME_SPAN_MILLISECOND);
     }
-   
+
     // what we expect to get...
     Appointment expected_appt;
     expected_appt.uid = "20150507T211449Z-4262-32011-1418-1@ubuntu-phablet";
     expected_appt.color = "#becedd";
     expected_appt.summary = "Alarm";
     std::array<Alarm,8> expected_alarms = {
-        Alarm({"Alarm", "file://" ALARM_DEFAULT_SOUND, DateTime(gtz,2015,5, 8,16,40,0)}),
-        Alarm({"Alarm", "file://" ALARM_DEFAULT_SOUND, DateTime(gtz,2015,5,15,16,40,0)}),
-        Alarm({"Alarm", "file://" ALARM_DEFAULT_SOUND, DateTime(gtz,2015,5,22,16,40,0)}),
-        Alarm({"Alarm", "file://" ALARM_DEFAULT_SOUND, DateTime(gtz,2015,5,29,16,40,0)}),
-        Alarm({"Alarm", "file://" ALARM_DEFAULT_SOUND, DateTime(gtz,2015,6, 5,16,40,0)}),
-        Alarm({"Alarm", "file://" ALARM_DEFAULT_SOUND, DateTime(gtz,2015,6,12,16,40,0)}),
-        Alarm({"Alarm", "file://" ALARM_DEFAULT_SOUND, DateTime(gtz,2015,6,19,16,40,0)}),
-        Alarm({"Alarm", "file://" ALARM_DEFAULT_SOUND, DateTime(gtz,2015,6,26,16,40,0)})
+        Alarm({Alarm::SOUND | Alarm::TEXT, "Alarm", "file://" ALARM_DEFAULT_SOUND, DateTime(gtz,2015,5, 8,16,40,0)}),
+        Alarm({Alarm::SOUND | Alarm::TEXT, "Alarm", "file://" ALARM_DEFAULT_SOUND, DateTime(gtz,2015,5,15,16,40,0)}),
+        Alarm({Alarm::SOUND | Alarm::TEXT, "Alarm", "file://" ALARM_DEFAULT_SOUND, DateTime(gtz,2015,5,22,16,40,0)}),
+        Alarm({Alarm::SOUND | Alarm::TEXT, "Alarm", "file://" ALARM_DEFAULT_SOUND, DateTime(gtz,2015,5,29,16,40,0)}),
+        Alarm({Alarm::SOUND | Alarm::TEXT, "Alarm", "file://" ALARM_DEFAULT_SOUND, DateTime(gtz,2015,6, 5,16,40,0)}),
+        Alarm({Alarm::SOUND | Alarm::TEXT, "Alarm", "file://" ALARM_DEFAULT_SOUND, DateTime(gtz,2015,6,12,16,40,0)}),
+        Alarm({Alarm::SOUND | Alarm::TEXT, "Alarm", "file://" ALARM_DEFAULT_SOUND, DateTime(gtz,2015,6,19,16,40,0)}),
+        Alarm({Alarm::SOUND | Alarm::TEXT, "Alarm", "file://" ALARM_DEFAULT_SOUND, DateTime(gtz,2015,6,26,16,40,0)})
     };
 
     // compare it to what we actually loaded...
