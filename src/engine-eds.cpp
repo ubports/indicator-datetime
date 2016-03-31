@@ -826,7 +826,6 @@ private:
         }
         e_cal_component_free_categories_list(categ_list);
 
-
         // we don't want not attending alarms
         // check if the user is part of attendee list if we found it check the status
         GSList *attendeeList = nullptr;
