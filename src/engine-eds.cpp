@@ -607,7 +607,7 @@ private:
         }
     };
 
-    static std::string get_alarm_text(ECalComponentAlarm * alarm, bool * hasText)
+    static std::string get_alarm_text(ECalComponentAlarm * alarm)
     {
         std::string ret;
 
@@ -615,7 +615,6 @@ private:
         e_cal_component_alarm_get_action(alarm, &action);
         if (action == E_CAL_COMPONENT_ALARM_DISPLAY)
         {
-            *hasText = true;
             ECalComponentText text {};
             e_cal_component_alarm_get_description(alarm, &text);
             if (text.value)
@@ -625,7 +624,7 @@ private:
         return ret;
     }
 
-    static std::string get_alarm_sound_url(ECalComponentAlarm * alarm, bool * hasSound)
+    static std::string get_alarm_sound_url(ECalComponentAlarm * alarm, const std::string & default_sound)
     {
         std::string ret;
 
@@ -633,7 +632,7 @@ private:
         e_cal_component_alarm_get_action(alarm, &action);
         if (action == E_CAL_COMPONENT_ALARM_AUDIO)
         {
-            *hasSound = true;
+            ret = default_sound;
             icalattach* attach = nullptr;
             e_cal_component_alarm_get_attach(alarm, &attach);
             if (attach != nullptr)
@@ -992,20 +991,13 @@ private:
             auto trigger_time = DateTime{gtz, ai->trigger};
 
             auto& alarm = alarms[instance_time][trigger_time];
-            bool hasText = false;
-            bool hasSound = false;
-
             if (alarm.text.empty())
-                alarm.text = get_alarm_text(a, &hasText);
+                alarm.text = get_alarm_text(a);
             if (alarm.audio_url.empty())
-                alarm.audio_url = get_alarm_sound_url(a, &hasSound);
+                alarm.audio_url = get_alarm_sound_url(a, baseline.is_ubuntu_alarm() ?
+                                                          ALARM_DEFAULT_SOUND : CALENDAR_DEFAULT_SOUND);
             if (!alarm.time.is_set())
                 alarm.time = trigger_time;
-
-            if (hasText)
-                alarm.type = alarm.type | Alarm::TEXT;
-            if (hasSound)
-                alarm.type = alarm.type | Alarm::SOUND;
 
             e_cal_component_alarm_free(a);
         }
@@ -1018,7 +1010,7 @@ private:
             appointment.alarms.reserve(i.second.size());
             for (auto& j : i.second)
             {
-                if ((j.second.type & Alarm::TEXT) || (j.second.type & Alarm::SOUND))
+                if (j.second.has_text() || (j.second.has_sound()))
                     appointment.alarms.push_back(j.second);
             }
             subtask->task->appointments.push_back(appointment);
