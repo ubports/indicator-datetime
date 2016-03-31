@@ -36,16 +36,17 @@ namespace datetime {
 /****
 *****
 ****/
+class Myself;
 
 /**
  * Class wrapper around EDS so multiple #EdsPlanners can share resources
- * 
+ *
  * @see EdsPlanner
  */
 class EdsEngine: public Engine
 {
 public:
-    EdsEngine();
+    EdsEngine(const std::shared_ptr<Myself> &myself);
     ~EdsEngine();
 
     void get_appointments(const DateTime& begin,
