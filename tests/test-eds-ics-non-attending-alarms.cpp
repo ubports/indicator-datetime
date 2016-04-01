@@ -22,6 +22,7 @@
 #include <datetime/alarm-queue-simple.h>
 #include <datetime/clock-mock.h>
 #include <datetime/engine-eds.h>
+#include <datetime/myself.h>
 #include <datetime/planner-range.h>
 
 #include <gtest/gtest.h>
@@ -41,7 +42,7 @@ using VAlarmFixture = GlibFixture;
 TEST_F(VAlarmFixture, NonAttendingEvent)
 {
     // start the EDS engine
-    auto engine = std::make_shared<EdsEngine>();
+    auto engine = std::make_shared<EdsEngine>(std::make_shared<Myself>());
 
     // we need a consistent timezone for the planner and our local DateTimes
     constexpr char const * zone_str {"America/Recife"};
@@ -70,23 +71,6 @@ TEST_F(VAlarmFixture, NonAttendingEvent)
     // the planner should match what we've got in the calendar.ics file
     const auto appts = planner->appointments().get();
     ASSERT_EQ(0, appts.size());
-
-    /*
-    // now let's try this out with AlarmQueue...
-    // hook the planner up to a SimpleAlarmQueue and confirm that it triggers for each of the reminders
-    auto mock_clock = std::make_shared<MockClock>(range_begin);
-    std::shared_ptr<Clock> clock = mock_clock;
-    std::shared_ptr<WakeupTimer> wakeup_timer = std::make_shared<MockWakeupTimer>(clock);
-    auto alarm_queue = std::make_shared<SimpleAlarmQueue>(clock, planner, wakeup_timer);
-    int triggered_count = 0;
-    alarm_queue->alarm_reached().connect([&triggered_count, appt](const Appointment&, const Alarm& active_alarm) {
-        EXPECT_TRUE(std::find(appt.alarms.begin(), appt.alarms.end(), active_alarm) != appt.alarms.end());
-        ++triggered_count;
-    });
-    for (auto now=range_begin; now<range_end; now+=std::chrono::minutes{1})
-      mock_clock->set_localtime(now);
-    EXPECT_EQ(appt.alarms.size(), triggered_count);
-    */
 
     // cleanup
     g_time_zone_unref(gtz);
