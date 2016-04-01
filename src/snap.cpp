@@ -102,7 +102,7 @@ public:
 
         // calendar events are muted in silent mode; alarm clocks never are
         std::shared_ptr<uin::Sound> sound;
-        if (appointment.is_ubuntu_alarm() || !silent_mode()) {
+        if (appointment.is_ubuntu_alarm() || (alarm.has_sound() && !silent_mode())) {
             // create the sound.
             const auto role = appointment.is_ubuntu_alarm() ? "alarm" : "alert";
             const auto uri = get_alarm_uri(appointment, alarm, m_settings);
@@ -224,8 +224,6 @@ private:
         };
 
         std::string uri;
-        if (!alarm.has_sound() && !is_alarm)
-            return uri;
 
         for(const auto& candidate : candidates)
         {
