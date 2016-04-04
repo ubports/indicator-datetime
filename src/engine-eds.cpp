@@ -828,24 +828,26 @@ private:
         }
         e_cal_component_free_categories_list(categ_list);
 
-        // we don't want not attending alarms
-        // check if the user is part of attendee list if we found it check the status
-        GSList *attendeeList = nullptr;
-        e_cal_component_get_attendee_list(component, &attendeeList);
+        if (!disabled) {
+            // we don't want not attending alarms
+            // check if the user is part of attendee list if we found it check the status
+            GSList *attendeeList = nullptr;
+            e_cal_component_get_attendee_list(component, &attendeeList);
 
-        for (GSList *attendeeIter=attendeeList; attendeeIter != nullptr; attendeeIter = attendeeIter->next) {
-            ECalComponentAttendee *attendee = static_cast<ECalComponentAttendee *>(attendeeIter->data);
-            if (attendee->value) {
-                if (strncmp(attendee->value, "mailto:", 7) == 0) {
-                    if (m_myself->isMyEmail(attendee->value+7)) {
-                        disabled = (attendee->status == ICAL_PARTSTAT_DECLINED);
-                        break;
+            for (GSList *attendeeIter=attendeeList; attendeeIter != nullptr; attendeeIter = attendeeIter->next) {
+                ECalComponentAttendee *attendee = static_cast<ECalComponentAttendee *>(attendeeIter->data);
+                if (attendee->value) {
+                    if (strncmp(attendee->value, "mailto:", 7) == 0) {
+                        if (m_myself->isMyEmail(attendee->value+7)) {
+                            disabled = (attendee->status == ICAL_PARTSTAT_DECLINED);
+                            break;
+                        }
                     }
                 }
             }
+            if (attendeeList)
+                e_cal_component_free_attendee_list(attendeeList);
         }
-        if (attendeeList)
-            e_cal_component_free_attendee_list(attendeeList);
 
         if (disabled)
             return false;
