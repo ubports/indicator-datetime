@@ -61,13 +61,39 @@ void LiveActions::dispatch_url(const std::string& url)
 ****
 ***/
 
+bool LiveActions::is_unity()
+{
+    static bool cached = false;
+    static bool result;
+
+    if (cached) {
+        return result;
+    }
+
+    result = false;
+    const gchar *xdg_current_desktop = g_getenv ("XDG_CURRENT_DESKTOP");
+
+    if (xdg_current_desktop != NULL) {
+        gchar **desktop_names = g_strsplit (xdg_current_desktop, ":", 0);
+        for (size_t i = 0; desktop_names[i]; ++i) {
+            if (!g_strcmp0 (desktop_names[i], "Unity")) {
+                result = true;
+                break;
+            }
+        }
+        g_strfreev (desktop_names);
+    }
+    cached = true;
+    return result;
+}
+
 void LiveActions::desktop_open_settings_app()
 {
     if (g_getenv ("MIR_SOCKET") != nullptr)
     {
         dispatch_url("settings:///system/time-date");
     }
-    else if ((g_strcmp0 (g_getenv ("XDG_CURRENT_DESKTOP"), "Unity") == 0))
+    else if (is_unity())
     {
         execute_command("unity-control-center datetime");
     }
