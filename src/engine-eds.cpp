@@ -691,10 +691,9 @@ private:
             if (!e_cal_component_has_alarms(component))
                 add_event_to_subtask(component, subtask, subtask->task->gtz);
         }
-
         g_list_free_full(subtask->components, g_object_unref);
+        g_clear_pointer(&subtask->instance_components, g_list_free);
         e_cal_free_alarms(comp_alarms);
-
         delete subtask;
     }
 
