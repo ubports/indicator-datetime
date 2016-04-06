@@ -53,6 +53,7 @@ public:
     void set_location(const std::string& zone, const std::string& name) override;
 
 protected:
+    static bool is_unity();
     virtual void execute_command(const std::string& command);
     virtual void dispatch_url(const std::string& url);
 };
