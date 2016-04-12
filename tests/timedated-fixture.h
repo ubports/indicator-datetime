@@ -61,7 +61,17 @@ protected:
 
     virtual void TearDown() override
     {
+        // take down the bus
+        bool bus_finished = false;
+        g_object_weak_ref(
+            G_OBJECT(m_bus),
+            [](gpointer gbus_finished, GObject*){*static_cast<bool*>(gbus_finished) = true;},
+            &bus_finished
+        );
         g_clear_object(&m_bus);
+        EXPECT_TRUE(wait_for([&bus_finished](){return bus_finished;}));
+
+        // take down the GTestBus
         g_clear_object(&m_test_bus);
 
         super::TearDown();

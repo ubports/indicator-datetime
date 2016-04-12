@@ -125,10 +125,11 @@ class GlibFixture : public ::testing::Test
       }
     }
 
-    bool wait_for_name_owned(GDBusConnection* connection,
-                             const gchar* name,
-                             guint timeout_msec=1000,
-                             GBusNameWatcherFlags flags=G_BUS_NAME_WATCHER_FLAGS_AUTO_START)
+    bool wait_for_name_owned(
+        GDBusConnection* connection,
+        const gchar* name,
+        guint timeout_msec=1000,
+        GBusNameWatcherFlags flags=G_BUS_NAME_WATCHER_FLAGS_AUTO_START)
     {
       struct Data {
         GMainLoop* loop = nullptr;
@@ -139,8 +140,7 @@ class GlibFixture : public ::testing::Test
       auto on_name_appeared = [](GDBusConnection* /*connection*/,
                                  const gchar* /*name_*/,
                                  const gchar* name_owner,
-                                 gpointer gdata)
-      {
+                                 gpointer gdata){
         if (name_owner == nullptr)
           return;
         auto tmp = static_cast<Data*>(gdata);
@@ -150,13 +150,16 @@ class GlibFixture : public ::testing::Test
 
       const auto timeout_id = g_timeout_add(timeout_msec, wait_msec__timeout, loop);
       data.loop = loop;
-      const auto watch_id = g_bus_watch_name_on_connection(connection,
-                                                           name,
-                                                           flags,
-                                                           on_name_appeared,
-                                                           nullptr, /* name_vanished */
-                                                           &data,
-                                                           nullptr); /* user_data_free_func */
+      const auto watch_id = g_bus_watch_name_on_connection(
+          connection,
+          name,
+          flags,
+          on_name_appeared,
+          nullptr, // name_vanished
+          &data,
+          nullptr // user_data_free_func
+      );
+
       g_main_loop_run(loop);
 
       g_bus_unwatch_name(watch_id);
