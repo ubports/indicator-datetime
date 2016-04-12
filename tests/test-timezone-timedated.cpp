@@ -55,12 +55,21 @@ protected:
         // get the bus
         m_bus = g_bus_get_sync(G_BUS_TYPE_SESSION, nullptr, nullptr);
         g_dbus_connection_set_exit_on_close(m_bus, FALSE);
-        g_object_add_weak_pointer(G_OBJECT(m_bus), (gpointer*)&m_bus);
     }
 
     void TearDown() override
     {
+        // tear down the bus
+        bool bus_finished = false;
+        g_object_weak_ref(
+            G_OBJECT(m_bus),
+            [](gpointer gbus_finished, GObject*){*static_cast<bool*>(gbus_finished) = true;},
+            &bus_finished
+        );
         g_clear_object(&m_bus);
+        EXPECT_TRUE(wait_for([&bus_finished](){return bus_finished;}));
+
+        // tear down test bus
         g_clear_object(&m_test_bus);
 
         super::TearDown();
@@ -125,7 +134,7 @@ TEST_F(Timedate1Fixture, DefaultTimezone)
 {
     const std::string expected_tzid{"Etc/Utc"};
 
-    TimedatedTimezone tmp;
+    TimedatedTimezone tmp {m_bus};
     EXPECT_TZID(expected_tzid, tmp);
 }
 
@@ -137,7 +146,7 @@ TEST_F(Timedate1Fixture, Timedate1First)
     const std::string expected_tzid{"America/Chicago"};
 
     start_timedate1(expected_tzid);
-    TimedatedTimezone tmp;
+    TimedatedTimezone tmp {m_bus};
     EXPECT_TZID(expected_tzid, tmp);
 }
 
@@ -148,7 +157,7 @@ TEST_F(Timedate1Fixture, Timedate1Last)
 {
     const std::string expected_tzid("America/Los_Angeles");
 
-    TimedatedTimezone tmp;
+    TimedatedTimezone tmp {m_bus};
     start_timedate1(expected_tzid);
     EXPECT_TZID(expected_tzid, tmp);
 }
@@ -160,7 +169,7 @@ TEST_F(Timedate1Fixture, TimezoneChange)
 {
     const std::vector<std::string> expected_tzids{"America/Los_Angeles", "America/Chicago", "Etc/Utc"};
 
-    TimedatedTimezone tmp;
+    TimedatedTimezone tmp {m_bus};
     start_timedate1("America/New_York");
 
     for(const auto& expected_tzid : expected_tzids)
