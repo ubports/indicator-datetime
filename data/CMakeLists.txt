@@ -30,6 +30,7 @@ set (UPSTART_JOB_FILE_IN "${CMAKE_CURRENT_SOURCE_DIR}/${UPSTART_JOB_NAME}.in")
 
 # build it
 set (pkglibexecdir "${CMAKE_INSTALL_FULL_PKGLIBEXECDIR}")
+set (messaging_menu_icon "${CMAKE_INSTALL_FULL_DATAROOTDIR}/icons/suru/actions/scalable/appointment.svg")
 configure_file ("${UPSTART_JOB_FILE_IN}" "${UPSTART_JOB_FILE}")
 
 # install it
@@ -52,7 +53,11 @@ set (XDG_AUTOSTART_FILE_IN "${CMAKE_CURRENT_SOURCE_DIR}/${XDG_AUTOSTART_NAME}.in
 set (pkglibexecdir "${CMAKE_INSTALL_FULL_PKGLIBEXECDIR}")
 configure_file ("${XDG_AUTOSTART_FILE_IN}" "${XDG_AUTOSTART_FILE}")
 
-# install it
+# install desktop file used by messaging-menu
+install (FILES "${XDG_AUTOSTART_FILE}"
+         DESTINATION "${CMAKE_INSTALL_FULL_DATAROOTDIR}/applications/")
+
+# install XDG autostart
 install (FILES "${XDG_AUTOSTART_FILE}"
          DESTINATION "${XDG_AUTOSTART_DIR}")
 

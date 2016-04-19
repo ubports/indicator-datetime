@@ -48,7 +48,9 @@ pkg_check_modules (SERVICE_DEPS REQUIRED
                    libnotify>=0.7.6
                    url-dispatcher-1>=1
                    properties-cpp>=0.0.1
-                   libaccounts-glib>=1.21)
+                   libaccounts-glib>=1.21
+                   messaging-menu>=12.10
+                   uuid>=2.25)
 include_directories (SYSTEM ${SERVICE_DEPS_INCLUDE_DIRS})
 
 ##
