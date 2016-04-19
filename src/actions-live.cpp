@@ -17,11 +17,14 @@
  *   Charles Kerr <charles.kerr@canonical.com>
  */
 
+#include <datetime/dbus-shared.h>
 #include <datetime/actions-live.h>
 
 #include <url-dispatcher.h>
 
 #include <glib.h>
+
+#include <sstream>
 
 namespace unity {
 namespace indicator {
@@ -59,13 +62,39 @@ void LiveActions::dispatch_url(const std::string& url)
 ****
 ***/
 
+bool LiveActions::is_unity()
+{
+    static bool cached = false;
+    static bool result;
+
+    if (cached) {
+        return result;
+    }
+
+    result = false;
+    const gchar *xdg_current_desktop = g_getenv ("XDG_CURRENT_DESKTOP");
+
+    if (xdg_current_desktop != NULL) {
+        gchar **desktop_names = g_strsplit (xdg_current_desktop, ":", 0);
+        for (size_t i = 0; desktop_names[i]; ++i) {
+            if (!g_strcmp0 (desktop_names[i], "Unity")) {
+                result = true;
+                break;
+            }
+        }
+        g_strfreev (desktop_names);
+    }
+    cached = true;
+    return result;
+}
+
 void LiveActions::desktop_open_settings_app()
 {
     if (g_getenv ("MIR_SOCKET") != nullptr)
     {
         dispatch_url("settings:///system/time-date");
     }
-    else if ((g_strcmp0 (g_getenv ("XDG_CURRENT_DESKTOP"), "Unity") == 0))
+    else if (is_unity())
     {
         execute_command("unity-control-center datetime");
     }
@@ -112,9 +141,9 @@ void LiveActions::desktop_open_alarm_app()
     execute_command("evolution -c calendar");
 }
 
-void LiveActions::desktop_open_appointment(const Appointment& appt)
+void LiveActions::desktop_open_appointment(const Appointment&, const DateTime& date)
 {
-    desktop_open_calendar_app(appt.begin);
+    desktop_open_calendar_app(date);
 }
 
 void LiveActions::desktop_open_calendar_app(const DateTime& dt)
@@ -133,7 +162,7 @@ void LiveActions::phone_open_alarm_app()
     dispatch_url("appid://com.ubuntu.clock/clock/current-user-version");
 }
 
-void LiveActions::phone_open_appointment(const Appointment& appt)
+void LiveActions::phone_open_appointment(const Appointment& appt, const DateTime& date)
 {
     if (!appt.activation_url.empty())
     {
@@ -145,15 +174,18 @@ void LiveActions::phone_open_appointment(const Appointment& appt)
             phone_open_alarm_app();
             break;
 
+        case Appointment::EVENT:
         default:
-            phone_open_calendar_app(appt.begin);
+            phone_open_calendar_app(date);
+            break;
     }
 }
 
-void LiveActions::phone_open_calendar_app(const DateTime&)
+void LiveActions::phone_open_calendar_app(const DateTime& dt)
 {
-    // does calendar app have a mechanism for specifying dates?
-    dispatch_url("appid://com.ubuntu.calendar/calendar/current-user-version");
+    const auto utc = dt.to_timezone("UTC");
+    auto cmd = utc.format("calendar://startdate=%Y-%m-%dT%H:%M:%S+00:00");
+    dispatch_url(cmd);
 }
 
 void LiveActions::phone_open_settings_app()
@@ -221,7 +253,7 @@ on_datetime1_proxy_ready (GObject      * object G_GNUC_UNUSED,
   else
     {
       g_dbus_proxy_call(proxy,
-                        "SetTimezone",
+                        Bus::Timedate1::Methods::SET_TIMEZONE,
                         g_variant_new ("(sb)", data->tzid.c_str(), TRUE),
                         G_DBUS_CALL_FLAGS_NONE,
                         -1,
@@ -249,9 +281,9 @@ void LiveActions::set_location(const std::string& tzid, const std::string& name)
     g_dbus_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
                               G_DBUS_PROXY_FLAGS_NONE,
                               nullptr,
-                              "org.freedesktop.timedate1",
-                              "/org/freedesktop/timedate1",
-                              "org.freedesktop.timedate1",
+                              Bus::Timedate1::BUSNAME,
+                              Bus::Timedate1::ADDR,
+                              Bus::Timedate1::IFACE,
                               nullptr,
                               on_datetime1_proxy_ready,
                               data);

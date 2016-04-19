@@ -60,7 +60,7 @@ GMenuModel* Menu::menu_model()
 
 /**
  * To avoid a giant menu on the PC, and to avoid pushing lower menu items
- * off-screen on the phone, the menu should show the menu should show the
+ * off-screen on the phone, the menu should the
  * next five calendar events, if any.
  *
  * The list might include multiple occurrences of the same event (bug 1515821).
@@ -221,19 +221,25 @@ protected:
 
     void update_upcoming()
     {
-        // The usual case is to show events germane to the current time.
-        // However when the user clicks onto a different calendar date,
-        // we pick events starting from the beginning of that clicked day.
+        // The usual case is on desktop (and /only/ case on phone)
+        // is that we're looking at the current date and want to see
+        // "the next five calendar events, if any."
+        //
+        // However on the Desktop when the user clicks onto a different
+        // calendar date, show the next five calendar events starting
+        // from the beginning of that clicked day.
+        DateTime begin;
         const auto now = m_state->clock->localtime();
         const auto calendar_day = m_state->calendar_month->month().get();
-        const auto begin = DateTime::is_same_day(now, calendar_day)
-            ? now.start_of_minute()
-            : calendar_day.start_of_day();
+        if ((profile() == Desktop) && !DateTime::is_same_day(now, calendar_day))
+            begin = calendar_day.start_of_day();
+        else
+            begin = now.start_of_minute();
 
-        auto upcoming = get_display_appointments(
-            m_state->calendar_upcoming->appointments().get(),
-            begin
-        );
+        std::vector<Appointment> upcoming;
+        for(const auto& a : m_state->calendar_upcoming->appointments().get())
+            if (begin <= a.begin)
+                upcoming.push_back(a);
 
         if (m_upcoming != upcoming)
         {
@@ -309,7 +315,7 @@ private:
     GMenuModel* create_calendar_section(Profile profile)
     {
         const bool show_calendar = m_state->settings->show_calendar.get() &&
-                                   ((profile == Desktop) || (profile == DesktopGreeter) || (profile == Phone));
+                                   ((profile == Desktop) || (profile == DesktopGreeter));
         auto menu = g_menu_new();
 
         const char * action_name;
@@ -403,9 +409,12 @@ private:
             if (!appt.color.empty())
                 g_menu_item_set_attribute (menu_item, "x-canonical-color", "s", appt.color.c_str());
 
-            if (action_name != nullptr)
+            if (action_name != nullptr) {
                 g_menu_item_set_action_and_target_value (menu_item, action_name,
-                                                         g_variant_new_string (appt.uid.c_str()));
+                                                         g_variant_new ("(sx)",
+                                                                        appt.uid.c_str(),
+                                                                        unix_time));
+            }
 
             g_menu_append_item (menu, menu_item);
             g_object_unref (menu_item);
@@ -448,7 +457,7 @@ private:
     {
         GMenu* menu = g_menu_new();
 
-        if (profile == Desktop || profile == Phone)
+        if (profile == Desktop)
         {
             const auto now = m_state->clock->localtime();
 
@@ -664,7 +673,7 @@ MenuFactory::buildMenu(Menu::Profile profile)
         g_warn_if_reached();
         break;
     }
-    
+
     return menu;
 }
 

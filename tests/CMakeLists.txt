@@ -1,6 +1,6 @@
 # build libgtest
-add_library (gtest STATIC 
-             ${GTEST_SOURCE_DIR}/gtest-all.cc 
+add_library (gtest STATIC
+             ${GTEST_SOURCE_DIR}/gtest-all.cc
              ${GTEST_SOURCE_DIR}/gtest_main.cc)
 set_target_properties (gtest PROPERTIES INCLUDE_DIRECTORIES ${INCLUDE_DIRECTORIES} ${GTEST_INCLUDE_DIR})
 set_target_properties (gtest PROPERTIES COMPILE_FLAGS ${COMPILE_FLAGS} -w)
@@ -70,7 +70,7 @@ target_link_libraries (${TEST_NAME} indicatordatetimeservice gtest ${SERVICE_DEP
 
 ##
 ## EDS Tests
-## 
+##
 
 find_program(DBUS_RUNNER dbus-test-runner)
 
@@ -95,6 +95,7 @@ add_eds_ics_test_by_name(test-eds-ics-repeating-valarms)
 add_eds_ics_test_by_name(test-eds-ics-missing-trigger)
 add_eds_ics_test_by_name(test-eds-ics-tzids)
 add_eds_ics_test_by_name(test-eds-ics-tzids-2)
+add_eds_ics_test_by_name(test-eds-ics-tzids-utc)
 
 
 # disabling the timezone unit tests because they require

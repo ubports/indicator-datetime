@@ -27,6 +27,7 @@
 #include <algorithm> // std::sort()
 #include <array>
 #include <ctime> // time()
+#include <cstring> // strstr(), strlen()
 #include <map>
 #include <set>
 
@@ -110,7 +111,7 @@ public:
 
         auto gtz = default_timezone != nullptr
                  ? g_time_zone_new(icaltimezone_get_location(default_timezone))
-                 : g_time_zone_new_local(); 
+                 : g_time_zone_new_local();
         auto main_task = std::make_shared<Task>(this, func, default_timezone, gtz, begin, end);
 
         for (auto& kv : m_clients)
@@ -750,18 +751,34 @@ private:
             if (itz == nullptr) // ok we have a strange tzid... ask EDS to look it up in VTIMEZONES
                 e_cal_client_get_timezone_sync(client, in.tzid, &itz, cancellable.get(), nullptr);
 
-            const char * tzid;
+            const char* identifier {};
+
             if (itz != nullptr)
             {
-                tzid = icaltimezone_get_location(itz);
-            }
-            else
-            {
-                g_warning("Unrecognized TZID: '%s'", in.tzid);
-                tzid = nullptr;
+                identifier = icaltimezone_get_display_name(itz);
+
+                if (identifier == nullptr)
+                    identifier = icaltimezone_get_location(itz);
             }
 
-            gtz = g_time_zone_new(tzid);
+            // handle the TZID /freeassociation.sourceforge.net/Tzfile/[Location] case
+            if (identifier != nullptr)
+            {
+                const char* pch;
+                const char* key = "/freeassociation.sourceforge.net/";
+                if ((pch = strstr(identifier, key)))
+                {
+                    identifier = pch + strlen(key);
+                    key = "Tzfile/"; // some don't have this, so check for it separately
+                    if ((pch = strstr(identifier, key)))
+                        identifier = pch + strlen(key);
+                }
+            }
+
+            if (identifier == nullptr)
+                g_warning("Unrecognized TZID: '%s'", in.tzid);
+
+            gtz = g_time_zone_new(identifier);
             g_debug("%s eccdt.tzid -> offset is %d", G_STRLOC, in.tzid, (int)g_time_zone_get_offset(gtz,0));
         }
         else
@@ -825,6 +842,14 @@ private:
         e_cal_component_get_uid(component, &uid);
         if (uid != nullptr)
             baseline.uid = uid;
+
+        // get source uid
+        ESource *source = nullptr;
+        g_object_get(G_OBJECT(client), "source", &source, nullptr);
+        if (source != nullptr) {
+            baseline.source_uid = e_source_get_uid(source);
+            g_object_unref(source);
+        }
 
         // get appointment.summary
         ECalComponentText text {};
@@ -1028,7 +1053,7 @@ private:
     /***
     ****
     ***/
- 
+
     core::Signal<> m_changed;
     std::set<ESource*> m_sources;
     std::map<ESource*,ECalClient*> m_clients;
