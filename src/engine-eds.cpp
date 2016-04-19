@@ -101,8 +101,6 @@ public:
         auto gtz = timezone_from_name(tz, nullptr, nullptr, &default_timezone);
         if (gtz == nullptr) {
             gtz = g_time_zone_new_local();
-        } else {
-            g_time_zone_ref(gtz);
         }
 
         g_debug("default_timezone is %s", default_timezone ? icaltimezone_get_display_name(default_timezone) : "null");
@@ -695,10 +693,8 @@ private:
             if (!e_cal_component_has_alarms(component))
                 add_event_to_subtask(component, subtask, subtask->task->gtz);
         }
-
         g_list_free_full(subtask->components, g_object_unref);
         e_cal_free_alarms(comp_alarms);
-
         delete subtask;
     }
 
