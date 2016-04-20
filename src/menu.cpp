@@ -221,25 +221,19 @@ protected:
 
     void update_upcoming()
     {
-        // The usual case is on desktop (and /only/ case on phone)
-        // is that we're looking at the current date and want to see
-        // "the next five calendar events, if any."
-        //
-        // However on the Desktop when the user clicks onto a different
-        // calendar date, show the next five calendar events starting
-        // from the beginning of that clicked day.
-        DateTime begin;
+        // The usual case is to show events germane to the current time.
+        // However when the user clicks onto a different calendar date,
+        // we pick events starting from the beginning of that clicked day.
         const auto now = m_state->clock->localtime();
         const auto calendar_day = m_state->calendar_month->month().get();
-        if ((profile() == Desktop) && !DateTime::is_same_day(now, calendar_day))
-            begin = calendar_day.start_of_day();
-        else
-            begin = now.start_of_minute();
+        const auto begin = DateTime::is_same_day(now, calendar_day)
+            ? now.start_of_minute()
+            : calendar_day.start_of_day();
 
-        std::vector<Appointment> upcoming;
-        for(const auto& a : m_state->calendar_upcoming->appointments().get())
-            if (begin <= a.begin)
-                upcoming.push_back(a);
+        auto upcoming = get_display_appointments(
+            m_state->calendar_upcoming->appointments().get(),
+            begin
+        );
 
         if (m_upcoming != upcoming)
         {
