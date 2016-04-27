@@ -50,7 +50,8 @@ pkg_check_modules (SERVICE_DEPS REQUIRED
                    properties-cpp>=0.0.1
                    libaccounts-glib>=1.18
                    messaging-menu>=12.10
-                   uuid>=2.25)
+                   uuid>=2.25
+                   ubuntu-app-launch-2)
 include_directories (SYSTEM ${SERVICE_DEPS_INCLUDE_DIRS})
 
 ##
