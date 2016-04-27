@@ -148,14 +148,17 @@ class Engine::Impl
 public:
 
     Impl(const std::string& app_name):
-        m_messaging_app(messaging_menu_app_new(calendar_app_id().c_str()), g_object_unref),
         m_app_name(app_name)
     {
         if (!notify_init(app_name.c_str()))
             g_critical("Unable to initialize libnotify!");
 
         // messaging menu
-        messaging_menu_app_register(m_messaging_app.get());
+        auto app_id = calendar_app_id();
+        if (!app_id.empty()) {
+            m_messaging_app.reset(messaging_menu_app_new(app_id.c_str()), g_object_unref);
+            messaging_menu_app_register(m_messaging_app.get());
+        }
     }
 
     ~Impl()
@@ -164,7 +167,8 @@ public:
         remove_all ();
 
         notify_uninit ();
-        messaging_menu_app_unregister (m_messaging_app.get());
+        if (m_messaging_app)
+            messaging_menu_app_unregister (m_messaging_app.get());
     }
 
     const std::string& app_name() const
@@ -278,6 +282,9 @@ public:
 
     std::string post(const Builder::Impl& data)
     {
+        if (!m_messaging_app) {
+            return std::string();
+        }
         uuid_t message_uuid;
         uuid_generate(message_uuid);
 
@@ -436,7 +443,10 @@ private:
     static std::string calendar_app_id()
     {
         auto app_id = ubuntu::app_launch::AppID::discover("com.ubuntu.calendar");
-        return std::string(app_id) + ".desktop";
+        if (!app_id.empty())
+            return std::string(app_id) + ".desktop";
+        else
+            return std::string();
     }
 
     static std::string calendar_app_icon()
