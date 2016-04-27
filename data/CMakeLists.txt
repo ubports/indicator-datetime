@@ -30,7 +30,7 @@ set (UPSTART_JOB_FILE_IN "${CMAKE_CURRENT_SOURCE_DIR}/${UPSTART_JOB_NAME}.in")
 
 # build it
 set (pkglibexecdir "${CMAKE_INSTALL_FULL_PKGLIBEXECDIR}")
-set (messaging_menu_icon "${CMAKE_INSTALL_FULL_DATAROOTDIR}/icons/suru/actions/scalable/appointment.svg")
+set (messaging_menu_icon "${CMAKE_INSTALL_FULL_DATAROOTDIR}/icons/suru/actions/scalable/calendar.svg")
 configure_file ("${UPSTART_JOB_FILE_IN}" "${UPSTART_JOB_FILE}")
 
 # install it
