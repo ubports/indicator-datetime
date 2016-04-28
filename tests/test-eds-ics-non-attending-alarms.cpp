@@ -39,20 +39,20 @@ using VAlarmFixture = GlibFixture;
 ****
 ***/
 
-TEST_F(VAlarmFixture, MultipleAppointments)
+TEST_F(VAlarmFixture, NonAttendingEvent)
 {
     // start the EDS engine
     auto engine = std::make_shared<EdsEngine>(std::make_shared<Myself>());
 
     // we need a consistent timezone for the planner and our local DateTimes
-    constexpr char const * zone_str {"America/Chicago"};
+    constexpr char const * zone_str {"America/Recife"};
     auto tz = std::make_shared<MockTimezone>(zone_str);
     auto gtz = g_time_zone_new(zone_str);
 
-    // make a planner that looks at the first half of 2015 in EDS
+    // make a planner that looks at the first half of 2016 in EDS
     auto planner = std::make_shared<SimpleRangePlanner>(engine, tz);
-    const DateTime range_begin {gtz, 2015,1, 1, 0, 0, 0.0};
-    const DateTime range_end   {gtz, 2015,6,31,23,59,59.5};
+    const DateTime range_begin {gtz, 2016,1, 1, 0, 0, 0.0};
+    const DateTime range_end   {gtz, 2016,6,31,23,59,59.5};
     planner->range().set(std::make_pair(range_begin, range_end));
 
     // give EDS a moment to load
@@ -68,26 +68,11 @@ TEST_F(VAlarmFixture, MultipleAppointments)
         wait_msec(max_wait_sec * G_TIME_SPAN_MILLISECOND);
     }
 
-    // what we expect to get...
-    Appointment expected_appt;
-    expected_appt.uid = "20150520T000726Z-3878-32011-1770-81@ubuntu-phablet";
-    expected_appt.color = "#becedd";
-    expected_appt.summary = "Alarm";
-    std::array<Alarm,1> expected_alarms = {
-        Alarm({"Alarm", "file://" ALARM_DEFAULT_SOUND, DateTime(gtz,2015,5,20,20,00,0)})
-    };
-
-    // compare it to what we actually loaded...
+    // the planner should match what we've got in the calendar.ics file
     const auto appts = planner->appointments().get();
-    EXPECT_EQ(expected_alarms.size(), appts.size());
-    for (size_t i=0, n=expected_alarms.size(); i<n; i++) {
-        const auto& appt = appts[i];
-        EXPECT_EQ(expected_appt.uid, appt.uid);
-        EXPECT_EQ(expected_appt.color, appt.color);
-        EXPECT_EQ(expected_appt.summary, appt.summary);
-        EXPECT_EQ(1, appt.alarms.size());
-        EXPECT_EQ(expected_alarms[i], appt.alarms[0]);
-    }
+    EXPECT_EQ(2, appts.size());
+    EXPECT_EQ(appts[0].begin, DateTime(gtz, 2016, 4, 4, 16, 0, 0));
+    EXPECT_EQ(appts[1].begin, DateTime(gtz, 2016, 4, 6, 16, 0, 0));
 
     // cleanup
     g_time_zone_unref(gtz);

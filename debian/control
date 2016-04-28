@@ -29,6 +29,8 @@ Build-Depends: cmake,
                gvfs-daemons,
 # for phone alarm/calendar notification sound tests:
                ubuntu-touch-sounds,
+# for query user e-mails based on accounts
+               libaccounts-glib-dev,
 Standards-Version: 3.9.3
 Homepage: https://launchpad.net/indicator-datetime
 # If you aren't a member of ~indicator-applet-developers but need to upload
