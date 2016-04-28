@@ -152,7 +152,9 @@ main(int /*argc*/, char** /*argv*/)
     auto on_snooze = [snooze_planner](const Appointment& appointment, const Alarm& alarm) {
         snooze_planner->add(appointment, alarm);
     };
-    auto on_ok = [](const Appointment&, const Alarm&){};
+    auto on_ok = [actions](const Appointment& app, const Alarm&){
+        actions->open_appointment(app, app.begin);
+    };
     auto on_alarm_reached = [&engine, &snap, &on_snooze, &on_ok](const Appointment& appointment, const Alarm& alarm) {
         (*snap)(appointment, alarm, on_snooze, on_ok);
         engine->disable_ubuntu_alarm(appointment);
