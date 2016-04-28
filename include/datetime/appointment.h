@@ -39,6 +39,8 @@ struct Alarm
     DateTime time;
 
     bool operator== (const Alarm& that) const;
+    bool has_sound() const;
+    bool has_text() const;
 };
 
 /**

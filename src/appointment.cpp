@@ -31,7 +31,17 @@ bool Alarm::operator==(const Alarm& that) const
 {
   return (text==that.text)
       && (audio_url==that.audio_url)
-      && (this->time==that.time);
+          && (this->time==that.time);
+}
+
+bool Alarm::has_sound() const
+{
+    return !audio_url.empty();
+}
+
+bool Alarm::has_text() const
+{
+    return !text.empty();
 }
 
 bool Appointment::operator==(const Appointment& that) const

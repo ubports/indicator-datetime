@@ -603,7 +603,7 @@ private:
         return ret;
     }
 
-    static std::string get_alarm_sound_url(ECalComponentAlarm * alarm)
+    static std::string get_alarm_sound_url(ECalComponentAlarm * alarm, const std::string & default_sound)
     {
         std::string ret;
 
@@ -624,6 +624,8 @@ private:
 
                 icalattach_unref(attach);
             }
+            if (ret.empty())
+                ret = default_sound;
         }
 
         return ret;
@@ -940,11 +942,14 @@ private:
                                                 DateTime{gtz, ai->occur_end});
             auto trigger_time = DateTime{gtz, ai->trigger};
             auto& alarm = alarms[instance_time][trigger_time];
-
             if (alarm.text.empty())
                 alarm.text = get_alarm_text(a);
+
             if (alarm.audio_url.empty())
-                alarm.audio_url = get_alarm_sound_url(a);
+                alarm.audio_url = get_alarm_sound_url(a,  (baseline.is_ubuntu_alarm() ?
+                                                         "file://" ALARM_DEFAULT_SOUND :
+                                                         "file://" CALENDAR_DEFAULT_SOUND));
+
             if (!alarm.time.is_set())
                 alarm.time = trigger_time;
 
@@ -958,7 +963,10 @@ private:
             appointment.end = i.first.second;
             appointment.alarms.reserve(i.second.size());
             for (auto& j : i.second)
-                appointment.alarms.push_back(j.second);
+            {
+                if (j.second.has_text() || j.second.has_sound())
+                    appointment.alarms.push_back(j.second);
+            }
             subtask->task->appointments.push_back(appointment);
         }
     }
