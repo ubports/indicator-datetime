@@ -22,6 +22,7 @@
 #include <datetime/alarm-queue-simple.h>
 #include <datetime/clock-mock.h>
 #include <datetime/engine-eds.h>
+#include <datetime/myself.h>
 #include <datetime/planner-range.h>
 
 #include <gtest/gtest.h>
@@ -41,7 +42,7 @@ using VAlarmFixture = GlibFixture;
 TEST_F(VAlarmFixture, MultipleAppointments)
 {
     // start the EDS engine
-    auto engine = std::make_shared<EdsEngine>();
+    auto engine = std::make_shared<EdsEngine>(std::make_shared<Myself>());
 
     // we need a consistent timezone for the planner and our local DateTimes
     constexpr char const * zone_str {"America/Chicago"};
@@ -72,14 +73,14 @@ TEST_F(VAlarmFixture, MultipleAppointments)
     ASSERT_EQ(1, appts.size());
     const auto& appt = appts.front();
     ASSERT_EQ(8, appt.alarms.size());
-    EXPECT_EQ(Alarm({"Time to pack!",      "", DateTime(gtz,2015,4,23,13,35,0)}), appt.alarms[0]);
-    EXPECT_EQ(Alarm({"Time to pack!",      "", DateTime(gtz,2015,4,23,13,37,0)}), appt.alarms[1]);
-    EXPECT_EQ(Alarm({"Time to pack!",      "", DateTime(gtz,2015,4,23,13,39,0)}), appt.alarms[2]);
-    EXPECT_EQ(Alarm({"Time to pack!",      "", DateTime(gtz,2015,4,23,13,41,0)}), appt.alarms[3]);
-    EXPECT_EQ(Alarm({"Go to the airport!", "", DateTime(gtz,2015,4,24,10,35,0)}), appt.alarms[4]);
-    EXPECT_EQ(Alarm({"Go to the airport!", "", DateTime(gtz,2015,4,24,10,37,0)}), appt.alarms[5]);
-    EXPECT_EQ(Alarm({"Go to the airport!", "", DateTime(gtz,2015,4,24,10,39,0)}), appt.alarms[6]);
-    EXPECT_EQ(Alarm({"Go to the airport!", "", DateTime(gtz,2015,4,24,10,41,0)}), appt.alarms[7]);
+    EXPECT_EQ(Alarm({"Time to pack!",      "file://" CALENDAR_DEFAULT_SOUND, DateTime(gtz,2015,4,23,13,35,0)}), appt.alarms[0]);
+    EXPECT_EQ(Alarm({"Time to pack!",      "file://" CALENDAR_DEFAULT_SOUND, DateTime(gtz,2015,4,23,13,37,0)}), appt.alarms[1]);
+    EXPECT_EQ(Alarm({"Time to pack!",      "file://" CALENDAR_DEFAULT_SOUND, DateTime(gtz,2015,4,23,13,39,0)}), appt.alarms[2]);
+    EXPECT_EQ(Alarm({"Time to pack!",      "file://" CALENDAR_DEFAULT_SOUND, DateTime(gtz,2015,4,23,13,41,0)}), appt.alarms[3]);
+    EXPECT_EQ(Alarm({"Go to the airport!", "file://" CALENDAR_DEFAULT_SOUND, DateTime(gtz,2015,4,24,10,35,0)}), appt.alarms[4]);
+    EXPECT_EQ(Alarm({"Go to the airport!", "file://" CALENDAR_DEFAULT_SOUND, DateTime(gtz,2015,4,24,10,37,0)}), appt.alarms[5]);
+    EXPECT_EQ(Alarm({"Go to the airport!", "file://" CALENDAR_DEFAULT_SOUND, DateTime(gtz,2015,4,24,10,39,0)}), appt.alarms[6]);
+    EXPECT_EQ(Alarm({"Go to the airport!", "file://" CALENDAR_DEFAULT_SOUND, DateTime(gtz,2015,4,24,10,41,0)}), appt.alarms[7]);
 
     // now let's try this out with AlarmQueue...
     // hook the planner up to a SimpleAlarmQueue and confirm that it triggers for each of the reminders

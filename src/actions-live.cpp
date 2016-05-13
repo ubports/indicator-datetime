@@ -62,47 +62,93 @@ void LiveActions::dispatch_url(const std::string& url)
 ****
 ***/
 
-bool LiveActions::is_unity()
+LiveActions::Desktop LiveActions::get_desktop()
 {
     static bool cached = false;
-    static bool result;
+    static LiveActions::Desktop result = LiveActions::OTHER;
 
     if (cached) {
         return result;
     }
 
-    result = false;
-    const gchar *xdg_current_desktop = g_getenv ("XDG_CURRENT_DESKTOP");
-
-    if (xdg_current_desktop != NULL) {
-        gchar **desktop_names = g_strsplit (xdg_current_desktop, ":", 0);
-        for (size_t i = 0; desktop_names[i]; ++i) {
-            if (!g_strcmp0 (desktop_names[i], "Unity")) {
-                result = true;
-                break;
+    // check for unity8
+    if (g_getenv ("MIR_SOCKET") != nullptr) {
+        result = LiveActions::UNITY8;
+     } else {
+        const gchar *xdg_current_desktop = g_getenv ("XDG_CURRENT_DESKTOP");
+        if (xdg_current_desktop != NULL) {
+            gchar **desktop_names = g_strsplit (xdg_current_desktop, ":", 0);
+            for (size_t i = 0; desktop_names[i]; ++i) {
+                if (!g_strcmp0 (desktop_names[i], "Unity")) {
+                    result = LiveActions::UNITY7;
+                    break;
+                }
             }
+            g_strfreev (desktop_names);
         }
-        g_strfreev (desktop_names);
     }
     cached = true;
     return result;
 }
 
-void LiveActions::desktop_open_settings_app()
+void LiveActions::open_alarm_app()
 {
-    if (g_getenv ("MIR_SOCKET") != nullptr)
-    {
+    switch(get_desktop()) {
+        case LiveActions::UNITY8:
+            dispatch_url("appid://com.ubuntu.clock/clock/current-user-version");
+            break;
+        case LiveActions::UNITY7:
+        default:
+            execute_command("evolution -c calendar");
+    }
+}
+
+void LiveActions::open_appointment(const Appointment& appt, const DateTime& date)
+{
+    switch(get_desktop()) {
+        case LiveActions::UNITY8:
+            unity8_open_appointment(appt, date);
+            break;
+        case LiveActions::UNITY7:
+        default:
+            open_calendar_app(date);
+    }
+}
+
+void LiveActions::open_calendar_app(const DateTime& dt)
+{
+    switch(get_desktop()) {
+        case LiveActions::UNITY8:
+        {
+            const auto utc = dt.to_timezone("UTC");
+            auto cmd = utc.format("calendar://startdate=%Y-%m-%dT%H:%M:%S+00:00");
+            dispatch_url(cmd);
+            break;
+        }
+        case LiveActions::UNITY7:
+        default:
+        {
+            const auto utc = dt.start_of_day().to_timezone("UTC");
+            auto cmd = utc.format("evolution \"calendar:///?startdate=%Y%m%dT%H%M%SZ\"");
+            execute_command(cmd.c_str());
+        }
+    }
+}
+
+void LiveActions::open_settings_app()
+{
+    switch(get_desktop()) {
+    case LiveActions::UNITY8:
         dispatch_url("settings:///system/time-date");
-    }
-    else if (is_unity())
-    {
+        break;
+    case LiveActions::UNITY7:
         execute_command("unity-control-center datetime");
-    }
-    else
-    {
+        break;
+    default:
         execute_command("gnome-control-center datetime");
     }
 }
+
 
 bool LiveActions::desktop_has_calendar_app() const
 {
@@ -136,33 +182,7 @@ bool LiveActions::desktop_has_calendar_app() const
     return have_calendar;
 }
 
-void LiveActions::desktop_open_alarm_app()
-{
-    execute_command("evolution -c calendar");
-}
-
-void LiveActions::desktop_open_appointment(const Appointment&, const DateTime& date)
-{
-    desktop_open_calendar_app(date);
-}
-
-void LiveActions::desktop_open_calendar_app(const DateTime& dt)
-{
-    const auto utc = dt.start_of_day().to_timezone("UTC");
-    auto cmd = utc.format("evolution \"calendar:///?startdate=%Y%m%dT%H%M%SZ\"");
-    execute_command(cmd.c_str());
-}
-
-/***
-****
-***/
-
-void LiveActions::phone_open_alarm_app()
-{
-    dispatch_url("appid://com.ubuntu.clock/clock/current-user-version");
-}
-
-void LiveActions::phone_open_appointment(const Appointment& appt, const DateTime& date)
+void LiveActions::unity8_open_appointment(const Appointment& appt, const DateTime& date)
 {
     if (!appt.activation_url.empty())
     {
@@ -171,26 +191,14 @@ void LiveActions::phone_open_appointment(const Appointment& appt, const DateTime
     else switch (appt.type)
     {
         case Appointment::UBUNTU_ALARM:
-            phone_open_alarm_app();
+            open_alarm_app();
             break;
 
         case Appointment::EVENT:
         default:
-            phone_open_calendar_app(date);
+            open_calendar_app(date);
             break;
     }
-}
-
-void LiveActions::phone_open_calendar_app(const DateTime& dt)
-{
-    const auto utc = dt.to_timezone("UTC");
-    auto cmd = utc.format("calendar://startdate=%Y-%m-%dT%H:%M:%S+00:00");
-    dispatch_url(cmd);
-}
-
-void LiveActions::phone_open_settings_app()
-{
-    dispatch_url("settings:///system/time-date");
 }
 
 /***

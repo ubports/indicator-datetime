@@ -29,10 +29,16 @@ class MockLiveActions: public LiveActions
 public:
     std::string last_cmd;
     std::string last_url;
+
+
     explicit MockLiveActions(const std::shared_ptr<State>& state_in): LiveActions(state_in) {}
     ~MockLiveActions() {}
+    void set_desktop(LiveActions::Desktop desktop) { m_desktop = desktop; }
 
 protected:
+    LiveActions::Desktop m_desktop;
+
+    LiveActions::Desktop get_desktop() override { return m_desktop; }
     void dispatch_url(const std::string& url) override { last_url = url; }
     void execute_command(const std::string& cmd) override { last_cmd = cmd; }
 };
@@ -112,31 +118,39 @@ TEST_F(TestLiveActionsFixture, SetLocation)
 
 TEST_F(TestLiveActionsFixture, DesktopOpenAlarmApp)
 {
-    m_actions->desktop_open_alarm_app();
+    m_live_actions->set_desktop(LiveActions::UNITY7);
+
+    m_actions->open_alarm_app();
     const std::string expected = "evolution -c calendar";
     EXPECT_EQ(expected, m_live_actions->last_cmd);
 }
 
 TEST_F(TestLiveActionsFixture, DesktopOpenAppointment)
 {
+    m_live_actions->set_desktop(LiveActions::UNITY7);
+
     Appointment a;
     a.uid = "some-uid";
     a.begin = DateTime::NowLocal();
-    m_actions->desktop_open_appointment(a, a.begin);
+    m_actions->open_appointment(a, a.begin);
     const std::string expected_substr = "evolution \"calendar:///?startdate=";
     EXPECT_NE(m_live_actions->last_cmd.find(expected_substr), std::string::npos);
 }
 
 TEST_F(TestLiveActionsFixture, DesktopOpenCalendarApp)
 {
-    m_actions->desktop_open_calendar_app(DateTime::NowLocal());
+    m_live_actions->set_desktop(LiveActions::UNITY7);
+
+    m_actions->open_calendar_app(DateTime::NowLocal());
     const std::string expected_substr = "evolution \"calendar:///?startdate=";
     EXPECT_NE(m_live_actions->last_cmd.find(expected_substr), std::string::npos);
 }
 
 TEST_F(TestLiveActionsFixture, DesktopOpenSettingsApp)
 {
-    m_actions->desktop_open_settings_app();
+    m_live_actions->set_desktop(LiveActions::UNITY7);
+
+    m_actions->open_settings_app();
     const std::string expected_substr = "control-center";
     EXPECT_NE(m_live_actions->last_cmd.find(expected_substr), std::string::npos);
 }
@@ -152,12 +166,16 @@ namespace
 
 TEST_F(TestLiveActionsFixture, PhoneOpenAlarmApp)
 {
-    m_actions->phone_open_alarm_app();
+    m_live_actions->set_desktop(LiveActions::UNITY8);
+
+    m_actions->open_alarm_app();
     EXPECT_EQ(clock_app_url, m_live_actions->last_url);
 }
 
 TEST_F(TestLiveActionsFixture, PhoneOpenAppointment)
 {
+    m_live_actions->set_desktop(LiveActions::UNITY8);
+
     Appointment a;
 
     a.uid = "event-uid";
@@ -165,19 +183,21 @@ TEST_F(TestLiveActionsFixture, PhoneOpenAppointment)
     a.begin = DateTime::NowLocal();
     a.type = Appointment::EVENT;
     auto ocurrenceDate = DateTime::Local(2014, 1, 1, 0, 0, 0);
-    m_actions->phone_open_appointment(a, ocurrenceDate);
+    m_actions->open_appointment(a, ocurrenceDate);
     const std::string appointment_app_url =  ocurrenceDate.to_timezone("UTC").format("calendar://startdate=%Y-%m-%dT%H:%M:%S+00:00");
     EXPECT_EQ(appointment_app_url, m_live_actions->last_url);
 
     a.type = Appointment::UBUNTU_ALARM;
-    m_actions->phone_open_appointment(a, a.begin);
+    m_actions->open_appointment(a, a.begin);
     EXPECT_EQ(clock_app_url, m_live_actions->last_url);
 }
 
 TEST_F(TestLiveActionsFixture, PhoneOpenCalendarApp)
 {
+    m_live_actions->set_desktop(LiveActions::UNITY8);
+
     auto now = DateTime::NowLocal();
-    m_actions->phone_open_calendar_app(now);
+    m_actions->open_calendar_app(now);
     const std::string expected =  now.to_timezone("UTC").format("calendar://startdate=%Y-%m-%dT%H:%M:%S+00:00");
     EXPECT_EQ(expected, m_live_actions->last_url);
 }
@@ -185,7 +205,9 @@ TEST_F(TestLiveActionsFixture, PhoneOpenCalendarApp)
 
 TEST_F(TestLiveActionsFixture, PhoneOpenSettingsApp)
 {
-    m_actions->phone_open_settings_app();
+    m_live_actions->set_desktop(LiveActions::UNITY8);
+
+    m_actions->open_settings_app();
     const std::string expected = "settings:///system/time-date";
     EXPECT_EQ(expected, m_live_actions->last_url);
 }
