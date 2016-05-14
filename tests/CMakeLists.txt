@@ -57,6 +57,7 @@ add_test_by_name(test-exporter)
 add_test_by_name(test-formatter)
 add_test_by_name(test-live-actions)
 add_test_by_name(test-locations)
+add_test_by_name(test-menu-appointments)
 add_test_by_name(test-menus)
 add_test_by_name(test-planner)
 add_test_by_name(test-settings)
@@ -85,7 +86,8 @@ function(add_eds_ics_test_by_name name)
             ${CMAKE_CURRENT_BINARY_DIR}/${TEST_NAME}               # arg2: test executable path
             ${TEST_NAME}                                           # arg3: test name
             ${CMAKE_CURRENT_SOURCE_DIR}/test-eds-ics-config-files  # arg4: base directory for config file template
-            ${CMAKE_CURRENT_BINARY_DIR}/${TEST_NAME}.ics)          # arg5: the ical file for this test
+            ${CMAKE_CURRENT_BINARY_DIR}/${TEST_NAME}.ics           # arg5: the ical file for this test
+            ${CMAKE_CURRENT_SOURCE_DIR}/accounts.db)               # arg6: online accounts database
 endfunction()
 add_eds_ics_test_by_name(test-eds-ics-all-day-events)
 add_eds_ics_test_by_name(test-eds-ics-repeating-events)
@@ -95,6 +97,7 @@ add_eds_ics_test_by_name(test-eds-ics-missing-trigger)
 add_eds_ics_test_by_name(test-eds-ics-tzids)
 add_eds_ics_test_by_name(test-eds-ics-tzids-2)
 add_eds_ics_test_by_name(test-eds-ics-tzids-utc)
+add_eds_ics_test_by_name(test-eds-ics-non-attending-alarms)
 
 
 # disabling the timezone unit tests because they require

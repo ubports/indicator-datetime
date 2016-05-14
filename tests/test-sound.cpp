@@ -85,7 +85,7 @@ TEST_F(NotificationFixture, InteractiveDuration)
 
   // confirm that the icon passed to Notify was "alarm-clock"
   g_variant_get_child (params, 2, "&s", &str);
-  ASSERT_STREQ("reminder", str);
+  ASSERT_STREQ("calendar-app", str);
 
   // confirm that the hints passed to Notify included a timeout matching duration_minutes
   int32_t i32;
@@ -155,8 +155,9 @@ TEST_F(NotificationFixture,DefaultSounds)
       std::string expected_role;
       std::string expected_uri;
   } test_cases[] = {
-      { ualarm, "alarm", path_to_uri(ALARM_DEFAULT_SOUND) },
-      { appt,   "alert", path_to_uri(CALENDAR_DEFAULT_SOUND) }
+      { ualarm, "alarm", path_to_uri(ALARM_DEFAULT_SOUND) }
+    // No sound for appointments
+    //  { appt, "alert", path_to_uri(CALENDAR_DEFAULT_SOUND) }
   };
 
   auto snap = create_snap(ne, sb, settings);

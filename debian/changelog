@@ -1,3 +1,18 @@
+indicator-datetime (15.10+16.04.20160428-0ubuntu1) xenial; urgency=medium
+
+  [ Charles Kerr ]
+  * Bring the code up-to-date with the spec wrt which calendar events
+    are shown in the menu, and in what order. (LP: #1302004, #1170366)
+
+  [ Renato Araujo Oliveira Filho ]
+  * Ignore alarms for events marked as not attending. (LP: #1508438)
+  * Only play a sound alert if the event contains a SOUND reminder. (LP:
+    #1533681)
+  * Post message on messaging menu if the notification get timeout. (LP:
+    #1401802)
+
+ -- Renato Araujo Oliveira Filho <renato.filho@canonical.com>  Thu, 28 Apr 2016 15:09:13 +0000
+
 indicator-datetime (15.10+16.04.20160413-0ubuntu1) xenial; urgency=medium
 
   * Fix possible startup timing issues when watching for a timezone from
