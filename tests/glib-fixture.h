@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2016 Canonical Ltd.
  *
  * Authors:
  *   Charles Kerr <charles.kerr@canonical.com>
@@ -17,9 +17,9 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef INDICATOR_DATETIME_TESTS_GLIB_FIXTURE_H
-#define INDICATOR_DATETIME_TESTS_GLIB_FIXTURE_H
+#pragma once
 
+#include <chrono>
 #include <functional> // std::function
 #include <map>
 #include <memory> // std::shared_ptr
@@ -200,7 +200,29 @@ class GlibFixture : public ::testing::Test
       ASSERT_FALSE(wait_for_name_owned(connection, name, timeout_msec, flags)) << "name: " << name;
     }
 
-    GMainLoop * loop;
+    using source_func = std::function<gboolean()>;
+
+    guint idle_add(source_func&& func)
+    {
+      return g_idle_add_full(
+        G_PRIORITY_DEFAULT_IDLE,
+        [](gpointer gf){return (*static_cast<source_func*>(gf))();},
+        new std::function<gboolean()>(func),
+        [](gpointer gf){delete static_cast<source_func*>(gf);}
+      );
+    }
+
+    guint timeout_add(source_func&& func, std::chrono::milliseconds msec)
+    {
+      return g_timeout_add_full(
+        G_PRIORITY_DEFAULT,
+        msec.count(),
+        [](gpointer gf){return (*static_cast<source_func*>(gf))();},
+        new std::function<gboolean()>(func),
+        [](gpointer gf){delete static_cast<source_func*>(gf);}
+      );
+    }
+
+    GMainLoop* loop {};
 };
 
-#endif /* INDICATOR_DATETIME_TESTS_GLIB_FIXTURE_H */
