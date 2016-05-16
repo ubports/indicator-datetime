@@ -1,3 +1,21 @@
+indicator-datetime (15.10+16.04.20160516.2-0ubuntu1) xenial; urgency=medium
+
+  [ Charles Kerr ]
+  * Differentiate between the 'OK' action in interactive and
+    noninteractive notifications. (LP: #1581089)
+  * finish syncing with trunk.15.10. this is why you bzr bd when doing
+    it manually. added: include/datetime/myself.h src/myself.cpp
+  * fix oops introduced by charlesk when syncing with 15.10 added:
+    tests/accounts.db tests/test-eds-ics-non-attending-alarms.cpp
+    tests/test-eds-ics-non-attending-alarms.ics.in tests/test-menu-
+    appointments.cpp
+
+  [ Renato Araujo Oliveira Filho ]
+  * sync with indicator-datetime/15.10 to pick up Renato's calendar
+    fixes
+
+ -- Charles Kerr <charles.kerr@canonical.com>  Mon, 16 May 2016 21:37:28 +0000
+
 indicator-datetime (15.10+16.04.20160428-0ubuntu1) xenial; urgency=medium
 
   [ Charles Kerr ]
