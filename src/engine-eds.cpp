@@ -665,6 +665,7 @@ private:
                 bool found = false;
 
                 if (e_cal_component_id_equal(instance_id, component_id)) {
+                    // replaces virtual instance with the real one
                     g_object_unref(component);
                     g_object_ref(instance);
                     c->data = instance;
@@ -740,8 +741,7 @@ private:
         return 1;
     }
 
-    // check if all alarms are valid alarms, some events imported from syncevolution contains
-    // invalid alarms with date of 1976 and this cause the event to not appear on the indicator
+    // we only care about AUDIO or DISPLAY alarms, others kind of alarm will not generate a notification
     static bool
     event_has_valid_alarms(ECalComponent *event)
     {
