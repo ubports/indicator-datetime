@@ -648,6 +648,51 @@ private:
         return TRUE;
     }
 
+    static gint
+    sort_events_by_start_date(ECalComponent *eventA, ECalComponent *eventB)
+    {
+        ECalComponentDateTime start_date_a;
+        ECalComponentDateTime start_date_b;
+
+        e_cal_component_get_dtstart(eventA, &start_date_a);
+        e_cal_component_get_dtstart(eventB, &start_date_b);
+
+        auto time_a = icaltime_as_timet(*start_date_a.value);
+        auto time_b = icaltime_as_timet(*start_date_b.value);
+        if (time_a == time_b)
+            return 0;
+        if (time_a < time_b)
+            return -1;
+        return 1;
+    }
+
+    static bool
+    event_has_valid_alarms(ECalComponent *event)
+    {
+        if (!e_cal_component_has_alarms(event))
+            return false;
+
+        // check alarms
+        bool valid = false;
+        auto uids = e_cal_component_get_alarm_uids(event);
+        for (auto l=uids; l!=nullptr; l=uids->next) {
+            auto auid = static_cast<gchar*>(l->data);
+            auto alarm = e_cal_component_get_alarm(event, auid);
+
+            if (alarm) {
+                ECalComponentAlarmAction action;
+                e_cal_component_alarm_get_action(alarm, &action);
+                if (action != E_CAL_COMPONENT_ALARM_UNKNOWN) {
+                    valid = true;
+                    break;
+                }
+            }
+        }
+
+        cal_obj_uid_list_free(uids);
+        return valid;
+    }
+
     static void
     on_event_generated_list_ready(gpointer gsubtask)
     {
@@ -687,10 +732,11 @@ private:
             add_alarms_to_subtask(static_cast<ECalComponentAlarms*>(l->data), subtask, subtask->task->gtz);
 
         subtask->components = g_list_concat(subtask->components, subtask->instance_components);
+        subtask->components = g_list_sort(subtask->components, (GCompareFunc) sort_events_by_start_date);
         // add events without alarm
         for (auto l=subtask->components; l!=nullptr; l=l->next) {
             auto component = static_cast<ECalComponent*>(l->data);
-            if (!e_cal_component_has_alarms(component))
+            if (!event_has_valid_alarms(component))
                 add_event_to_subtask(component, subtask, subtask->task->gtz);
         }
         g_list_free_full(subtask->components, g_object_unref);
