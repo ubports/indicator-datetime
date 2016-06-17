@@ -666,6 +666,8 @@ private:
         return 1;
     }
 
+    // check if all alarms are valid alarms, some events imported from syncevolution contains
+    // invalid alarms with date of 1976 and this cause the event to not appear on the indicator
     static bool
     event_has_valid_alarms(ECalComponent *event)
     {
