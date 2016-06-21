@@ -741,7 +741,7 @@ private:
         return 1;
     }
 
-    // we only care about AUDIO or DISPLAY alarms, others kind of alarm will not generate a notification
+    // we only care about AUDIO or DISPLAY alarms, other kind of alarm will not generate a notification
     static bool
     event_has_valid_alarms(ECalComponent *event)
     {
