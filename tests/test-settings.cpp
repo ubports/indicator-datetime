@@ -45,10 +45,12 @@ protected:
     {
         super::SetUp();
 
-        m_gsettings = g_settings_new(SETTINGS_INTERFACE);
+        if (g_settings_schema_source_lookup(source, SETTINGS_INTERFACE, true)) {
+            m_gsettings = g_settings_new(SETTINGS_INTERFACE);
+        }
 
         if (g_settings_schema_source_lookup(source, SETTINGS_NOTIFY_SCHEMA_ID, true)) {
-             m_gsettings_cal_notification = g_settings_new_with_path(SETTINGS_NOTIFY_SCHEMA_ID, SETTINGS_NOTIFY_CALENDAR_PATH);
+            m_gsettings_cal_notification = g_settings_new_with_path(SETTINGS_NOTIFY_SCHEMA_ID, SETTINGS_NOTIFY_CALENDAR_PATH);
         }
 
         m_live.reset(new LiveSettings);
@@ -144,6 +146,10 @@ TEST_F(SettingsFixture, HelloWorld)
 
 TEST_F(SettingsFixture, BoolProperties)
 {
+    if (!m_gsettings) {
+        return;
+    }
+
     TestBoolProperty(m_gsettings, m_settings->show_seconds, SETTINGS_SHOW_SECONDS_S);
     TestBoolProperty(m_gsettings, m_settings->show_calendar, SETTINGS_SHOW_CALENDAR_S);
     TestBoolProperty(m_gsettings, m_settings->show_clock, SETTINGS_SHOW_CLOCK_S);
@@ -158,6 +164,10 @@ TEST_F(SettingsFixture, BoolProperties)
 
 TEST_F(SettingsFixture, UIntProperties)
 {
+    if (!m_gsettings) {
+        return;
+    }
+
     TestUIntProperty(m_gsettings, m_settings->alarm_duration, SETTINGS_ALARM_DURATION_S);
     TestUIntProperty(m_gsettings, m_settings->alarm_volume, SETTINGS_ALARM_VOLUME_S);
     TestUIntProperty(m_gsettings, m_settings->snooze_duration, SETTINGS_SNOOZE_DURATION_S);
@@ -165,6 +175,10 @@ TEST_F(SettingsFixture, UIntProperties)
 
 TEST_F(SettingsFixture, StringProperties)
 {
+    if (!m_gsettings) {
+        return;
+    }
+
     TestStringProperty(m_gsettings, m_settings->custom_time_format, SETTINGS_CUSTOM_TIME_FORMAT_S);
     TestStringProperty(m_gsettings, m_settings->timezone_name, SETTINGS_TIMEZONE_NAME_S);
     TestStringProperty(m_gsettings, m_settings->alarm_sound, SETTINGS_ALARM_SOUND_S);
@@ -174,6 +188,10 @@ TEST_F(SettingsFixture, StringProperties)
 
 TEST_F(SettingsFixture, TimeFormatMode)
 {
+    if (!m_gsettings) {
+        return;
+    }
+
     const auto key = SETTINGS_TIME_FORMAT_S;
     const TimeFormatMode modes[] = { TIME_FORMAT_MODE_LOCALE_DEFAULT,
                                      TIME_FORMAT_MODE_12_HOUR,
@@ -206,6 +224,10 @@ namespace
 
 TEST_F(SettingsFixture, Locations)
 {
+    if (!m_gsettings) {
+        return;
+    }
+
     const auto key = SETTINGS_LOCATIONS_S;
 
     const gchar* astrv[] = {"America/Los_Angeles Oakland", "America/Chicago Oklahoma City", "Europe/London London", nullptr};
