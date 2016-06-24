@@ -35,16 +35,16 @@ LiveSettings::~LiveSettings()
 
 LiveSettings::LiveSettings():
     m_settings(g_settings_new(SETTINGS_INTERFACE)),
-    m_gsettings_cal_notification(NULL)
+    m_settings_cal_notification(NULL)
 {
     GSettingsSchemaSource *source = g_settings_schema_source_get_default();
     if (g_settings_schema_source_lookup(source, SETTINGS_NOTIFY_SCHEMA_ID, true)) {
-        m_gsettings_cal_notification = g_settings_new_with_path(SETTINGS_NOTIFY_SCHEMA_ID, SETTINGS_NOTIFY_CALENDAR_PATH);
+        m_settings_cal_notification = g_settings_new_with_path(SETTINGS_NOTIFY_SCHEMA_ID, SETTINGS_NOTIFY_CALENDAR_PATH);
     }
 
     g_signal_connect (m_settings,                  "changed", G_CALLBACK(on_changed_ccid), this);
 
-    if (m_gsettings_cal_notification) {
+    if (m_settings_cal_notification) {
         g_signal_connect (m_settings_cal_notification, "changed", G_CALLBACK(on_changed_cal_notification), this);
     }
 
