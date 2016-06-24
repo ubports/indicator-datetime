@@ -98,7 +98,7 @@ public:
 
         // force the system to stay awake
         std::shared_ptr<uin::Awake> awake;
-        if (calendar_bubbles_enabled()) {
+        if (appointment.is_ubuntu_alarm() || calendar_bubbles_enabled()) {
             awake = std::make_shared<uin::Awake>(m_engine->app_name());
         }
 
@@ -115,7 +115,7 @@ public:
 
         // create the haptic feedback...
         std::shared_ptr<uin::Haptic> haptic;
-        if (should_vibrate() && calendar_vibrations_enabled()) {
+        if (should_vibrate() && (appointment.is_ubuntu_alarm() || calendar_vibrations_enabled())) {
             const auto haptic_mode = m_settings->alarm_haptic.get();
             if (haptic_mode == "pulse")
                 haptic = std::make_shared<uin::Haptic>(uin::Haptic::MODE_PULSE, appointment.is_ubuntu_alarm());
