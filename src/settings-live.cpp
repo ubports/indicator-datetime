@@ -309,7 +309,7 @@ void LiveSettings::update_snooze_duration()
 
 void LiveSettings::update_cal_notification_enabled()
 {
-    if (m_settings_cal_notification) {
+    if (m_settings_cal_notification != NULL) {
         cal_notification_enabled.set(g_settings_get_boolean(m_settings_cal_notification, SETTINGS_NOTIFY_ENABLED_KEY));
     } else {
         cal_notification_enabled.set(true);
@@ -318,7 +318,7 @@ void LiveSettings::update_cal_notification_enabled()
 
 void LiveSettings::update_cal_notification_sounds()
 {
-    if (m_settings_cal_notification) {
+    if (m_settings_cal_notification != NULL) {
         cal_notification_sounds.set(g_settings_get_boolean(m_settings_cal_notification, SETTINGS_NOTIFY_SOUNDS_KEY));
     } else {
         cal_notification_sounds.set(true);
@@ -327,7 +327,7 @@ void LiveSettings::update_cal_notification_sounds()
 
 void LiveSettings::update_cal_notification_vibrations()
 {
-    if (m_settings_cal_notification) {
+    if (m_settings_cal_notification != NULL) {
         cal_notification_vibrations.set(g_settings_get_boolean(m_settings_cal_notification, SETTINGS_NOTIFY_VIBRATIONS_KEY));
     } else {
         cal_notification_vibrations.set(true);
@@ -336,7 +336,7 @@ void LiveSettings::update_cal_notification_vibrations()
 
 void LiveSettings::update_cal_notification_bubbles()
 {
-    if (m_settings_cal_notification) {
+    if (m_settings_cal_notification != NULL) {
         cal_notification_bubbles.set(g_settings_get_boolean(m_settings_cal_notification, SETTINGS_NOTIFY_BUBBLES_KEY));
     } else {
         cal_notification_bubbles.set(true);
@@ -345,7 +345,7 @@ void LiveSettings::update_cal_notification_bubbles()
 
 void LiveSettings::update_cal_notification_list()
 {
-    if (m_settings_cal_notification) {
+    if (m_settings_cal_notification != NULL) {
         cal_notification_list.set(g_settings_get_boolean(m_settings_cal_notification, SETTINGS_NOTIFY_LIST_KEY));
     } else {
         cal_notification_list.set(true);
