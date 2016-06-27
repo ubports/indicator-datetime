@@ -309,7 +309,7 @@ private:
     GMenuModel* create_calendar_section(Profile profile)
     {
         const bool show_calendar = m_state->settings->show_calendar.get() &&
-                                   ((profile == Desktop) || (profile == DesktopGreeter));
+                                   ((profile == Desktop) || (profile == DesktopGreeter) || (profile == Phone));
         auto menu = g_menu_new();
 
         const char * action_name;
@@ -451,7 +451,7 @@ private:
     {
         GMenu* menu = g_menu_new();
 
-        if (profile == Desktop)
+        if (profile == Desktop || profile == Phone)
         {
             const auto now = m_state->clock->localtime();
 
