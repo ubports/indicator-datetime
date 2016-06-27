@@ -1,3 +1,9 @@
+indicator-datetime (15.10+16.04.20160516.2-0ubuntu2) yakkety; urgency=medium
+
+  * No-change rebuild for libical soname change.
+
+ -- Matthias Klose <doko@ubuntu.com>  Wed, 25 May 2016 13:12:38 +0000
+
 indicator-datetime (15.10+16.04.20160516.2-0ubuntu1) xenial; urgency=medium
 
   [ Charles Kerr ]
