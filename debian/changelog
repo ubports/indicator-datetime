@@ -1,3 +1,11 @@
+indicator-datetime (15.10+16.10.20160627-0ubuntu1) yakkety; urgency=medium
+
+  [ Lukáš Tinkl ]
+  * Re-introduce the calendar component for the phone profile. (LP:
+    #1450036)
+
+ -- Michael Zanetti <michael.zanetti@canonical.com>  Mon, 27 Jun 2016 08:47:36 +0000
+
 indicator-datetime (15.10+16.04.20160516.2-0ubuntu2) yakkety; urgency=medium
 
   * No-change rebuild for libical soname change.
