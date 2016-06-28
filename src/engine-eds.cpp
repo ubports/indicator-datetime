@@ -642,8 +642,7 @@ private:
         const gchar *uid = nullptr;
         e_cal_component_get_uid (comp, &uid);
         g_object_ref(comp);
-        ECalComponentText summary;
-        e_cal_component_get_summary(comp, &summary);
+
         if (e_cal_component_is_instance(comp)) {
             subtask->parent_components.insert(std::string(uid));
             subtask->instance_components = g_list_append(subtask->instance_components, comp);
@@ -654,7 +653,7 @@ private:
     }
 
     static void
-    merge_deatached_instances(ClientSubtask *subtask, GSList *instances)
+    merge_detached_instances(ClientSubtask *subtask, GSList *instances)
     {
         for (GSList *i=instances; i!=nullptr; i=i->next) {
             auto instance = static_cast<ECalComponent*>(i->data);
@@ -667,8 +666,7 @@ private:
                 if (e_cal_component_id_equal(instance_id, component_id)) {
                     // replaces virtual instance with the real one
                     g_object_unref(component);
-                    g_object_ref(instance);
-                    c->data = instance;
+                    c->data = g_object_ref(instance);
                     found = true;
                 }
                 e_cal_component_free_id(component_id);
@@ -680,7 +678,7 @@ private:
     }
 
     static void
-    fetch_deatached_instances(GObject *,
+    fetch_detached_instances(GObject *,
                               GAsyncResult *res,
                               gpointer gsubtask)
     {
@@ -693,10 +691,10 @@ private:
                                                     &comps,
                                                     &error);
             if (error) {
-                g_warning("Fail to retrieve deatached instances: %s", error->message);
+                g_warning("Fail to retrieve detached instances: %s", error->message);
                 g_error_free(error);
             } else {
-                merge_deatached_instances(subtask, comps);
+                merge_detached_instances(subtask, comps);
                 e_cal_client_free_ecalcomp_slist(comps);
             }
         }
@@ -706,21 +704,21 @@ private:
             return;
         }
 
-        // continue fetch deatached instances
+        // continue fetch detached instances
         auto i_begin = subtask->parent_components.begin();
         std::string id = *i_begin;
         subtask->parent_components.erase(i_begin);
         e_cal_client_get_objects_for_uid(subtask->client,
                                          id.c_str(),
                                          subtask->cancellable.get(),
-                                         (GAsyncReadyCallback) fetch_deatached_instances,
+                                         (GAsyncReadyCallback) fetch_detached_instances,
                                          gsubtask);
     }
 
     static void
     on_event_generated_list_ready(gpointer gsubtask)
     {
-        fetch_deatached_instances(nullptr, nullptr, gsubtask);
+        fetch_detached_instances(nullptr, nullptr, gsubtask);
     }
 
     static gint
@@ -741,6 +739,20 @@ private:
         return 1;
     }
 
+    static bool
+    is_alarm_interesting(ECalComponentAlarm *alarm)
+    {
+        if (alarm) {
+            ECalComponentAlarmAction action;
+            e_cal_component_alarm_get_action(alarm, &action);
+            if ((action == E_CAL_COMPONENT_ALARM_AUDIO) ||
+                (action == E_CAL_COMPONENT_ALARM_DISPLAY)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     // we only care about AUDIO or DISPLAY alarms, other kind of alarm will not generate a notification
     static bool
     event_has_valid_alarms(ECalComponent *event)
@@ -755,14 +767,9 @@ private:
             auto auid = static_cast<gchar*>(l->data);
             auto alarm = e_cal_component_get_alarm(event, auid);
 
-            if (alarm) {
-                ECalComponentAlarmAction action;
-                e_cal_component_alarm_get_action(alarm, &action);
-                if ((action == E_CAL_COMPONENT_ALARM_AUDIO) ||
-                    (action == E_CAL_COMPONENT_ALARM_DISPLAY)) {
-                    valid = true;
-                    break;
-                }
+            valid = is_alarm_interesting(alarm);
+            if (valid) {
+                break;
             }
         }
 
@@ -1060,14 +1067,8 @@ private:
         {
             auto ai = static_cast<ECalComponentAlarmInstance*>(l->data);
             auto a = e_cal_component_get_alarm(component, ai->auid);
-            if (a == nullptr)
-                continue;
 
-            // we only care about AUDIO or DISPLAY alarms
-            ECalComponentAlarmAction action;
-            e_cal_component_alarm_get_action(a, &action);
-            if ((action != E_CAL_COMPONENT_ALARM_AUDIO) &&
-                (action != E_CAL_COMPONENT_ALARM_DISPLAY)) {
+            if (!is_alarm_interesting(a)) {
                 continue;
             }
 
