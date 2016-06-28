@@ -643,7 +643,7 @@ private:
         e_cal_component_get_uid (comp, &uid);
         g_object_ref(comp);
 
-        if (e_cal_component_is_instance(comp)) {
+        if (e_cal_component_is_instance(comp) && (uid != nullptr)) {
             subtask->parent_components.insert(std::string(uid));
             subtask->instance_components = g_list_append(subtask->instance_components, comp);
         } else {
