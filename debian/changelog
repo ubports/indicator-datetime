@@ -1,3 +1,11 @@
+indicator-datetime (15.10+16.10.20160629-0ubuntu1) yakkety; urgency=medium
+
+  * Does not show events from non selected sources. (LP: #1593523)
+  * Fetch individual detached instances for recurrence events. (LP:
+    #1593692)
+
+ -- Renato Araujo Oliveira Filho <renato.filho@canonical.com>  Wed, 29 Jun 2016 14:15:57 +0000
+
 indicator-datetime (15.10+16.10.20160627-0ubuntu1) yakkety; urgency=medium
 
   [ Lukáš Tinkl ]
