@@ -98,6 +98,7 @@ add_eds_ics_test_by_name(test-eds-ics-tzids)
 add_eds_ics_test_by_name(test-eds-ics-tzids-2)
 add_eds_ics_test_by_name(test-eds-ics-tzids-utc)
 add_eds_ics_test_by_name(test-eds-ics-non-attending-alarms)
+add_eds_ics_test_by_name(test-eds-ics-repeating-events-with-individual-change)
 
 
 # disabling the timezone unit tests because they require

@@ -574,6 +574,7 @@ private:
         std::string color;
         GList *components;
         GList *instance_components;
+        std::set<std::string> parent_components;
 
         ClientSubtask(const std::shared_ptr<Task>& task_in,
                       ECalClient* client_in,
@@ -646,15 +647,145 @@ private:
         const gchar *uid = nullptr;
         e_cal_component_get_uid (comp, &uid);
         g_object_ref(comp);
-        if (e_cal_component_is_instance(comp))
+
+        if (e_cal_component_is_instance(comp) && (uid != nullptr)) {
+            subtask->parent_components.insert(std::string(uid));
             subtask->instance_components = g_list_append(subtask->instance_components, comp);
-        else
+        } else {
             subtask->components = g_list_append(subtask->components, comp);
+        }
         return TRUE;
     }
 
     static void
+    merge_detached_instances(ClientSubtask *subtask, GSList *instances)
+    {
+        for (GSList *i=instances; i!=nullptr; i=i->next) {
+            auto instance = static_cast<ECalComponent*>(i->data);
+            auto instance_id = e_cal_component_get_id(instance);
+            for (GList *c=subtask->instance_components ; c!= nullptr; c=c->next) {
+                auto component = static_cast<ECalComponent*>(c->data);
+                auto component_id = e_cal_component_get_id(component);
+                bool found = false;
+
+                if (e_cal_component_id_equal(instance_id, component_id)) {
+                    // replaces virtual instance with the real one
+                    g_object_unref(component);
+                    c->data = g_object_ref(instance);
+                    found = true;
+                }
+                e_cal_component_free_id(component_id);
+                if (found)
+                    break;
+            }
+            e_cal_component_free_id (instance_id);
+        }
+    }
+
+    static void
+    fetch_detached_instances(GObject *,
+                              GAsyncResult *res,
+                              gpointer gsubtask)
+    {
+        auto subtask = static_cast<ClientSubtask*>(gsubtask);
+        if (res) {
+            GError *error = nullptr;
+            GSList *comps = nullptr;
+            e_cal_client_get_objects_for_uid_finish(subtask->client,
+                                                    res,
+                                                    &comps,
+                                                    &error);
+            if (error) {
+                g_warning("Fail to retrieve detached instances: %s", error->message);
+                g_error_free(error);
+            } else {
+                merge_detached_instances(subtask, comps);
+                e_cal_client_free_ecalcomp_slist(comps);
+            }
+        }
+
+        if (subtask->parent_components.empty()) {
+            on_event_fetch_list_done(gsubtask);
+            return;
+        }
+
+        // continue fetch detached instances
+        auto i_begin = subtask->parent_components.begin();
+        std::string id = *i_begin;
+        subtask->parent_components.erase(i_begin);
+        e_cal_client_get_objects_for_uid(subtask->client,
+                                         id.c_str(),
+                                         subtask->cancellable.get(),
+                                         (GAsyncReadyCallback) fetch_detached_instances,
+                                         gsubtask);
+    }
+
+    static void
     on_event_generated_list_ready(gpointer gsubtask)
+    {
+        fetch_detached_instances(nullptr, nullptr, gsubtask);
+    }
+
+    static gint
+    sort_events_by_start_date(ECalComponent *eventA, ECalComponent *eventB)
+    {
+        ECalComponentDateTime start_date_a;
+        ECalComponentDateTime start_date_b;
+
+        e_cal_component_get_dtstart(eventA, &start_date_a);
+        e_cal_component_get_dtstart(eventB, &start_date_b);
+
+        auto time_a = icaltime_as_timet(*start_date_a.value);
+        auto time_b = icaltime_as_timet(*start_date_b.value);
+        if (time_a == time_b)
+            return 0;
+        if (time_a < time_b)
+            return -1;
+        return 1;
+    }
+
+    static bool
+    is_alarm_interesting(ECalComponentAlarm *alarm)
+    {
+        if (alarm) {
+            ECalComponentAlarmAction action;
+            e_cal_component_alarm_get_action(alarm, &action);
+            if ((action == E_CAL_COMPONENT_ALARM_AUDIO) ||
+                (action == E_CAL_COMPONENT_ALARM_DISPLAY)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // we only care about AUDIO or DISPLAY alarms, other kind of alarm will not generate a notification
+    static bool
+    event_has_valid_alarms(ECalComponent *event)
+    {
+        if (!e_cal_component_has_alarms(event))
+            return false;
+
+        // check alarms
+        bool valid = false;
+        auto uids = e_cal_component_get_alarm_uids(event);
+        for (auto l=uids; l!=nullptr; l=uids->next) {
+            auto auid = static_cast<gchar*>(l->data);
+            auto alarm = e_cal_component_get_alarm(event, auid);
+
+            valid = is_alarm_interesting(alarm);
+            if (valid) {
+                break;
+            }
+        }
+
+        cal_obj_uid_list_free(uids);
+        return valid;
+    }
+
+
+
+    static void
+    on_event_fetch_list_done(gpointer gsubtask)
     {
         auto subtask = static_cast<ClientSubtask*>(gsubtask);
 
@@ -692,10 +823,11 @@ private:
             add_alarms_to_subtask(static_cast<ECalComponentAlarms*>(l->data), subtask, subtask->task->gtz);
 
         subtask->components = g_list_concat(subtask->components, subtask->instance_components);
+        subtask->components = g_list_sort(subtask->components, (GCompareFunc) sort_events_by_start_date);
         // add events without alarm
         for (auto l=subtask->components; l!=nullptr; l=l->next) {
             auto component = static_cast<ECalComponent*>(l->data);
-            if (!e_cal_component_has_alarms(component))
+            if (!event_has_valid_alarms(component))
                 add_event_to_subtask(component, subtask, subtask->task->gtz);
         }
         g_list_free_full(subtask->components, g_object_unref);
@@ -940,8 +1072,10 @@ private:
         {
             auto ai = static_cast<ECalComponentAlarmInstance*>(l->data);
             auto a = e_cal_component_get_alarm(component, ai->auid);
-            if (a == nullptr)
+
+            if (!is_alarm_interesting(a)) {
                 continue;
+            }
 
             auto instance_time = std::make_pair(DateTime{gtz, ai->occur_start},
                                                 DateTime{gtz, ai->occur_end});
