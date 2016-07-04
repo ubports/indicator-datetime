@@ -98,9 +98,9 @@ public:
 
         // force the system to stay awake
         std::shared_ptr<uin::Awake> awake;
-	if (appointment.is_ubuntu_alarm() || calendar_bubbles_enabled()) {
-	    awake = std::make_shared<uin::Awake>(m_engine->app_name());
-	}
+        if (appointment.is_ubuntu_alarm() || calendar_bubbles_enabled() || calendar_list_enabled()) {
+            awake = std::make_shared<uin::Awake>(m_engine->app_name());
+        }
 
         // calendar events are muted in silent mode; alarm clocks never are
         std::shared_ptr<uin::Sound> sound;
@@ -116,9 +116,12 @@ public:
         // create the haptic feedback...
         std::shared_ptr<uin::Haptic> haptic;
         if (should_vibrate() && (appointment.is_ubuntu_alarm() || calendar_vibrations_enabled())) {
-            const auto haptic_mode = m_settings->alarm_haptic.get();
-            if (haptic_mode == "pulse")
-                haptic = std::make_shared<uin::Haptic>(uin::Haptic::MODE_PULSE, appointment.is_ubuntu_alarm());
+            // when in silent mode should only vibrate if user defined so
+            if (!silent_mode() || vibrate_in_silent_mode_enabled()) {
+                const auto haptic_mode = m_settings->alarm_haptic.get();
+                if (haptic_mode == "pulse")
+                    haptic = std::make_shared<uin::Haptic>(uin::Haptic::MODE_PULSE, appointment.is_ubuntu_alarm());
+            }
         }
 
         // show a notification...
@@ -214,6 +217,11 @@ private:
     bool calendar_list_enabled() const
     {
         return m_settings->cal_notification_list.get();
+    }
+
+    bool vibrate_in_silent_mode_enabled() const
+    {
+        return m_settings->vibrate_silent_mode.get();
     }
 
     static void on_sound_proxy_ready(GObject* /*source_object*/, GAsyncResult* res, gpointer gself)

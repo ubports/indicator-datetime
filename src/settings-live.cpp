@@ -29,17 +29,20 @@ namespace datetime {
 
 LiveSettings::~LiveSettings()
 {
+    g_clear_object(&m_settings_general_notification);
     g_clear_object(&m_settings_cal_notification);
     g_clear_object(&m_settings);
 }
 
 LiveSettings::LiveSettings():
     m_settings(g_settings_new(SETTINGS_INTERFACE)),
-    m_settings_cal_notification(g_settings_new_with_path(SETTINGS_NOTIFY_SCHEMA_ID, SETTINGS_NOTIFY_CALENDAR_PATH))
+    m_settings_cal_notification(g_settings_new_with_path(SETTINGS_NOTIFY_SCHEMA_ID, SETTINGS_NOTIFY_CALENDAR_PATH)),
+    m_settings_general_notification(g_settings_new(SETTINGS_NOTIFY_APPS_SCHEMA_ID))
 {
 
-    g_signal_connect (m_settings,                  "changed", G_CALLBACK(on_changed_ccid), this);
-    g_signal_connect (m_settings_cal_notification, "changed", G_CALLBACK(on_changed_cal_notification), this);
+    g_signal_connect (m_settings,                      "changed", G_CALLBACK(on_changed_ccid), this);
+    g_signal_connect (m_settings_cal_notification,     "changed", G_CALLBACK(on_changed_cal_notification), this);
+    g_signal_connect (m_settings_general_notification, "changed", G_CALLBACK(on_changed_general_notification), this);
 
     // init the Properties from the GSettings backend
     update_custom_time_format();
@@ -67,6 +70,7 @@ LiveSettings::LiveSettings():
     update_cal_notification_vibrations();
     update_cal_notification_bubbles();
     update_cal_notification_list();
+    update_vibrate_silent_mode();
 
     // now listen for clients to change the properties s.t. we can sync update GSettings
 
@@ -173,6 +177,10 @@ LiveSettings::LiveSettings():
 
     cal_notification_list.changed().connect([this](bool value){
         g_settings_set_boolean(m_settings_cal_notification, SETTINGS_NOTIFY_LIST_KEY, value);
+    });
+
+    vibrate_silent_mode.changed().connect([this](bool value){
+        g_settings_set_boolean(m_settings_general_notification, SETTINGS_VIBRATE_SILENT_KEY, value);
     });
 }
 
@@ -325,6 +333,11 @@ void LiveSettings::update_cal_notification_list()
     cal_notification_list.set(g_settings_get_boolean(m_settings_cal_notification, SETTINGS_NOTIFY_LIST_KEY));
 }
 
+void LiveSettings::update_vibrate_silent_mode()
+{
+    vibrate_silent_mode.set(g_settings_get_boolean(m_settings_general_notification, SETTINGS_VIBRATE_SILENT_KEY));
+}
+
 /***
 ****
 ***/
@@ -349,6 +362,23 @@ void LiveSettings::update_key_cal_notification(const std::string& key)
         update_cal_notification_bubbles();
     else if (key == SETTINGS_NOTIFY_LIST_KEY)
         update_cal_notification_list();
+}
+
+/***
+****
+***/
+
+void LiveSettings::on_changed_general_notification(GSettings* /*settings*/,
+                                                   gchar*     key,
+                                                   gpointer   gself)
+{
+    static_cast<LiveSettings*>(gself)->update_key_general_notification(key);
+}
+
+void LiveSettings::update_key_general_notification(const std::string& key)
+{
+    if (key == SETTINGS_VIBRATE_SILENT_KEY)
+        update_vibrate_silent_mode();
 }
 
 /***
