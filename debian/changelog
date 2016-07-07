@@ -1,3 +1,12 @@
+indicator-datetime (15.10+16.10.20160707-0ubuntu1) yakkety; urgency=medium
+
+  [ Arthur Mello ]
+  * Update indicator-datetime to work with the new notification settings
+  * Remove call to keepDisplayOn since that now is handled by Unity
+    during notifications
+
+ -- Arthur Renato Mello <arthur.mello@canonical.com>  Thu, 07 Jul 2016 17:33:51 +0000
+
 indicator-datetime (15.10+16.10.20160629-0ubuntu1) yakkety; urgency=medium
 
   * Does not show events from non selected sources. (LP: #1593523)
