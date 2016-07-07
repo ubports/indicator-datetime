@@ -62,7 +62,12 @@ public:
     core::Property<unsigned int> alarm_volume;
     core::Property<unsigned int> alarm_duration;
     core::Property<unsigned int> snooze_duration;
-    core::Property<std::set<std::pair<std::string,std::string>>> muted_apps;
+    core::Property<bool> cal_notification_enabled;
+    core::Property<bool> cal_notification_sounds;
+    core::Property<bool> cal_notification_vibrations;
+    core::Property<bool> cal_notification_bubbles;
+    core::Property<bool> cal_notification_list;
+    core::Property<bool> vibrate_silent_mode;
 };
 
 } // namespace datetime
