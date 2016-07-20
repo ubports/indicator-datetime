@@ -5,3 +5,4 @@ After=indicators-pre.target
 
 [Service]
 ExecStart=@pkglibexec@/indicator-datetime-service
+Restart=on-failure
