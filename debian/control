@@ -15,7 +15,7 @@ Build-Depends: cmake,
                liburl-dispatcher1-dev,
                libproperties-cpp-dev,
 # for com.ubuntu.notifications.hub schema to pick up blacklist of apps that can't show notifications
-               gsettings-ubuntu-schemas,
+               gsettings-ubuntu-schemas (>= 0.0.7),
 # for the test harness:
                libgtest-dev,
                libdbustest1-dev,
@@ -49,7 +49,7 @@ Package: indicator-datetime
 Architecture: any
 Depends: ${shlibs:Depends}, 
          ${misc:Depends},
-         gsettings-ubuntu-schemas,
+         gsettings-ubuntu-schemas (>= 0.0.7),
          indicator-common,
          systemd | systemd-shim,
 Recommends: indicator-applet | indicator-renderer,
