@@ -40,8 +40,8 @@ Homepage: https://launchpad.net/indicator-datetime
 # If you aren't a member of ~indicator-applet-developers but need to upload
 # packaging changes, just go ahead.  ~indicator-applet-developers will notice
 # and sync up the code again.
-Vcs-Bzr: https://code.launchpad.net/~indicator-applet-developers/indicator-datetime/trunk.13.04
-Vcs-Browser: https://bazaar.launchpad.net/~indicator-applet-developers/indicator-datetime/trunk.13.04/files
+Vcs-Bzr: https://code.launchpad.net/~indicator-applet-developers/indicator-datetime/trunk.16.10
+Vcs-Browser: https://bazaar.launchpad.net/~indicator-applet-developers/indicator-datetime/trunk.16.10/files
 
 Package: indicator-datetime
 Architecture: any
