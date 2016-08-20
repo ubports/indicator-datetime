@@ -1,8 +1,8 @@
-indicator-datetime (15.10+16.10.20160707-0ubuntu2) UNRELEASED; urgency=medium
+indicator-datetime (15.10+16.10.20160820-0ubuntu1) yakkety; urgency=medium
 
   * Rebuild against latest evolution-data-server
 
- -- Jeremy Bicha <jbicha@ubuntu.com>  Fri, 19 Aug 2016 23:12:26 -0400
+ -- Jeremy Bicha <jbicha@ubuntu.com>  Sat, 20 Aug 2016 03:16:45 +0000
 
 indicator-datetime (15.10+16.10.20160707-0ubuntu1) yakkety; urgency=medium
 
