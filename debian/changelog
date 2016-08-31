@@ -1,3 +1,9 @@
+indicator-datetime (15.10+16.10.20160820.1-0ubuntu1) yakkety; urgency=medium
+
+  * No change rebuild for UAL ABI change
+
+ -- Ted Gould <ted@gould.cx>  Sat, 20 Aug 2016 21:12:55 +0000
+
 indicator-datetime (15.10+16.10.20160820-0ubuntu1) yakkety; urgency=medium
 
   * Rebuild against latest evolution-data-server
