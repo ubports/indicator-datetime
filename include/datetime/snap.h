@@ -26,6 +26,8 @@
 #include <notifications/notifications.h>
 #include <notifications/sound.h>
 
+#include <gio/gio.h> // GDBusConnection
+
 #include <functional>
 #include <memory>
 
@@ -41,7 +43,8 @@ class Snap
 public:
     Snap(const std::shared_ptr<unity::indicator::notifications::Engine>& engine,
          const std::shared_ptr<unity::indicator::notifications::SoundBuilder>& sound_builder,
-         const std::shared_ptr<const Settings>& settings);
+         const std::shared_ptr<const Settings>& settings,
+         GDBusConnection* system_bus);
     virtual ~Snap();
 
     enum class Response { None, Snooze, ShowApp };
