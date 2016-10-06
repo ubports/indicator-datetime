@@ -334,7 +334,7 @@ protected:
               const std::shared_ptr<unity::indicator::notifications::SoundBuilder>& sb,
               const std::shared_ptr<unity::indicator::datetime::Settings>& settings)
   {
-    auto snap = std::make_shared<unity::indicator::datetime::Snap>(ne, sb, settings);
+    auto snap = std::make_shared<unity::indicator::datetime::Snap>(ne, sb, settings, system_bus);
     wait_msec(100); // wait a moment for the Snap to finish its async dbus bootstrapping
     return snap;
   }
