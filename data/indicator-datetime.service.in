@@ -4,5 +4,5 @@ PartOf=graphical-session.target
 After=indicators-pre.target
 
 [Service]
-ExecStart=@pkglibexec@/indicator-datetime-service
+ExecStart=@pkglibexecdir@/indicator-datetime-service
 Restart=on-failure
