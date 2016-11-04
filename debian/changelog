@@ -1,3 +1,11 @@
+indicator-datetime (15.10+17.04.20161104-0ubuntu1) zesty; urgency=medium
+
+  [ Charles Kerr ]
+  * Remember the system bus instead of fetching it asynchronously (LP:
+    #1588526)
+
+ -- charles.kerr@canonical.com <charles.kerr@canonical.com>  Fri, 04 Nov 2016 16:45:17 +0000
+
 indicator-datetime (15.10+17.04.20161021-0ubuntu1) zesty; urgency=medium
 
   [ Martin Pitt ]
