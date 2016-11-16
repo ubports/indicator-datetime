@@ -1,3 +1,10 @@
+indicator-datetime (15.10+17.04.20161116.1-0ubuntu1) zesty; urgency=medium
+
+  * UpcomingPlanner: don't get events from the day before of the
+    selected one (LP: #1641720, #1641726)
+
+ -- Marco Trevisan (Treviño) <mail@3v1n0.net>  Wed, 16 Nov 2016 23:52:50 +0000
+
 indicator-datetime (15.10+17.04.20161104-0ubuntu1) zesty; urgency=medium
 
   [ Charles Kerr ]
