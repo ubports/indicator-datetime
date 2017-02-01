@@ -462,7 +462,7 @@ private:
     static std::string calendar_app_id()
     {
         auto registry = std::make_shared<ubuntu::app_launch::Registry>();
-        auto app_id = ubuntu::app_launch::AppID::discover(registry, "com.ubuntu.calendar");
+        auto app_id = ubuntu::app_launch::AppID::discover(registry, "ubuntu-calendar-app");
         if (!app_id.empty())
             // Due the use of old API by messaging_menu we need append a extra ".desktop" to the app_id.
             return std::string(app_id) + ".desktop";
