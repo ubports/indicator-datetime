@@ -3,7 +3,7 @@ Section: misc
 Priority: optional
 Maintainer: Ubuntu Desktop Team <ubuntu-desktop@lists.ubuntu.com>
 Build-Depends: cmake,
-               cmake-extras (>= 0.10),
+               cmake-extras (>= 1.1),
                dbus,
                debhelper (>= 9), 
                dh-translations,

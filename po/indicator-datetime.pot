@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-03 12:23-0500\n"
+"POT-Creation-Date: 2017-02-09 12:28-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -80,12 +80,4 @@ msgstr ""
 
 #: ../src/snap.cpp:163
 msgid "Snooze"
-msgstr ""
-
-#: ../tests/test-formatter.cpp:221 ../tests/test-formatter.cpp:222
-msgid "Today"
-msgstr ""
-
-#: ../tests/test-formatter.cpp:223 ../tests/test-formatter.cpp:224
-msgid "Tomorrow"
 msgstr ""
