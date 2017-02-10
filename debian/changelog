@@ -1,3 +1,13 @@
+indicator-datetime (15.10+17.04.20170210-0ubuntu1) zesty; urgency=medium
+
+  * Update app name usage to match snaps.
+  * Switch to using gmock module from cmake-extras.
+  * Use cmake-extras for coverage support and always enable testing.
+  * Use cmake-extras intltool module, and keep pot file in vcs.
+  * Remove old autostart .desktop files.
+
+ -- Rodney Dawes <rodney.dawes@canonical.com>  Fri, 10 Feb 2017 17:10:07 +0000
+
 indicator-datetime (15.10+17.04.20161201-0ubuntu1) zesty; urgency=medium
 
   [ Michael Terry ]
