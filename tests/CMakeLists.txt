@@ -1,6 +1,6 @@
 find_package(GMock REQUIRED)
 
-SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g ${CC_WARNING_ARGS}")
+SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ${CC_WARNING_ARGS}")
 
 # dbustest
 pkg_check_modules(DBUSTEST REQUIRED
