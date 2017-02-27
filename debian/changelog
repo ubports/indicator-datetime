@@ -1,3 +1,9 @@
+indicator-datetime (15.10+17.04.20170227-0ubuntu1) zesty; urgency=medium
+
+  * Handle UAL API bump
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Mon, 27 Feb 2017 14:58:04 +0000
+
 indicator-datetime (15.10+17.04.20170210-0ubuntu1) zesty; urgency=medium
 
   * Update app name usage to match snaps.
