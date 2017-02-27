@@ -24,8 +24,8 @@
 #include <messaging-menu/messaging-menu-app.h>
 #include <messaging-menu/messaging-menu-message.h>
 
-#include <libubuntu-app-launch-2/ubuntu-app-launch/appid.h>
-#include <libubuntu-app-launch-2/ubuntu-app-launch/registry.h>
+#include <libubuntu-app-launch-3/ubuntu-app-launch/appid.h>
+#include <libubuntu-app-launch-3/ubuntu-app-launch/registry.h>
 
 #include <uuid/uuid.h>
 
