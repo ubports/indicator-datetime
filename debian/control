@@ -38,7 +38,7 @@ Build-Depends: cmake,
 # messaging menu integration
                libmessaging-menu-dev,
                uuid-dev,
-               libubuntu-app-launch2-dev (>= 0.9),
+               libubuntu-app-launch3-dev (>= 0.9),
 # to locate the place to put systemd files
                systemd,
 Standards-Version: 3.9.3
