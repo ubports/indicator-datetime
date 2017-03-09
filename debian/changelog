@@ -1,3 +1,9 @@
+indicator-datetime (15.10+17.04.20170309-0ubuntu1) zesty; urgency=medium
+
+  * Capitalize Settings in indicator menu to match capitalization style
+
+ -- Jeremy Bicha <jbicha@ubuntu.com>  Thu, 09 Mar 2017 16:12:11 +0000
+
 indicator-datetime (15.10+17.04.20170227-0ubuntu1) zesty; urgency=medium
 
   * Handle UAL API bump
