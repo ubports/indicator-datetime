@@ -1,3 +1,9 @@
+indicator-datetime (15.10+17.04.20170322-0ubuntu1) zesty; urgency=medium
+
+  * no change rebuild
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Wed, 22 Mar 2017 18:28:10 +0000
+
 indicator-datetime (15.10+17.04.20170309-0ubuntu1) zesty; urgency=medium
 
   * Capitalize Settings in indicator menu to match capitalization style
