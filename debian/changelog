@@ -1,3 +1,9 @@
+indicator-datetime (15.11+ubports) zesty; urgency=medium
+
+  * Imported to UBports
+
+ -- UBports auto importer <infra@ubports.com>  Sun, 23 Jul 2017 17:48:26 +0200
+
 indicator-datetime (15.10+17.04.20161116.1-0ubuntu1) zesty; urgency=medium
 
   * UpcomingPlanner: don't get events from the day before of the
