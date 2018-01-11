@@ -1,3 +1,9 @@
+indicator-datetime (15.11+ubports1) UNRELEASED; urgency=medium
+
+  * Update Jenkinsfile
+
+ -- Dan Chapman <dan@ubports.com>  Thu, 11 Jan 2018 10:59:01 +0000
+
 indicator-datetime (15.11+ubports) xenial; urgency=medium
 
   * Imported to UBports
