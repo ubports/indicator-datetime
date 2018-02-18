@@ -1,0 +1,2 @@
+# Because dh-systemd does not yet support user units, we manually make the WantedBy link
+/usr/lib/systemd/user/indicator-datetime.service /usr/lib/systemd/user/indicators.target.wants/indicator-datetime.service

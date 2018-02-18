@@ -15,8 +15,10 @@ add_definitions(-DALARM_DEFAULT_SOUND="${ALARM_DEFAULT_SOUND}"
                 -DCALENDAR_DEFAULT_SOUND="${CALENDAR_DEFAULT_SOUND}")
 
 
-option (enable_tests "Build the package's automatic tests." ON)
-option (enable_lcov "Generate lcov code coverage reports." ON)
+##
+## Always Be Testing
+##
+enable_testing()
 
 ##
 ##  GNU standard installation directories
@@ -51,7 +53,7 @@ pkg_check_modules (SERVICE_DEPS REQUIRED
                    libaccounts-glib>=1.18
                    messaging-menu>=12.10
                    uuid>=2.25
-                   ubuntu-app-launch-2)
+                   ubuntu-app-launch-3)
 include_directories (SYSTEM ${SERVICE_DEPS_INCLUDE_DIRS})
 
 ##
@@ -62,9 +64,6 @@ set (ARCHIVE_NAME ${CMAKE_PROJECT_NAME}-${PROJECT_VERSION})
 add_custom_target (dist
                    COMMAND bzr export --root=${ARCHIVE_NAME} ${CMAKE_BINARY_DIR}/${ARCHIVE_NAME}.tar.gz
                    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-
-add_custom_target (clean-coverage
-                   COMMAND find ${CMAKE_BINARY_DIR} -name '*.gcda' | xargs rm -f)
 
 add_custom_target (cppcheck COMMAND cppcheck --enable=all -q --error-exitcode=2 --inline-suppr
                    ${CMAKE_SOURCE_DIR}/src
@@ -80,24 +79,17 @@ set (CXX_WARNING_ARGS " -Wall -Wextra -pedantic -Wno-missing-field-initializers"
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/include)
 include_directories (${CMAKE_CURRENT_BINARY_DIR}/include)
 
-# testing & coverage
-if (${enable_tests})
-  pkg_check_modules (DBUSTEST REQUIRED dbustest-1>=14.04.0)
-  set (GTEST_SOURCE_DIR /usr/src/gtest/src)
-  set (GTEST_INCLUDE_DIR ${GTEST_SOURCE_DIR}/..)
-  set (GTEST_LIBS -lpthread)
-  enable_testing ()
-  if (${enable_lcov})
-    include(GCov)
-  endif ()
-endif ()
-
 # actually build things
 add_subdirectory(include)
 add_subdirectory(src)
 add_subdirectory(data)
 add_subdirectory(po)
-if (${enable_tests})
-  add_subdirectory(tests)
-endif ()
+add_subdirectory(tests)
 
+# testing & coverage
+find_package(CoverageReport)
+ENABLE_COVERAGE_REPORT(
+  TARGETS indicatordatetimeservice indicator-datetime-service
+  TESTS ${COVERAGE_TEST_TARGETS}
+  FILTER /usr/include ${CMAKE_BINARY_DIR}/*
+)

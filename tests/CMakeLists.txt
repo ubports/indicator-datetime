@@ -1,11 +1,6 @@
-# build libgtest
-add_library (gtest STATIC
-             ${GTEST_SOURCE_DIR}/gtest-all.cc
-             ${GTEST_SOURCE_DIR}/gtest_main.cc)
-set_target_properties (gtest PROPERTIES INCLUDE_DIRECTORIES ${INCLUDE_DIRECTORIES} ${GTEST_INCLUDE_DIR})
-set_target_properties (gtest PROPERTIES COMPILE_FLAGS ${COMPILE_FLAGS} -w)
+find_package(GMock REQUIRED)
 
-SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g ${CC_WARNING_ARGS}")
+SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ${CC_WARNING_ARGS}")
 
 # dbustest
 pkg_check_modules(DBUSTEST REQUIRED
@@ -42,9 +37,10 @@ add_definitions (-DG_LOG_DOMAIN="Indicator-Datetime")
 
 function(add_test_by_name name)
   set (TEST_NAME ${name})
+  set (COVERAGE_TEST_TARGETS ${COVERAGE_TEST_TARGETS} ${TEST_NAME} PARENT_SCOPE)
   add_executable (${TEST_NAME} ${TEST_NAME}.cpp gschemas.compiled)
   add_test (${TEST_NAME} ${TEST_NAME})
-  target_link_libraries (${TEST_NAME} indicatordatetimeservice gtest ${DBUSTEST_LIBRARIES} ${SERVICE_DEPS_LIBRARIES} ${GTEST_LIBS})
+  target_link_libraries (${TEST_NAME} indicatordatetimeservice ${DBUSTEST_LIBRARIES} ${SERVICE_DEPS_LIBRARIES} ${GTEST_LIBRARIES} ${GMOCK_LIBRARIES})
 endfunction()
 add_test_by_name(test-datetime)
 add_test_by_name(test-sound)
@@ -66,8 +62,9 @@ add_test_by_name(test-timezone-timedated)
 add_test_by_name(test-utils)
 
 set (TEST_NAME manual-test-snap)
+set (COVERAGE_TEST_TARGETS ${COVERAGE_TEST_TARGETS} ${TEST_NAME})
 add_executable (${TEST_NAME} ${TEST_NAME}.cpp)
-target_link_libraries (${TEST_NAME} indicatordatetimeservice gtest ${SERVICE_DEPS_LIBRARIES} ${GTEST_LIBS})
+target_link_libraries (${TEST_NAME} indicatordatetimeservice ${SERVICE_DEPS_LIBRARIES} ${GTEST_LIBRARIES} ${GMOCK_LIBRARIES})
 
 ##
 ## EDS Tests
@@ -77,10 +74,11 @@ find_program(DBUS_RUNNER dbus-test-runner)
 
 function(add_eds_ics_test_by_name name)
   set (TEST_NAME ${name})
+  set (COVERAGE_TEST_TARGETS ${COVERAGE_TEST_TARGETS} ${TEST_NAME} PARENT_SCOPE)
   configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${TEST_NAME}.ics.in"
                  "${CMAKE_CURRENT_BINARY_DIR}/${TEST_NAME}.ics")
   add_executable(${TEST_NAME} ${TEST_NAME}.cpp gschemas.compiled)
-  target_link_libraries (${TEST_NAME} indicatordatetimeservice gtest ${DBUSTEST_LIBRARIES} ${SERVICE_DEPS_LIBRARIES} ${GTEST_LIBS})
+  target_link_libraries (${TEST_NAME} indicatordatetimeservice ${DBUSTEST_LIBRARIES} ${SERVICE_DEPS_LIBRARIES} ${GTEST_LIBRARIES} ${GMOCK_LIBRARIES})
   add_test (${TEST_NAME}
             ${CMAKE_CURRENT_SOURCE_DIR}/run-eds-ics-test.sh
             ${DBUS_RUNNER}                                         # arg1: dbus-test-runner exec
@@ -107,9 +105,16 @@ add_eds_ics_test_by_name(test-eds-ics-repeating-events-with-individual-change)
 # which hasn't landed yet. These can be re-enabled as soon as that lands.
 #function(add_dbusmock_test_by_name name)
 #  set (TEST_NAME ${name})
+#  set (COVERAGE_TEST_TARGETS ${COVERAGE_TEST_TARGETS} ${TEST_NAME} PARENT_SCOPE)
 #  add_executable (${TEST_NAME} ${TEST_NAME}.cpp gschemas.compiled)
 #  add_test (${TEST_NAME} ${TEST_NAME})
-#  target_link_libraries (${TEST_NAME} indicatordatetimeservice gtest ${SERVICE_DEPS_LIBRARIES} ${DBUSTEST_LIBRARIES} ${GTEST_LIBS})
+#  target_link_libraries (${TEST_NAME} indicatordatetimeservice ${SERVICE_DEPS_LIBRARIES} ${DBUSTEST_LIBRARIES} ${GTEST_LIBRARIES} ${GMOCK_LIBRARIES})
 #endfunction()
 #add_dbusmock_test_by_name(test-timezone-geoclue)
 #add_dbusmock_test_by_name(test-timezones)
+
+set(
+  COVERAGE_TEST_TARGETS
+  ${COVERAGE_TEST_TARGETS}
+  PARENT_SCOPE
+)
