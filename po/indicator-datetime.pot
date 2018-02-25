@@ -36,7 +36,7 @@ msgid "Clock"
 msgstr ""
 
 #: ../src/menu.cpp:491
-msgid "Time & Date Settings…"
+msgid "Time and Date Settings…"
 msgstr ""
 
 #: ../src/menu.cpp:546
@@ -44,7 +44,7 @@ msgid "Date and Time"
 msgstr ""
 
 #: ../src/menu.cpp:596
-msgid "Time & Date"
+msgid "Time and Date"
 msgstr ""
 
 #: ../src/menu.cpp:601
