@@ -1,4 +1,4 @@
-indicator-datetime (15.11+ubports1) UNRELEASED; urgency=medium
+indicator-datetime (15.11+ubports1) xenial; urgency=medium
 
   * Update Jenkinsfile
 
@@ -9,6 +9,42 @@ indicator-datetime (15.11+ubports) xenial; urgency=medium
   * Imported to UBports
 
  -- UBports auto importer <infra@ubports.com>  Sun, 23 Jul 2017 17:48:26 +0200
+
+indicator-datetime (15.10+17.04.20170322-0ubuntu1) zesty; urgency=medium
+
+  * no change rebuild
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Wed, 22 Mar 2017 18:28:10 +0000
+
+indicator-datetime (15.10+17.04.20170309-0ubuntu1) zesty; urgency=medium
+
+  * Capitalize Settings in indicator menu to match capitalization style
+
+ -- Jeremy Bicha <jbicha@ubuntu.com>  Thu, 09 Mar 2017 16:12:11 +0000
+
+indicator-datetime (15.10+17.04.20170227-0ubuntu1) zesty; urgency=medium
+
+  * Handle UAL API bump
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Mon, 27 Feb 2017 14:58:04 +0000
+
+indicator-datetime (15.10+17.04.20170210-0ubuntu1) zesty; urgency=medium
+
+  * Update app name usage to match snaps.
+  * Switch to using gmock module from cmake-extras.
+  * Use cmake-extras for coverage support and always enable testing.
+  * Use cmake-extras intltool module, and keep pot file in vcs.
+  * Remove old autostart .desktop files.
+
+ -- Rodney Dawes <rodney.dawes@canonical.com>  Fri, 10 Feb 2017 17:10:07 +0000
+
+indicator-datetime (15.10+17.04.20161201-0ubuntu1) zesty; urgency=medium
+
+  [ Michael Terry ]
+  * Run inside a snap by prefixing hard coded paths with $SNAP. (LP:
+    #1629009)
+
+ -- Rodney Dawes <rodney.dawes@canonical.com>  Thu, 01 Dec 2016 22:34:08 +0000
 
 indicator-datetime (15.10+17.04.20161116.1-0ubuntu1) zesty; urgency=medium
 
