@@ -24,8 +24,7 @@
 #include <messaging-menu/messaging-menu-app.h>
 #include <messaging-menu/messaging-menu-message.h>
 
-#include <libubuntu-app-launch-3/ubuntu-app-launch/appid.h>
-#include <libubuntu-app-launch-3/ubuntu-app-launch/registry.h>
+#include <url-dispatcher.h>
 
 #include <uuid/uuid.h>
 
@@ -461,13 +460,15 @@ private:
 
     static std::string calendar_app_id()
     {
-        auto registry = std::make_shared<ubuntu::app_launch::Registry>();
-        auto app_id = ubuntu::app_launch::AppID::discover(registry, "ubuntu-calendar-app");
-        if (!app_id.empty())
+        auto urls = g_strsplit("calendar://", ",", 0);
+        auto appids = url_dispatch_url_appid(const_cast<const gchar**>(urls));
+        g_strfreev(urls);
+        std::string result;
+        if (appids != nullptr) {
             // Due the use of old API by messaging_menu we need append a extra ".desktop" to the app_id.
-            return std::string(app_id) + ".desktop";
-        else
-            return std::string();
+            result = std::string(appids[0]) + ".desktop";
+        }
+        return result;
     }
 
     static std::string calendar_app_icon()
