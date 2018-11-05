@@ -460,13 +460,14 @@ private:
 
     static std::string calendar_app_id()
     {
-        auto urls = g_strsplit("calendar://", ",", 0);
+        auto urls = g_strsplit("calendar://", "\n", 0);
         auto appids = url_dispatch_url_appid(const_cast<const gchar**>(urls));
         g_strfreev(urls);
         std::string result;
         if (appids != nullptr) {
             // Due the use of old API by messaging_menu we need append a extra ".desktop" to the app_id.
             result = std::string(appids[0]) + ".desktop";
+            g_strfreev(appids);
         }
         return result;
     }
