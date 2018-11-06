@@ -161,7 +161,7 @@ TEST_F(TestLiveActionsFixture, DesktopOpenSettingsApp)
 
 namespace
 {
-    const std::string clock_app_url = "appid://com.ubuntu.clock/clock/current-user-version";
+    const std::string clock_app_url = "alarm://";
 }
 
 TEST_F(TestLiveActionsFixture, PhoneOpenAlarmApp)

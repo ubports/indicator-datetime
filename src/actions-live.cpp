@@ -95,7 +95,7 @@ void LiveActions::open_alarm_app()
 {
     switch(get_desktop()) {
         case LiveActions::UNITY8:
-            dispatch_url("appid://com.ubuntu.clock/clock/current-user-version");
+            dispatch_url("alarm://");
             break;
         case LiveActions::UNITY7:
         default:

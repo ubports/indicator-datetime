@@ -488,7 +488,7 @@ private:
             action_name = nullptr;
 
         if (action_name != nullptr)
-            g_menu_append (menu, _("Time and Date settings…"), action_name);
+            g_menu_append (menu, _("Time and Date Settings…"), action_name);
 
         return G_MENU_MODEL (menu);
     }
