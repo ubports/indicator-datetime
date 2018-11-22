@@ -8,13 +8,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-09 12:28-0500\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2018-11-25 00:01+0000\n"
+"Last-Translator: Louies <louies0623@gmail.com>\n"
+"Language-Team: Chinese (Hong Kong) <https://translate.ubports.com/projects/"
+"ubports/indicator-datetime/zh_Hant_HK/>\n"
 "Language: zh_Hant_HK\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 3.1.1\n"
 
 #. Translators, please edit/rearrange these strftime(3) tokens to suit your locale!
 #. Format string for the day on the first menuitem in the datetime indicator.
@@ -44,7 +47,7 @@ msgstr ""
 
 #: ../src/menu.cpp:596
 msgid "Time and Date"
-msgstr ""
+msgstr "時間與日期"
 
 #: ../src/menu.cpp:601
 #, c-format
@@ -75,7 +78,7 @@ msgstr ""
 
 #: ../src/snap.cpp:162 ../src/snap.cpp:166
 msgid "OK"
-msgstr ""
+msgstr "確定"
 
 #: ../src/snap.cpp:163
 msgid "Snooze"
