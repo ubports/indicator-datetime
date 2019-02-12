@@ -1,0 +1,85 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Canonical Ltd.
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-02-09 12:28-0500\n"
+"PO-Revision-Date: 2019-01-12 11:54+0000\n"
+"Last-Translator: Adrià <adriamartinmor@gmail.com>\n"
+"Language-Team: Sardinian <https://translate.ubports.com/projects/ubports/"
+"indicator-datetime/sc/>\n"
+"Language: sc\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.1.1\n"
+
+#. Translators, please edit/rearrange these strftime(3) tokens to suit your locale!
+#. Format string for the day on the first menuitem in the datetime indicator.
+#. This format string gives the full weekday, date, month, and year.
+#. en_US example: "%A, %B %e %Y" --> Saturday, October 31 2020"
+#. en_GB example: "%A, %e %B %Y" --> Saturday, 31 October 2020"
+#: ../src/menu.cpp:329
+msgid "%A, %e %B %Y"
+msgstr "%A, %e de %B de %Y"
+
+#. add the 'Add Event…' menuitem
+#: ../src/menu.cpp:429
+msgid "Add Event…"
+msgstr "Agiunghe eventu…"
+
+#: ../src/menu.cpp:439
+msgid "Clock"
+msgstr "Rellògiu"
+
+#: ../src/menu.cpp:491
+msgid "Time and Date Settings…"
+msgstr "Cunfiguratziones de data e oràriu…"
+
+#: ../src/menu.cpp:546
+msgid "Date and Time"
+msgstr "Data e oràriu"
+
+#: ../src/menu.cpp:596
+msgid "Time and Date"
+msgstr "Data e oràriu"
+
+#: ../src/menu.cpp:601
+#, c-format
+msgid "%s (has alarms)"
+msgstr "%s tenet un'allarme"
+
+#. * strftime(3) format for abbreviated weekday,
+#. hours, minutes in a 12h locale; e.g. Wed, 2:00 PM
+#: ../src/snap.cpp:144
+msgid "%a, %l:%M %p"
+msgstr "%a, %l:%M %p"
+
+#. * A strftime(3) format for abbreviated weekday,
+#. hours, minutes in a 24h locale; e.g. Wed, 14:00
+#: ../src/snap.cpp:148
+msgid "%a, %H:%M"
+msgstr "%a, %H:%M"
+
+#: ../src/snap.cpp:153
+#, c-format
+msgid "Alarm %s"
+msgstr "Allarme %s"
+
+#: ../src/snap.cpp:154
+#, c-format
+msgid "Event %s"
+msgstr "Eventu %s"
+
+#: ../src/snap.cpp:162 ../src/snap.cpp:166
+msgid "OK"
+msgstr "AB"
+
+#: ../src/snap.cpp:163
+msgid "Snooze"
+msgstr "Cràstina"
