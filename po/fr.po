@@ -24,24 +24,24 @@ msgstr ""
 #. en_GB example: "%A, %e %B %Y" --> Saturday, 31 October 2020"
 #: ../src/menu.cpp:329
 msgid "%A, %e %B %Y"
-msgstr ""
+msgstr "%A, %e %B %Y"
 
 #. add the 'Add Event…' menuitem
 #: ../src/menu.cpp:429
 msgid "Add Event…"
-msgstr ""
+msgstr "Nouvel évênement..."
 
 #: ../src/menu.cpp:439
 msgid "Clock"
-msgstr ""
+msgstr "Horloge"
 
 #: ../src/menu.cpp:491
 msgid "Time and Date Settings…"
-msgstr ""
+msgstr "Paramètres date et heure"
 
 #: ../src/menu.cpp:546
 msgid "Date and Time"
-msgstr ""
+msgstr "Date et Heure"
 
 #: ../src/menu.cpp:596
 #, fuzzy
@@ -51,7 +51,7 @@ msgstr "Régler la date et l'heure..."
 #: ../src/menu.cpp:601
 #, c-format
 msgid "%s (has alarms)"
-msgstr ""
+msgstr "%s (a des alarmes)"
 
 #. * strftime(3) format for abbreviated weekday,
 #. hours, minutes in a 12h locale; e.g. Wed, 2:00 PM
@@ -68,12 +68,12 @@ msgstr ""
 #: ../src/snap.cpp:153
 #, c-format
 msgid "Alarm %s"
-msgstr ""
+msgstr "Alarme %s"
 
 #: ../src/snap.cpp:154
 #, c-format
 msgid "Event %s"
-msgstr ""
+msgstr "Événement"
 
 #: ../src/snap.cpp:162 ../src/snap.cpp:166
 msgid "OK"
@@ -81,7 +81,7 @@ msgstr ""
 
 #: ../src/snap.cpp:163
 msgid "Snooze"
-msgstr ""
+msgstr "Répétition"
 
 #~ msgid "Error getting time"
 #~ msgstr "Erreur lors de l'obtention de l'heure"
