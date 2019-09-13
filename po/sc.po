@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-09 12:28-0500\n"
-"PO-Revision-Date: 2019-01-12 11:54+0000\n"
+"PO-Revision-Date: 2019-09-15 11:50+0000\n"
 "Last-Translator: Adrià <adriamartinmor@gmail.com>\n"
 "Language-Team: Sardinian <https://translate.ubports.com/projects/ubports/"
 "indicator-datetime/sc/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.1.1\n"
+"X-Generator: Weblate 3.8\n"
 
 #. Translators, please edit/rearrange these strftime(3) tokens to suit your locale!
 #. Format string for the day on the first menuitem in the datetime indicator.
@@ -52,7 +52,7 @@ msgstr "Data e oràriu"
 #: ../src/menu.cpp:601
 #, c-format
 msgid "%s (has alarms)"
-msgstr "%s tenet un'allarme"
+msgstr "%s (tenet un'ispertadore)"
 
 #. * strftime(3) format for abbreviated weekday,
 #. hours, minutes in a 12h locale; e.g. Wed, 2:00 PM
@@ -69,7 +69,7 @@ msgstr "%a, %H:%M"
 #: ../src/snap.cpp:153
 #, c-format
 msgid "Alarm %s"
-msgstr "Allarme %s"
+msgstr "Ispertadore %s"
 
 #: ../src/snap.cpp:154
 #, c-format
