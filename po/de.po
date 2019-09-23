@@ -8,14 +8,16 @@ msgstr ""
 "Project-Id-Version: indicator-datetime\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-09 12:28-0500\n"
-"PO-Revision-Date: 2010-03-03 10:06-0500\n"
-"Last-Translator: Canonical OEM\n"
-"Language-Team: German\n"
-"Language: \n"
+"PO-Revision-Date: 2019-09-23 14:27+0000\n"
+"Last-Translator: Florian Leeber <flori@bin.org.in>\n"
+"Language-Team: German <https://translate.ubports.com/projects/ubports/"
+"indicator-datetime/de/>\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.8\n"
 
 #. Translators, please edit/rearrange these strftime(3) tokens to suit your locale!
 #. Format string for the day on the first menuitem in the datetime indicator.
@@ -29,29 +31,28 @@ msgstr ""
 #. add the 'Add Event…' menuitem
 #: ../src/menu.cpp:429
 msgid "Add Event…"
-msgstr ""
+msgstr "Ereignis hinzufügen…"
 
 #: ../src/menu.cpp:439
 msgid "Clock"
-msgstr ""
+msgstr "Uhr"
 
 #: ../src/menu.cpp:491
 msgid "Time and Date Settings…"
-msgstr ""
+msgstr "Datums- und Zeiteinstellungen…"
 
 #: ../src/menu.cpp:546
 msgid "Date and Time"
-msgstr ""
+msgstr "Datum und Uhrzeit"
 
 #: ../src/menu.cpp:596
-#, fuzzy
 msgid "Time and Date"
-msgstr "Datum und Uhrzeit einstellen."
+msgstr "Zeit und Datum"
 
 #: ../src/menu.cpp:601
 #, c-format
 msgid "%s (has alarms)"
-msgstr ""
+msgstr "%s (mit Alarmen)"
 
 #. * strftime(3) format for abbreviated weekday,
 #. hours, minutes in a 12h locale; e.g. Wed, 2:00 PM
@@ -68,20 +69,20 @@ msgstr ""
 #: ../src/snap.cpp:153
 #, c-format
 msgid "Alarm %s"
-msgstr ""
+msgstr "Alarm %s"
 
 #: ../src/snap.cpp:154
 #, c-format
 msgid "Event %s"
-msgstr ""
+msgstr "Ereignis %s"
 
 #: ../src/snap.cpp:162 ../src/snap.cpp:166
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 #: ../src/snap.cpp:163
 msgid "Snooze"
-msgstr ""
+msgstr "Schlummern"
 
 #~ msgid "Error getting time"
 #~ msgstr "Fehler beim Abrufen der Zeit"
