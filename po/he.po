@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-datetime\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-09 12:28-0500\n"
-"PO-Revision-Date: 2019-10-12 13:54+0000\n"
+"PO-Revision-Date: 2019-10-15 09:55+0000\n"
 "Last-Translator: Eran <etherpulse@gmail.com>\n"
 "Language-Team: Hebrew <https://translate.ubports.com/projects/ubports/"
 "indicator-datetime/he/>\n"
@@ -43,17 +43,16 @@ msgstr "הגדרות זמן ותאריך…"
 
 #: ../src/menu.cpp:546
 msgid "Date and Time"
-msgstr ""
+msgstr "שעה ותאריך"
 
 #: ../src/menu.cpp:596
-#, fuzzy
 msgid "Time and Date"
 msgstr "הגדרת שעה ותאריך..."
 
 #: ../src/menu.cpp:601
 #, c-format
 msgid "%s (has alarms)"
-msgstr ""
+msgstr "%s (עם התרעות)"
 
 #. * strftime(3) format for abbreviated weekday,
 #. hours, minutes in a 12h locale; e.g. Wed, 2:00 PM
