@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-datetime\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-09 12:28-0500\n"
-"PO-Revision-Date: 2019-10-13 21:12+0000\n"
+"PO-Revision-Date: 2019-10-16 14:55+0000\n"
 "Last-Translator: Tom Dom <thomas@patoel.nl>\n"
 "Language-Team: Dutch <https://translate.ubports.com/projects/ubports/"
 "indicator-datetime/nl/>\n"
@@ -26,56 +26,55 @@ msgstr ""
 #. en_GB example: "%A, %e %B %Y" --> Saturday, 31 October 2020"
 #: ../src/menu.cpp:329
 msgid "%A, %e %B %Y"
-msgstr ""
+msgstr "%A, %e %B %Y"
 
 #. add the 'Add Event…' menuitem
 #: ../src/menu.cpp:429
 msgid "Add Event…"
-msgstr ""
+msgstr "Gebeurtenis Aanmaken…"
 
 #: ../src/menu.cpp:439
 msgid "Clock"
-msgstr ""
+msgstr "Klok"
 
 #: ../src/menu.cpp:491
 msgid "Time and Date Settings…"
-msgstr ""
+msgstr "Datum- en Tijdinstellingen…"
 
 #: ../src/menu.cpp:546
 msgid "Date and Time"
-msgstr ""
+msgstr "Datum en Tijd"
 
 #: ../src/menu.cpp:596
-#, fuzzy
 msgid "Time and Date"
-msgstr "Datum en tijd instellen..."
+msgstr "Tijd en Datum"
 
 #: ../src/menu.cpp:601
 #, c-format
 msgid "%s (has alarms)"
-msgstr ""
+msgstr "%s (met Alarmen)"
 
 #. * strftime(3) format for abbreviated weekday,
 #. hours, minutes in a 12h locale; e.g. Wed, 2:00 PM
 #: ../src/snap.cpp:144
 msgid "%a, %l:%M %p"
-msgstr ""
+msgstr "%a, %l:%M %p"
 
 #. * A strftime(3) format for abbreviated weekday,
 #. hours, minutes in a 24h locale; e.g. Wed, 14:00
 #: ../src/snap.cpp:148
 msgid "%a, %H:%M"
-msgstr ""
+msgstr "%a, %H:%M"
 
 #: ../src/snap.cpp:153
 #, c-format
 msgid "Alarm %s"
-msgstr ""
+msgstr "Alarm %s"
 
 #: ../src/snap.cpp:154
 #, c-format
 msgid "Event %s"
-msgstr ""
+msgstr "Gebeurtenis %s"
 
 #: ../src/snap.cpp:162 ../src/snap.cpp:166
 msgid "OK"
@@ -83,7 +82,7 @@ msgstr "OK"
 
 #: ../src/snap.cpp:163
 msgid "Snooze"
-msgstr ""
+msgstr "Sluimer"
 
 #~ msgid "Error getting time"
 #~ msgstr "Fout bij lezen van tijd"
