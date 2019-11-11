@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-datetime\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-09 12:28-0500\n"
-"PO-Revision-Date: 2019-09-16 16:50+0000\n"
+"PO-Revision-Date: 2019-10-30 23:36+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://translate.ubports.com/projects/"
 "ubports/indicator-datetime/nb/>\n"
@@ -25,13 +25,14 @@ msgstr ""
 #. en_US example: "%A, %B %e %Y" --> Saturday, October 31 2020"
 #. en_GB example: "%A, %e %B %Y" --> Saturday, 31 October 2020"
 #: ../src/menu.cpp:329
+#, fuzzy
 msgid "%A, %e %B %Y"
-msgstr ""
+msgstr "%A, %e %B %Y"
 
 #. add the 'Add Event…' menuitem
 #: ../src/menu.cpp:429
 msgid "Add Event…"
-msgstr ""
+msgstr "Legg til hendelse…"
 
 #: ../src/menu.cpp:439
 msgid "Clock"
@@ -39,16 +40,15 @@ msgstr "Klokke"
 
 #: ../src/menu.cpp:491
 msgid "Time and Date Settings…"
-msgstr ""
+msgstr "Tid- og datoinnstillinger…"
 
 #: ../src/menu.cpp:546
 msgid "Date and Time"
 msgstr "Dato og tid"
 
 #: ../src/menu.cpp:596
-#, fuzzy
 msgid "Time and Date"
-msgstr "Angi dato og klokkeslett..."
+msgstr "Tid og dato"
 
 #: ../src/menu.cpp:601
 #, c-format
@@ -70,12 +70,12 @@ msgstr ""
 #: ../src/snap.cpp:153
 #, c-format
 msgid "Alarm %s"
-msgstr ""
+msgstr "Alarm %s"
 
 #: ../src/snap.cpp:154
 #, c-format
 msgid "Event %s"
-msgstr ""
+msgstr "Hendelse %s"
 
 #: ../src/snap.cpp:162 ../src/snap.cpp:166
 msgid "OK"

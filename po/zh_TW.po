@@ -8,13 +8,16 @@ msgstr ""
 "Project-Id-Version: indicator-datetime\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-09 12:28-0500\n"
-"PO-Revision-Date: 2010-03-03 10:06-0500\n"
-"Last-Translator: Canonical OEM\n"
-"Language-Team: Chinese (traditional)\n"
-"Language: \n"
+"PO-Revision-Date: 2019-10-30 23:36+0000\n"
+"Last-Translator: P.-H. Lin <cypressyew@gmail.com>\n"
+"Language-Team: Chinese (Traditional) <https://translate.ubports.com/projects/"
+"ubports/indicator-datetime/zh_Hant/>\n"
+"Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 3.8\n"
 
 #. Translators, please edit/rearrange these strftime(3) tokens to suit your locale!
 #. Format string for the day on the first menuitem in the datetime indicator.
@@ -23,64 +26,63 @@ msgstr ""
 #. en_GB example: "%A, %e %B %Y" --> Saturday, 31 October 2020"
 #: ../src/menu.cpp:329
 msgid "%A, %e %B %Y"
-msgstr ""
+msgstr "%Y %B %e, %A"
 
 #. add the 'Add Event…' menuitem
 #: ../src/menu.cpp:429
 msgid "Add Event…"
-msgstr ""
+msgstr "新增事件…"
 
 #: ../src/menu.cpp:439
 msgid "Clock"
-msgstr ""
+msgstr "時鐘"
 
 #: ../src/menu.cpp:491
 msgid "Time and Date Settings…"
-msgstr ""
+msgstr "日期與時間設定…"
 
 #: ../src/menu.cpp:546
 msgid "Date and Time"
-msgstr ""
+msgstr "日期與時間"
 
 #: ../src/menu.cpp:596
-#, fuzzy
 msgid "Time and Date"
-msgstr "設定時間和日期..."
+msgstr "日期與時間"
 
 #: ../src/menu.cpp:601
 #, c-format
 msgid "%s (has alarms)"
-msgstr ""
+msgstr "%s（有鬧鐘）"
 
 #. * strftime(3) format for abbreviated weekday,
 #. hours, minutes in a 12h locale; e.g. Wed, 2:00 PM
 #: ../src/snap.cpp:144
 msgid "%a, %l:%M %p"
-msgstr ""
+msgstr "%a, %p %l:%M"
 
 #. * A strftime(3) format for abbreviated weekday,
 #. hours, minutes in a 24h locale; e.g. Wed, 14:00
 #: ../src/snap.cpp:148
 msgid "%a, %H:%M"
-msgstr ""
+msgstr "%a, %H:%M"
 
 #: ../src/snap.cpp:153
 #, c-format
 msgid "Alarm %s"
-msgstr ""
+msgstr "鬧鐘 %s"
 
 #: ../src/snap.cpp:154
 #, c-format
 msgid "Event %s"
-msgstr ""
+msgstr "事件 %s"
 
 #: ../src/snap.cpp:162 ../src/snap.cpp:166
 msgid "OK"
-msgstr ""
+msgstr "確定"
 
 #: ../src/snap.cpp:163
 msgid "Snooze"
-msgstr ""
+msgstr "貪睡"
 
 #~ msgid "Error getting time"
 #~ msgstr "獲得時間發生錯誤"
