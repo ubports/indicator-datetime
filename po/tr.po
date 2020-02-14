@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-datetime\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-09 12:28-0500\n"
-"PO-Revision-Date: 2019-11-03 20:36+0000\n"
+"PO-Revision-Date: 2020-02-06 20:21+0000\n"
 "Last-Translator: Ege Öz <ege.oz@tutanota.com>\n"
 "Language-Team: Turkish <https://translate.ubports.com/projects/ubports/"
 "indicator-datetime/tr/>\n"
@@ -26,12 +26,12 @@ msgstr ""
 #. en_GB example: "%A, %e %B %Y" --> Saturday, 31 October 2020"
 #: ../src/menu.cpp:329
 msgid "%A, %e %B %Y"
-msgstr ""
+msgstr "%A, %e %B %Y"
 
 #. add the 'Add Event…' menuitem
 #: ../src/menu.cpp:429
 msgid "Add Event…"
-msgstr ""
+msgstr "Etkinlik Ekle…"
 
 #: ../src/menu.cpp:439
 msgid "Clock"
@@ -39,16 +39,15 @@ msgstr "Saat"
 
 #: ../src/menu.cpp:491
 msgid "Time and Date Settings…"
-msgstr ""
+msgstr "Saat ve Tarih Ayarları…"
 
 #: ../src/menu.cpp:546
 msgid "Date and Time"
-msgstr ""
+msgstr "Saat ve Tarih"
 
 #: ../src/menu.cpp:596
-#, fuzzy
 msgid "Time and Date"
-msgstr "Saati ve Târihi Ayarla..."
+msgstr "Saat ve Tarih"
 
 #: ../src/menu.cpp:601
 #, c-format
@@ -70,12 +69,12 @@ msgstr ""
 #: ../src/snap.cpp:153
 #, c-format
 msgid "Alarm %s"
-msgstr ""
+msgstr "Alarm %s"
 
 #: ../src/snap.cpp:154
 #, c-format
 msgid "Event %s"
-msgstr ""
+msgstr "Etkinlik %s"
 
 #: ../src/snap.cpp:162 ../src/snap.cpp:166
 msgid "OK"
@@ -83,7 +82,7 @@ msgstr "Tamam"
 
 #: ../src/snap.cpp:163
 msgid "Snooze"
-msgstr ""
+msgstr "Ertele"
 
 #~ msgid "Error getting time"
 #~ msgstr "Saati alma hatâsı"
