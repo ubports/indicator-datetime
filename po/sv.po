@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: indicator-datetime\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-09 12:28-0500\n"
-"PO-Revision-Date: 2019-11-02 00:36+0000\n"
-"Last-Translator: Kristoffer Grundström <hamnisdude@gmail.com>\n"
+"PO-Revision-Date: 2020-02-18 17:21+0000\n"
+"Last-Translator: Rondy Andersson <rondarius@vivaldi.net>\n"
 "Language-Team: Swedish <https://translate.ubports.com/projects/ubports/"
 "indicator-datetime/sv/>\n"
 "Language: sv\n"
@@ -46,9 +46,8 @@ msgid "Date and Time"
 msgstr "Datum och Tid"
 
 #: ../src/menu.cpp:596
-#, fuzzy
 msgid "Time and Date"
-msgstr "Ange tid och datum..."
+msgstr "Tid och Datum"
 
 #: ../src/menu.cpp:601
 #, c-format
@@ -83,7 +82,7 @@ msgstr "OK"
 
 #: ../src/snap.cpp:163
 msgid "Snooze"
-msgstr ""
+msgstr "Slumra om"
 
 #~ msgid "Error getting time"
 #~ msgstr "Ett fel uppstod då tid hämtades"
