@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-datetime\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-09 12:28-0500\n"
-"PO-Revision-Date: 2020-02-29 19:21+0000\n"
+"PO-Revision-Date: 2020-03-03 14:22+0000\n"
 "Last-Translator: Pavel Borecki <pavel.borecki@gmail.com>\n"
 "Language-Team: Czech <https://translate.ubports.com/projects/ubports/"
 "indicator-datetime/cs/>\n"
@@ -39,11 +39,11 @@ msgstr "Hodiny"
 
 #: ../src/menu.cpp:491
 msgid "Time and Date Settings…"
-msgstr "Nastavení datumu a času…"
+msgstr "Nastavení data a času…"
 
 #: ../src/menu.cpp:546
 msgid "Date and Time"
-msgstr "Datum a hodina"
+msgstr "Datum a čas"
 
 #: ../src/menu.cpp:596
 msgid "Time and Date"
@@ -52,7 +52,7 @@ msgstr "Datum a čas"
 #: ../src/menu.cpp:601
 #, c-format
 msgid "%s (has alarms)"
-msgstr "%s (máte budíky)"
+msgstr "%s (má budíky)"
 
 #. * strftime(3) format for abbreviated weekday,
 #. hours, minutes in a 12h locale; e.g. Wed, 2:00 PM
@@ -82,7 +82,7 @@ msgstr "OK"
 
 #: ../src/snap.cpp:163
 msgid "Snooze"
-msgstr "Opakovat"
+msgstr "Odložit"
 
 #~ msgid "Error getting time"
 #~ msgstr "Chyba získání času"
