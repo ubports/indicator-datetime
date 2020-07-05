@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-datetime\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-09 12:28-0500\n"
-"PO-Revision-Date: 2020-07-03 12:42+0000\n"
+"PO-Revision-Date: 2020-07-05 11:44+0000\n"
 "Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
 "Language-Team: Dutch <https://translate.ubports.com/projects/ubports/"
 "indicator-datetime/nl/>\n"
@@ -47,7 +47,7 @@ msgstr "Datum en Tijd"
 
 #: ../src/menu.cpp:596
 msgid "Time and Date"
-msgstr "Tijd en Datum"
+msgstr "Datum en tijd"
 
 #: ../src/menu.cpp:601
 #, c-format
