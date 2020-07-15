@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-datetime\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-09 12:28-0500\n"
-"PO-Revision-Date: 2020-02-20 11:21+0000\n"
+"PO-Revision-Date: 2020-05-14 15:24+0000\n"
 "Last-Translator: Mike <miguel2000@livecom.it>\n"
 "Language-Team: Italian <https://translate.ubports.com/projects/ubports/"
 "indicator-datetime/it/>\n"
@@ -50,7 +50,7 @@ msgid "Time and Date"
 msgstr "Ora e data"
 
 #: ../src/menu.cpp:601
-#, c-format, fuzzy
+#, c-format
 msgid "%s (has alarms)"
 msgstr "%s (ha sveglie)"
 
