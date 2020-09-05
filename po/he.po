@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: indicator-datetime\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-09 12:28-0500\n"
-"PO-Revision-Date: 2019-10-15 09:55+0000\n"
-"Last-Translator: Eran <etherpulse@gmail.com>\n"
+"PO-Revision-Date: 2020-09-05 14:38+0000\n"
+"Last-Translator: tamer dab <dabsantamer@yahoo.com>\n"
 "Language-Team: Hebrew <https://translate.ubports.com/projects/ubports/"
 "indicator-datetime/he/>\n"
 "Language: he\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Weblate 3.8\n"
+"X-Generator: Weblate 3.11.3\n"
 
 #. Translators, please edit/rearrange these strftime(3) tokens to suit your locale!
 #. Format string for the day on the first menuitem in the datetime indicator.
@@ -31,7 +31,7 @@ msgstr "%A, %e/%m/%Y"
 #. add the 'Add Event…' menuitem
 #: ../src/menu.cpp:429
 msgid "Add Event…"
-msgstr "הוסיפו אירוע…"
+msgstr "הוסף אירוע…"
 
 #: ../src/menu.cpp:439
 msgid "Clock"
@@ -47,7 +47,7 @@ msgstr "שעה ותאריך"
 
 #: ../src/menu.cpp:596
 msgid "Time and Date"
-msgstr "הגדרת שעה ותאריך..."
+msgstr "זמן ותאריך"
 
 #: ../src/menu.cpp:601
 #, c-format
@@ -58,31 +58,31 @@ msgstr "%s (עם התרעות)"
 #. hours, minutes in a 12h locale; e.g. Wed, 2:00 PM
 #: ../src/snap.cpp:144
 msgid "%a, %l:%M %p"
-msgstr ""
+msgstr "%א, %l:%M %p"
 
 #. * A strftime(3) format for abbreviated weekday,
 #. hours, minutes in a 24h locale; e.g. Wed, 14:00
 #: ../src/snap.cpp:148
 msgid "%a, %H:%M"
-msgstr ""
+msgstr "%א, %H:%M"
 
 #: ../src/snap.cpp:153
 #, c-format
 msgid "Alarm %s"
-msgstr ""
+msgstr "התראה %s"
 
 #: ../src/snap.cpp:154
 #, c-format
 msgid "Event %s"
-msgstr ""
+msgstr "אירוע %s"
 
 #: ../src/snap.cpp:162 ../src/snap.cpp:166
 msgid "OK"
-msgstr ""
+msgstr "אישור"
 
 #: ../src/snap.cpp:163
 msgid "Snooze"
-msgstr ""
+msgstr "נודניק"
 
 #~ msgid "Error getting time"
 #~ msgstr "שגיאה בקבלת השעה"
