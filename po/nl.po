@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-datetime\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-09 12:28-0500\n"
-"PO-Revision-Date: 2020-11-07 13:28+0000\n"
+"PO-Revision-Date: 2020-11-12 14:00+0000\n"
 "Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
 "Language-Team: Dutch <https://translate.ubports.com/projects/ubports/"
 "indicator-datetime/nl/>\n"
@@ -78,7 +78,7 @@ msgstr "Afspraak %s"
 
 #: ../src/snap.cpp:162 ../src/snap.cpp:166
 msgid "OK"
-msgstr "Oké"
+msgstr "Uitzetten"
 
 #: ../src/snap.cpp:163
 msgid "Snooze"
