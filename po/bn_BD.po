@@ -1,18 +1,18 @@
-# Hungarian translations for PACKAGE package.
-# Copyright (C) 2010 THE PACKAGE'S COPYRIGHT HOLDER
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Canonical Ltd.
 # This file is distributed under the same license as the PACKAGE package.
-# Canonical OEM, 2010.
-# 
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: indicator-datetime\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-09 12:28-0500\n"
-"PO-Revision-Date: 2021-01-28 03:24+0000\n"
-"Last-Translator: Adam <padamyno@gmail.com>\n"
-"Language-Team: Hungarian <https://translate.ubports.com/projects/ubports/"
-"indicator-datetime/hu/>\n"
-"Language: hu\n"
+"PO-Revision-Date: 2021-01-30 15:27+0000\n"
+"Last-Translator: imrufbd <imrufbd@gmail.com>\n"
+"Language-Team: Bengali (Bangladesh) <https://translate.ubports.com/projects/"
+"ubports/indicator-datetime/bn_BD/>\n"
+"Language: bn_BD\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -26,39 +26,39 @@ msgstr ""
 #. en_GB example: "%A, %e %B %Y" --> Saturday, 31 October 2020"
 #: ../src/menu.cpp:329
 msgid "%A, %e %B %Y"
-msgstr "%Y. %B %e. %A"
+msgstr "%A, %e %B %Y"
 
 #. add the 'Add Event…' menuitem
 #: ../src/menu.cpp:429
 msgid "Add Event…"
-msgstr "Új esemény…"
+msgstr "আসন্ন সূচী …"
 
 #: ../src/menu.cpp:439
 msgid "Clock"
-msgstr "Óra"
+msgstr "ঘড়ি"
 
 #: ../src/menu.cpp:491
 msgid "Time and Date Settings…"
-msgstr "Idő- és dátumbeállítások…"
+msgstr "সময় ও তারিখ সেটিংস …"
 
 #: ../src/menu.cpp:546
 msgid "Date and Time"
-msgstr "Dátum és idő"
+msgstr "তারিখ ও সময়"
 
 #: ../src/menu.cpp:596
 msgid "Time and Date"
-msgstr "Idő és dátum"
+msgstr "সময় ও তারিখ"
 
 #: ../src/menu.cpp:601
 #, c-format
 msgid "%s (has alarms)"
-msgstr "%s (riasztással)"
+msgstr "%s (অ্যালার্ম আছে)"
 
 #. * strftime(3) format for abbreviated weekday,
 #. hours, minutes in a 12h locale; e.g. Wed, 2:00 PM
 #: ../src/snap.cpp:144
 msgid "%a, %l:%M %p"
-msgstr "%a, %p %l:%M"
+msgstr "%a, %l:%M %p"
 
 #. * A strftime(3) format for abbreviated weekday,
 #. hours, minutes in a 24h locale; e.g. Wed, 14:00
@@ -69,29 +69,17 @@ msgstr "%a, %H:%M"
 #: ../src/snap.cpp:153
 #, c-format
 msgid "Alarm %s"
-msgstr "Riasztás %s"
+msgstr "অ্যালার্ম %s"
 
 #: ../src/snap.cpp:154
 #, c-format
 msgid "Event %s"
-msgstr "Esemény %s"
+msgstr "আসন্ন %s"
 
 #: ../src/snap.cpp:162 ../src/snap.cpp:166
 msgid "OK"
-msgstr "OK"
+msgstr "ঠিক আছে"
 
 #: ../src/snap.cpp:163
 msgid "Snooze"
-msgstr "Halasztás"
-
-#~ msgid "Error getting time"
-#~ msgstr "Hiba az idő lekérésekor"
-
-#~ msgid "%d%d:%d%d AM"
-#~ msgstr "%d%d:%d%d de."
-
-#~ msgid "%d%d:%d%d PM"
-#~ msgstr "%d%d:%d%d du."
-
-#~ msgid "Open Calendar"
-#~ msgstr "Naptár megnyitása"
+msgstr "আরেকটু ঘুম"
