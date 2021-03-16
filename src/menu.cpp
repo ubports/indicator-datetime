@@ -376,7 +376,7 @@ private:
                 continue;
 
             // don't show too many
-            if (g_menu_model_get_n_items (G_MENU_MODEL(menu)) >= MAX_APPTS)
+            if (g_menu_model_get_n_items (G_MENU_MODEL(menu)) > MAX_APPTS)
                 break;
 
             added.insert(appt.uid);
@@ -392,8 +392,11 @@ private:
 
             if (appt.is_ubuntu_alarm())
             {
-                g_menu_item_set_attribute (menu_item, "x-canonical-type", "s", "com.canonical.indicator.alarm");
-                g_menu_item_set_attribute_value(menu_item, G_MENU_ATTRIBUTE_ICON, get_serialized_alarm_icon());
+                if (m_state->settings->show_calendar.get())
+                {
+                    g_menu_item_set_attribute (menu_item, "x-canonical-type", "s", "com.canonical.indicator.alarm");
+                    g_menu_item_set_attribute_value(menu_item, G_MENU_ATTRIBUTE_ICON, get_serialized_alarm_icon());
+                }
             }
             else
             {
@@ -436,12 +439,11 @@ private:
         }
         else if (profile==Phone && m_state->settings->show_events.get())
         {
-            auto menu_item = g_menu_item_new (_("Clock"), "indicator.phone.open-alarm-app");
+            add_appointments (menu, profile);
+            auto menu_item = g_menu_item_new (_("View/Add Alarms…"), "indicator.phone.open-alarm-app");
             g_menu_item_set_attribute_value (menu_item, G_MENU_ATTRIBUTE_ICON, get_serialized_alarm_icon());
             g_menu_append_item (menu, menu_item);
             g_object_unref (menu_item);
-
-            add_appointments (menu, profile);
         }
 
         return G_MENU_MODEL(menu);
