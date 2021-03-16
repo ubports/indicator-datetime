@@ -434,7 +434,7 @@ private:
                 g_object_unref(menu_item);
             }
         }
-        else if (profile==Phone)
+        else if (profile==Phone && m_state->settings->show_events.get())
         {
             auto menu_item = g_menu_item_new (_("Clock"), "indicator.phone.open-alarm-app");
             g_menu_item_set_attribute_value (menu_item, G_MENU_ATTRIBUTE_ICON, get_serialized_alarm_icon());
