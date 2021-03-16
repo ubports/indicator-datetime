@@ -371,50 +371,50 @@ private:
 
         for (const auto& appt : m_upcoming)
         {
-            // don't show duplicates
-            if (added.count(appt.uid))
-                continue;
-
-            // don't show too many
-            if (g_menu_model_get_n_items (G_MENU_MODEL(menu)) > MAX_APPTS)
-                break;
-
-            added.insert(appt.uid);
-
-            GDateTime* begin = appt.begin();
-            GDateTime* end = appt.end();
-            auto fmt = m_formatter->relative_format(begin, end);
-            auto unix_time = g_date_time_to_unix(begin);
-
-            auto menu_item = g_menu_item_new (appt.summary.c_str(), nullptr);
-            g_menu_item_set_attribute (menu_item, "x-canonical-time", "x", unix_time);
-            g_menu_item_set_attribute (menu_item, "x-canonical-time-format", "s", fmt.c_str());
-
-            if (appt.is_ubuntu_alarm())
+            if (! appt.is_ubuntu_alarm() || (appt.is_ubuntu_alarm() && m_state->settings->show_calendar.get()))
             {
-                if (m_state->settings->show_calendar.get())
+                // don't show duplicates
+                if (added.count(appt.uid))
+                    continue;
+
+                // don't show too many
+                if (g_menu_model_get_n_items (G_MENU_MODEL(menu)) > MAX_APPTS)
+                    break;
+
+                added.insert(appt.uid);
+
+                GDateTime* begin = appt.begin();
+                GDateTime* end = appt.end();
+                auto fmt = m_formatter->relative_format(begin, end);
+                auto unix_time = g_date_time_to_unix(begin);
+
+                auto menu_item = g_menu_item_new (appt.summary.c_str(), nullptr);
+                g_menu_item_set_attribute (menu_item, "x-canonical-time", "x", unix_time);
+                g_menu_item_set_attribute (menu_item, "x-canonical-time-format", "s", fmt.c_str());
+
+                if (appt.is_ubuntu_alarm())
                 {
                     g_menu_item_set_attribute (menu_item, "x-canonical-type", "s", "com.canonical.indicator.alarm");
                     g_menu_item_set_attribute_value(menu_item, G_MENU_ATTRIBUTE_ICON, get_serialized_alarm_icon());
                 }
-            }
-            else
-            {
-                g_menu_item_set_attribute (menu_item, "x-canonical-type", "s", "com.canonical.indicator.appointment");
-            }
+                else
+                {
+                    g_menu_item_set_attribute (menu_item, "x-canonical-type", "s", "com.canonical.indicator.appointment");
+                }
 
-            if (!appt.color.empty())
-                g_menu_item_set_attribute (menu_item, "x-canonical-color", "s", appt.color.c_str());
+                if (!appt.color.empty())
+                    g_menu_item_set_attribute (menu_item, "x-canonical-color", "s", appt.color.c_str());
 
-            if (action_name != nullptr) {
-                g_menu_item_set_action_and_target_value (menu_item, action_name,
-                                                         g_variant_new ("(sx)",
-                                                                        appt.uid.c_str(),
-                                                                        unix_time));
+                if (action_name != nullptr) {
+                    g_menu_item_set_action_and_target_value (menu_item, action_name,
+                                                             g_variant_new ("(sx)",
+                                                                            appt.uid.c_str(),
+                                                                            unix_time));
+                }
+
+                g_menu_append_item (menu, menu_item);
+                g_object_unref (menu_item);
             }
-
-            g_menu_append_item (menu, menu_item);
-            g_object_unref (menu_item);
         }
     }
 
