@@ -270,7 +270,10 @@ private:
         EXPECT_EQ(n_add_event_buttons + appointments.size(), g_menu_model_get_n_items(section));
 
         for (int i=0, n=appointments.size(); i<n; i++)
-            InspectAppointmentMenuItem(section, first_appt_index+i, appointments[i]);
+            if (!appointments[i].is_ubuntu_alarm() || (appointments[i].is_ubuntu_alarm() && m_state->settings->show_calendar.get()))
+            {
+                InspectAppointmentMenuItem(section, first_appt_index+i, appointments[i]);
+            }
 
         //g_clear_object(&section);
         //g_clear_object(&submenu);
