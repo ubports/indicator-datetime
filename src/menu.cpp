@@ -371,15 +371,14 @@ private:
 
         for (const auto& appt : m_upcoming)
         {
-            // if (! appt.is_ubuntu_alarm() || (appt.is_ubuntu_alarm() && m_state->settings->show_calendar.get()))
-            if (true)
+            if (! appt.is_ubuntu_alarm() || (appt.is_ubuntu_alarm() && m_state->settings->show_calendar.get()))
             {
                 // don't show duplicates
                 if (added.count(appt.uid))
                     continue;
 
                 // don't show too many
-                if (g_menu_model_get_n_items (G_MENU_MODEL(menu)) >= MAX_APPTS)
+                if (g_menu_model_get_n_items (G_MENU_MODEL(menu)) > MAX_APPTS)
                     break;
 
                 added.insert(appt.uid);
