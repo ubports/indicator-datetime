@@ -243,6 +243,12 @@ void LiveSettings::update_show_events()
     show_events.set(val);
 }
 
+void LiveSettings::update_show_alarms()
+{
+    const auto val = g_settings_get_boolean(m_settings, SETTINGS_SHOW_ALARMS_S);
+    show_alarms.set(val);
+}
+
 void LiveSettings::update_show_locations()
 {
     const auto val = g_settings_get_boolean(m_settings, SETTINGS_SHOW_LOCATIONS_S);
@@ -421,6 +427,8 @@ void LiveSettings::update_key_ccid(const std::string& key)
         update_show_week_numbers();
     else if (key == SETTINGS_SHOW_EVENTS_S)
         update_show_events();
+    else if (key == SETTINGS_SHOW_ALARMS_S)
+        update_show_alarms();
     else if (key == SETTINGS_SHOW_LOCATIONS_S)
         update_show_locations();
     else if (key == SETTINGS_SHOW_DETECTED_S)
