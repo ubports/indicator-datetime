@@ -53,6 +53,7 @@ LiveSettings::LiveSettings():
     update_show_day();
     update_show_detected_locations();
     update_show_events();
+    update_show_alarms();
     update_show_locations();
     update_show_seconds();
     update_show_week_numbers();
@@ -109,6 +110,10 @@ LiveSettings::LiveSettings():
 
     show_events.changed().connect([this](bool value){
         g_settings_set_boolean(m_settings, SETTINGS_SHOW_EVENTS_S, value);
+    });
+
+    show_alarms.changed().connect([this](bool value){
+        g_settings_set_boolean(m_settings, SETTINGS_SHOW_ALARMS_S, value);
     });
 
     show_locations.changed().connect([this](bool value){
