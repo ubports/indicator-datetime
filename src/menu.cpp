@@ -115,7 +115,7 @@ Menu::get_display_appointments(const std::vector<Appointment>& appointments_in,
             return false;
         };
         std::sort(appointments.begin(), appointments.end(), compare);
-        appointments.resize(max_items);
+        //~ appointments.resize(max_items);
     }
 
     /*
@@ -360,7 +360,7 @@ private:
 
     void add_appointments(GMenu* menu, Profile profile)
     {
-        const int MAX_APPTS = 20;
+        const int MAX_APPTS = 5;
         std::set<std::string> added;
 
         const char * action_name;
@@ -374,7 +374,7 @@ private:
 
         for (const auto& appt : m_upcoming)
         {
-            if (! appt.is_ubuntu_alarm() || (appt.is_ubuntu_alarm() && m_state->settings->show_calendar.get()))
+            if (! appt.is_ubuntu_alarm() || (appt.is_ubuntu_alarm() && m_state->settings->show_alarm.get()))
             {
                 // don't show duplicates
                 if (added.count(appt.uid))
@@ -442,7 +442,7 @@ private:
         }
         else if (profile==Phone && m_state->settings->show_events.get())
         {
-            auto menu_item = g_menu_item_new (_("View/Add Alarms…"), "indicator.phone.open-alarm-app");
+            auto menu_item = g_menu_item_new (_("View Alarms…"), "indicator.phone.open-alarm-app");
             g_menu_item_set_attribute_value (menu_item, G_MENU_ATTRIBUTE_ICON, get_serialized_alarm_icon());
             g_menu_append_item (menu, menu_item);
             g_object_unref (menu_item);
