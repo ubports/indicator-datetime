@@ -184,6 +184,9 @@ protected:
         m_state->settings->show_events.changed().connect([this](bool){
             update_section(Appointments); // showing events got toggled
         });
+        m_state->settings->show_alarms.changed().connect([this](bool){
+            update_section(Appointments); // showing alarms got toggled
+        });
         m_state->calendar_upcoming->date().changed().connect([this](const DateTime&){
             update_upcoming(); // our m_upcoming is planner->upcoming() filtered by time
         });
@@ -357,7 +360,7 @@ private:
 
     void add_appointments(GMenu* menu, Profile profile)
     {
-        const int MAX_APPTS = 5;
+        const int MAX_APPTS = 20;
         std::set<std::string> added;
 
         const char * action_name;
