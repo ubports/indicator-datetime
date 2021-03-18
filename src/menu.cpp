@@ -445,14 +445,14 @@ private:
         }
         else if (profile==Phone && m_state->settings->show_events.get())
         {
-            add_appointments (menu, profile);
+            //~ add_appointments (menu, profile);
             
             auto menu_item = g_menu_item_new (_("View Alarms…"), "indicator.phone.open-alarm-app");
             g_menu_item_set_attribute_value (menu_item, G_MENU_ATTRIBUTE_ICON, get_serialized_alarm_icon());
             g_menu_append_item (menu, menu_item);
             g_object_unref (menu_item);
             
-            //~ add_appointments (menu, profile);
+            add_appointments (menu, profile);
         }
 
         return G_MENU_MODEL(menu);
