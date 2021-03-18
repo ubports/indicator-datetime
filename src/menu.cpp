@@ -68,8 +68,8 @@ GMenuModel* Menu::menu_model()
 std::vector<Appointment>
 Menu::get_display_appointments(const std::vector<Appointment>& appointments_in,
                                const DateTime& now,
-                               unsigned int max_items
-                               , const bool include_alarms)
+                               unsigned int max_items,
+                               const bool include_alarms)
 {
     std::vector<Appointment> appointments;
     std::copy_if(appointments_in.begin(),
@@ -117,7 +117,7 @@ Menu::get_display_appointments(const std::vector<Appointment>& appointments_in,
             return false;
         };
         std::sort(appointments.begin(), appointments.end(), compare);
-        //~ appointments.resize(max_items);
+        appointments.resize(max_items);
     }
 
     /*
