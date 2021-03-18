@@ -340,7 +340,7 @@ private:
         wait_msec(); // wait a moment for the menu to update
 
         // check that there's a "clock app" menuitem even when there are no appointments
-        auto section = g_menu_model_get_item_link(submenu, Menu::Appointments, G_MENU_LINK_SECTION);
+        section = g_menu_model_get_item_link(submenu, Menu::Appointments, G_MENU_LINK_SECTION);
         const char* expected_action = "phone.open-alarm-app";
         EXPECT_EQ(1, g_menu_model_get_n_items(section));
         gchar* action = nullptr;
