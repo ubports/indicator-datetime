@@ -374,7 +374,7 @@ private:
 
         for (const auto& appt : m_upcoming)
         {
-            if (! appt.is_ubuntu_alarm() || (appt.is_ubuntu_alarm() && m_state->settings->show_alarm.get()))
+            if (! appt.is_ubuntu_alarm() || (appt.is_ubuntu_alarm() && m_state->settings->show_alarms.get()))
             {
                 // don't show duplicates
                 if (added.count(appt.uid))
