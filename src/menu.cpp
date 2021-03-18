@@ -238,7 +238,7 @@ protected:
             m_state->calendar_upcoming->appointments().get(),
             begin,
             //~ 5,
-            10,
+            20,
             m_state->settings->show_alarms.get()
         );
 
