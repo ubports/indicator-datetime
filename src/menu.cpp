@@ -68,15 +68,15 @@ GMenuModel* Menu::menu_model()
 std::vector<Appointment>
 Menu::get_display_appointments(const std::vector<Appointment>& appointments_in,
                                const DateTime& now,
-                               unsigned int max_items)
+                               unsigned int max_items
+                               , const bool include_alarms)
 {
-    const bool show_alarms = m_state->settings->show_alarms.get();
     std::vector<Appointment> appointments;
     std::copy_if(appointments_in.begin(),
                  appointments_in.end(),
                  std::back_inserter(appointments),
                  //~ [now](const Appointment& a){return a.end >= now;});
-                 [now](const Appointment& a){return a.end >= now && (! a.is_ubuntu_alarm() || (a.is_ubuntu_alarm() && show_alarms));});
+                 [now](const Appointment& a){return a.end >= now && (! a.is_ubuntu_alarm() || (a.is_ubuntu_alarm() && include_alarms));});
 
     if (appointments.size() > max_items)
     {
@@ -237,7 +237,9 @@ protected:
 
         auto upcoming = get_display_appointments(
             m_state->calendar_upcoming->appointments().get(),
-            begin
+            begin,
+            5,
+            m_state->settings->show_alarms.get()
         );
 
         if (m_upcoming != upcoming)
