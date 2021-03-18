@@ -76,7 +76,7 @@ Menu::get_display_appointments(const std::vector<Appointment>& appointments_in,
                  appointments_in.end(),
                  std::back_inserter(appointments),
                  //~ [now](const Appointment& a){return a.end >= now;});
-                 [now](const Appointment& a){return a.end >= now && (! a.is_ubuntu_alarm() || (a.is_ubuntu_alarm() && include_alarms));});
+                 [now, include_alarms](const Appointment& a){return a.end >= now && (! a.is_ubuntu_alarm() || (a.is_ubuntu_alarm() && include_alarms));});
 
     if (appointments.size() > max_items)
     {
