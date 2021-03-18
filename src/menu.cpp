@@ -238,7 +238,8 @@ protected:
         auto upcoming = get_display_appointments(
             m_state->calendar_upcoming->appointments().get(),
             begin,
-            5,
+            //~ 5,
+            10,
             m_state->settings->show_alarms.get()
         );
 
@@ -364,7 +365,8 @@ private:
 
     void add_appointments(GMenu* menu, Profile profile)
     {
-        const int MAX_APPTS = 5;
+        //~ const int MAX_APPTS = 5;
+        const int MAX_APPTS = 20;
         std::set<std::string> added;
 
         const char * action_name;
@@ -378,50 +380,47 @@ private:
 
         for (const auto& appt : m_upcoming)
         {
-            //~ if (! appt.is_ubuntu_alarm() || (appt.is_ubuntu_alarm() && m_state->settings->show_alarms.get()))
-            //~ {
-                // don't show duplicates
-                if (added.count(appt.uid))
-                    continue;
+            // don't show duplicates
+            if (added.count(appt.uid))
+                continue;
 
-                // don't show too many
-                if (g_menu_model_get_n_items (G_MENU_MODEL(menu)) > MAX_APPTS)
-                    break;
+            // don't show too many
+            if (g_menu_model_get_n_items (G_MENU_MODEL(menu)) > MAX_APPTS)
+                break;
 
-                added.insert(appt.uid);
+            added.insert(appt.uid);
 
-                GDateTime* begin = appt.begin();
-                GDateTime* end = appt.end();
-                auto fmt = m_formatter->relative_format(begin, end);
-                auto unix_time = g_date_time_to_unix(begin);
+            GDateTime* begin = appt.begin();
+            GDateTime* end = appt.end();
+            auto fmt = m_formatter->relative_format(begin, end);
+            auto unix_time = g_date_time_to_unix(begin);
 
-                auto menu_item = g_menu_item_new (appt.summary.c_str(), nullptr);
-                g_menu_item_set_attribute (menu_item, "x-canonical-time", "x", unix_time);
-                g_menu_item_set_attribute (menu_item, "x-canonical-time-format", "s", fmt.c_str());
+            auto menu_item = g_menu_item_new (appt.summary.c_str(), nullptr);
+            g_menu_item_set_attribute (menu_item, "x-canonical-time", "x", unix_time);
+            g_menu_item_set_attribute (menu_item, "x-canonical-time-format", "s", fmt.c_str());
 
-                if (appt.is_ubuntu_alarm())
-                {
-                    g_menu_item_set_attribute (menu_item, "x-canonical-type", "s", "com.canonical.indicator.alarm");
-                    g_menu_item_set_attribute_value(menu_item, G_MENU_ATTRIBUTE_ICON, get_serialized_alarm_icon());
-                }
-                else
-                {
-                    g_menu_item_set_attribute (menu_item, "x-canonical-type", "s", "com.canonical.indicator.appointment");
-                }
+            if (appt.is_ubuntu_alarm())
+            {
+                g_menu_item_set_attribute (menu_item, "x-canonical-type", "s", "com.canonical.indicator.alarm");
+                g_menu_item_set_attribute_value(menu_item, G_MENU_ATTRIBUTE_ICON, get_serialized_alarm_icon());
+            }
+            else
+            {
+                g_menu_item_set_attribute (menu_item, "x-canonical-type", "s", "com.canonical.indicator.appointment");
+            }
 
-                if (!appt.color.empty())
-                    g_menu_item_set_attribute (menu_item, "x-canonical-color", "s", appt.color.c_str());
+            if (!appt.color.empty())
+                g_menu_item_set_attribute (menu_item, "x-canonical-color", "s", appt.color.c_str());
 
-                if (action_name != nullptr) {
-                    g_menu_item_set_action_and_target_value (menu_item, action_name,
-                                                             g_variant_new ("(sx)",
-                                                                            appt.uid.c_str(),
-                                                                            unix_time));
-                }
+            if (action_name != nullptr) {
+                g_menu_item_set_action_and_target_value (menu_item, action_name,
+                                                         g_variant_new ("(sx)",
+                                                                        appt.uid.c_str(),
+                                                                        unix_time));
+            }
 
-                g_menu_append_item (menu, menu_item);
-                g_object_unref (menu_item);
-            //~ }
+            g_menu_append_item (menu, menu_item);
+            g_object_unref (menu_item);
         }
     }
 
@@ -446,12 +445,14 @@ private:
         }
         else if (profile==Phone && m_state->settings->show_events.get())
         {
+            add_appointments (menu, profile);
+            
             auto menu_item = g_menu_item_new (_("View Alarms…"), "indicator.phone.open-alarm-app");
             g_menu_item_set_attribute_value (menu_item, G_MENU_ATTRIBUTE_ICON, get_serialized_alarm_icon());
             g_menu_append_item (menu, menu_item);
             g_object_unref (menu_item);
             
-            add_appointments (menu, profile);
+            //~ add_appointments (menu, profile);
         }
 
         return G_MENU_MODEL(menu);
