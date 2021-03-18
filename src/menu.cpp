@@ -70,11 +70,13 @@ Menu::get_display_appointments(const std::vector<Appointment>& appointments_in,
                                const DateTime& now,
                                unsigned int max_items)
 {
+    const bool show_alarms = m_state->settings->show_alarms.get();
     std::vector<Appointment> appointments;
     std::copy_if(appointments_in.begin(),
                  appointments_in.end(),
                  std::back_inserter(appointments),
-                 [now](const Appointment& a){return a.end >= now;});
+                 //~ [now](const Appointment& a){return a.end >= now;});
+                 [now](const Appointment& a){return a.end >= now && (! a.is_ubuntu_alarm() || (a.is_ubuntu_alarm() && show_alarms));});
 
     if (appointments.size() > max_items)
     {
@@ -374,8 +376,8 @@ private:
 
         for (const auto& appt : m_upcoming)
         {
-            if (! appt.is_ubuntu_alarm() || (appt.is_ubuntu_alarm() && m_state->settings->show_alarms.get()))
-            {
+            //~ if (! appt.is_ubuntu_alarm() || (appt.is_ubuntu_alarm() && m_state->settings->show_alarms.get()))
+            //~ {
                 // don't show duplicates
                 if (added.count(appt.uid))
                     continue;
@@ -417,7 +419,7 @@ private:
 
                 g_menu_append_item (menu, menu_item);
                 g_object_unref (menu_item);
-            }
+            //~ }
         }
     }
 
