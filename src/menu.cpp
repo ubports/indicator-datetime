@@ -75,7 +75,6 @@ Menu::get_display_appointments(const std::vector<Appointment>& appointments_in,
     std::copy_if(appointments_in.begin(),
                  appointments_in.end(),
                  std::back_inserter(appointments),
-                 //~ [now](const Appointment& a){return a.end >= now;});
                  [now, include_alarms](const Appointment& a){return a.end >= now && (! a.is_ubuntu_alarm() || (a.is_ubuntu_alarm() && include_alarms));});
 
     if (appointments.size() > max_items)
@@ -381,8 +380,8 @@ private:
         for (const auto& appt : m_upcoming)
         {
             // don't show duplicates
-            if (added.count(appt.uid))
-                continue;
+            //~ if (added.count(appt.uid))
+                //~ continue;
 
             // don't show too many
             if (g_menu_model_get_n_items (G_MENU_MODEL(menu)) > MAX_APPTS)
