@@ -126,7 +126,7 @@ Menu::get_display_appointments(const std::vector<Appointment>& appointments_in,
      * time, they should be sorted alphabetically.
      */
     //~ auto compare = [](const Appointment& a, const Appointment& b)
-    compare = [](const Appointment& a, const Appointment& b)
+    auto compare2 = [](const Appointment& a, const Appointment& b)
     {
         if (a.begin != b.begin)
             return a.begin < b.begin;
@@ -136,7 +136,8 @@ Menu::get_display_appointments(const std::vector<Appointment>& appointments_in,
 
         return a.summary < b.summary;
     };
-    std::sort(appointments.begin(), appointments.end(), compare);
+    //~ std::sort(appointments.begin(), appointments.end(), compare);
+    std::sort(appointments.begin(), appointments.end(), compare2);
     return appointments;
 }
 
