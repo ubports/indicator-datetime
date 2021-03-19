@@ -125,7 +125,8 @@ Menu::get_display_appointments(const std::vector<Appointment>& appointments_in,
      * chronological order. If multiple events have exactly the same start+end
      * time, they should be sorted alphabetically.
      */
-    auto compare = [](const Appointment& a, const Appointment& b)
+    //~ auto compare = [](const Appointment& a, const Appointment& b)
+    compare = [](const Appointment& a, const Appointment& b)
     {
         if (a.begin != b.begin)
             return a.begin < b.begin;
