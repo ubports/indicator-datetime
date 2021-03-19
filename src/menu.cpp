@@ -599,7 +599,6 @@ protected:
         bool has_ubuntu_alarms = false;
         bool has_non_alarm_events = false;
         for(const auto& appointment : m_upcoming)
-            has_events = true
             if((has_ubuntu_alarms = appointment.is_ubuntu_alarm()))
             {
                 break;
@@ -620,6 +619,7 @@ protected:
             auto a11y = g_strdup_printf(_("%s (has events)"), label.c_str());
             g_variant_builder_add(&b, "{sv}", "label", g_variant_new_string(label.c_str()));
             g_variant_builder_add(&b, "{sv}", "accessible-desc", g_variant_new_take_string(a11y));
+
             if (has_ubuntu_alarms && m_state->settings->show_alarms.get())
             {
                 g_variant_builder_add(&b, "{sv}", "icon", get_serialized_alarm_icon());
