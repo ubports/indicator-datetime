@@ -266,11 +266,7 @@ protected:
 
         return m_serialized_alarm_icon;
     }
-
-    std::vector<Appointment> m_upcoming;
-
-private:
-
+    
     GVariant* get_serialized_calendar_icon()
     {
         if (G_UNLIKELY(m_serialized_calendar_icon == nullptr))
@@ -282,6 +278,10 @@ private:
 
         return m_serialized_calendar_icon;
     }
+
+    std::vector<Appointment> m_upcoming;
+
+private:
 
     void create_gmenu()
     {
