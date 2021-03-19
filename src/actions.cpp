@@ -139,7 +139,8 @@ GVariant* create_calendar_state(const std::shared_ptr<State>& state)
 {
     gboolean days[32] = { 0 };
     for (const auto& appt : state->calendar_month->appointments().get())
-        days[appt.begin.day_of_month()] = true;
+        //~ days[appt.begin.day_of_month()] = true;
+        days[appt.begin.day_of_month()] = false;
 
     GVariantBuilder day_builder;
     g_variant_builder_init(&day_builder, G_VARIANT_TYPE("ai"));
