@@ -68,7 +68,7 @@ GMenuModel* Menu::menu_model()
 std::vector<Appointment>
 Menu::get_display_appointments(const std::vector<Appointment>& appointments_in,
                                const DateTime& now,
-                               unsigned int max_items,
+                               //~ unsigned int max_items,
                                const bool include_alarms)
 {
     std::vector<Appointment> appointments;
@@ -77,8 +77,8 @@ Menu::get_display_appointments(const std::vector<Appointment>& appointments_in,
                  std::back_inserter(appointments),
                  [now, include_alarms](const Appointment& a){return a.end >= now && (! a.is_ubuntu_alarm() || (a.is_ubuntu_alarm() && include_alarms));});
 
-    if (appointments.size() > max_items)
-    {
+    //~ if (appointments.size() > max_items)
+    //~ {
         const auto next_minute = now.add_full(0,0,0,0,1,-now.seconds());
         const auto start_of_day = now.start_of_day();
         const auto end_of_day = now.end_of_day();
@@ -116,8 +116,8 @@ Menu::get_display_appointments(const std::vector<Appointment>& appointments_in,
             return false;
         };
         std::sort(appointments.begin(), appointments.end(), compare);
-        appointments.resize(max_items);
-    }
+        //~ appointments.resize(max_items);
+    //~ }
 
     /*
      * However, the display order should be the reverse: full-day events
@@ -238,7 +238,6 @@ protected:
             m_state->calendar_upcoming->appointments().get(),
             begin,
             //~ 5,
-            20,
             m_state->settings->show_alarms.get()
         );
 
@@ -364,8 +363,7 @@ private:
 
     void add_appointments(GMenu* menu, Profile profile)
     {
-        //~ const int MAX_APPTS = 5;
-        const int MAX_APPTS = 20;
+        const int MAX_APPTS = 5;
         std::set<std::string> added;
 
         const char * action_name;
@@ -380,11 +378,12 @@ private:
         for (const auto& appt : m_upcoming)
         {
             // don't show duplicates
-            //~ if (added.count(appt.uid))
-                //~ continue;
+            if (added.count(appt.uid))
+                continue;
 
             // don't show too many
-            if (g_menu_model_get_n_items (G_MENU_MODEL(menu)) > MAX_APPTS)
+            // Max + 1 for the Clock menu item
+            if (g_menu_model_get_n_items (G_MENU_MODEL(menu)) >= MAX_APPTS + 1)
                 break;
 
             added.insert(appt.uid);

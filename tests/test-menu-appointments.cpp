@@ -185,7 +185,7 @@ TEST_F(MenuAppointmentFixture, DisplayEvents)
         DateTime start;
         std::vector<Appointment> appointments;
         std::vector<Appointment> expected_display_appointments;
-        int max_items;
+        //~ int max_items;
     }
     tests[] =
     {
@@ -252,12 +252,14 @@ TEST_F(MenuAppointmentFixture, DisplayEvents)
         g_debug("running test: %s", test.description);
 
         // run the test...
-        ASSERT_EQ(test.expected_display_appointments, Menu::get_display_appointments(test.appointments, test.start, test.max_items));
+        //~ ASSERT_EQ(test.expected_display_appointments, Menu::get_display_appointments(test.appointments, test.start, test.max_items));
+        ASSERT_EQ(test.expected_display_appointments, Menu::get_display_appointments(test.appointments, test.start));
 
         // ...and again with a reversed vector to confirm input order doesn't matter
         auto reversed = test.appointments;
         std::reverse(reversed.begin(), reversed.end());
-        ASSERT_EQ(test.expected_display_appointments, Menu::get_display_appointments(reversed, test.start, test.max_items));
+        //~ ASSERT_EQ(test.expected_display_appointments, Menu::get_display_appointments(reversed, test.start, test.max_items));
+        ASSERT_EQ(test.expected_display_appointments, Menu::get_display_appointments(reversed, test.start));
     }
 }
 
