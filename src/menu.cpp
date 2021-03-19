@@ -597,21 +597,37 @@ protected:
     {
         // are there alarms?
         bool has_ubuntu_alarms = false;
+        bool has_non_alarm_events = false;
         for(const auto& appointment : m_upcoming)
+            has_events = true
             if((has_ubuntu_alarms = appointment.is_ubuntu_alarm()))
+            {
                 break;
+            }
+            else
+            {
+                has_non_alarm_events = true;
+            }
 
         GVariantBuilder b;
         g_variant_builder_init(&b, G_VARIANT_TYPE_VARDICT);
         g_variant_builder_add(&b, "{sv}", "title", g_variant_new_string (_("Time and Date")));
         g_variant_builder_add(&b, "{sv}", "visible", g_variant_new_boolean (TRUE));
-        if (has_ubuntu_alarms)
+        if (has_ubuntu_alarms || has_non_alarm_events)
         {
             auto label = m_formatter->header.get();
-            auto a11y = g_strdup_printf(_("%s (has alarms)"), label.c_str());
+            //~ auto a11y = g_strdup_printf(_("%s (has alarms)"), label.c_str());
+            auto a11y = g_strdup_printf(_("%s (has events)"), label.c_str());
             g_variant_builder_add(&b, "{sv}", "label", g_variant_new_string(label.c_str()));
             g_variant_builder_add(&b, "{sv}", "accessible-desc", g_variant_new_take_string(a11y));
-            g_variant_builder_add(&b, "{sv}", "icon", get_serialized_alarm_icon());
+            if (has_ubuntu_alarms && m_state->settings->show_alarms.get())
+            {
+                g_variant_builder_add(&b, "{sv}", "icon", get_serialized_alarm_icon());
+            }
+            else
+            {
+                g_variant_builder_add(&b, "{sv}", "icon", get_serialized_calendar_icon());
+            }
         }
         else
         {
