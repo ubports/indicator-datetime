@@ -147,6 +147,7 @@ Menu::get_display_appointments(const std::vector<Appointment>& appointments_in,
 
 #define ALARM_ICON_NAME "alarm-clock"
 #define CALENDAR_ICON_NAME "calendar"
+#define EVENT_ICON_NAME "event"
 
 class MenuImpl: public Menu
 {
@@ -213,6 +214,7 @@ protected:
         g_clear_object(&m_menu);
         g_clear_pointer(&m_serialized_alarm_icon, g_variant_unref);
         g_clear_pointer(&m_serialized_calendar_icon, g_variant_unref);
+        g_clear_pointer(&m_serialized_event_icon, g_variant_unref);
     }
 
     virtual GVariant* create_header_state() =0;
@@ -279,6 +281,18 @@ protected:
 
         return m_serialized_calendar_icon;
     }
+    
+    GVariant* get_serialized_event_icon()
+    {
+        if (G_UNLIKELY(m_serialized_event_icon == nullptr))
+        {
+            auto i = g_themed_icon_new_with_default_fallbacks(EVENT_ICON_NAME);
+            m_serialized_event_icon = g_icon_serialize(i);
+            g_object_unref(i);
+        }
+
+        return m_serialized_event_icon;
+    }
 
     std::vector<Appointment> m_upcoming;
 
@@ -329,21 +343,21 @@ private:
         else
             action_name = nullptr;
             
-        const auto now = m_state->clock->localtime();
-        const auto location = m_state->locations->locations.get().front();
+        //~ const auto now = m_state->clock->localtime();
+        //~ const auto location = m_state->locations->locations.get().front();
 
-        const auto zone = location.zone();
-        const auto name = location.name();
-        const auto zone_now = now.to_timezone(zone);
-        const auto fmt = m_formatter->relative_format(zone_now.get());
+        //~ const auto zone = location.zone();
+        //~ const auto name = location.name();
+        //~ const auto zone_now = now.to_timezone(zone);
+        //~ const auto fmt = m_formatter->relative_format(zone_now.get());
         //~ auto detailed_action = g_strdup_printf("indicator.set-location::%s %s", zone.c_str(), name.c_str());
         //~ auto i = g_menu_item_new (name.c_str(), detailed_action);
-        auto i = g_menu_item_new (name.c_str(), nullptr);
-        g_menu_item_set_attribute(i, "x-canonical-type", "s", "com.canonical.indicator.location");
-        g_menu_item_set_attribute(i, "x-canonical-timezone", "s", zone.c_str());
-        g_menu_item_set_attribute(i, "x-canonical-time-format", "s", fmt.c_str());
-        g_menu_append_item (menu, i);
-        g_object_unref(i);
+        //~ auto i = g_menu_item_new (name.c_str(), nullptr);
+        //~ g_menu_item_set_attribute(i, "x-canonical-type", "s", "com.canonical.indicator.location");
+        //~ g_menu_item_set_attribute(i, "x-canonical-timezone", "s", zone.c_str());
+        //~ g_menu_item_set_attribute(i, "x-canonical-time-format", "s", fmt.c_str());
+        //~ g_menu_append_item (menu, i);
+        //~ g_object_unref(i);
         //~ g_free(detailed_action);
 
         /* Translators, please edit/rearrange these strftime(3) tokens to suit your locale!
@@ -402,7 +416,7 @@ private:
 
             // don't show too many
             // Max + 1 for the Clock menu item
-            if (g_menu_model_get_n_items (G_MENU_MODEL(menu)) >= MAX_APPTS + 1)
+            if (g_menu_model_get_n_items (G_MENU_MODEL(menu)) >= MAX_APPTS)
                 break;
 
             added.insert(appt.uid);
@@ -424,6 +438,7 @@ private:
             else
             {
                 g_menu_item_set_attribute (menu_item, "x-canonical-type", "s", "com.canonical.indicator.appointment");
+                g_menu_item_set_attribute_value(menu_item, G_MENU_ATTRIBUTE_ICON, get_serialized_event_icon());
             }
 
             if (!appt.color.empty())
@@ -546,6 +561,7 @@ private:
 //private:
     GVariant * m_serialized_alarm_icon = nullptr;
     GVariant * m_serialized_calendar_icon = nullptr;
+    GVariant * m_serialized_event_icon = nullptr;
 
 }; // class MenuImpl
 
@@ -644,7 +660,7 @@ protected:
             }
             else
             {
-                g_variant_builder_add(&b, "{sv}", "icon", get_serialized_calendar_icon());
+                g_variant_builder_add(&b, "{sv}", "icon", get_serialized_event_icon());
             }
         }
         else
