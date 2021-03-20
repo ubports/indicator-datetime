@@ -479,7 +479,14 @@ private:
         {
             add_appointments (menu, profile);
             
-            auto menu_item = g_menu_item_new (_("View Alarms…"), "indicator.phone.open-alarm-app");
+            const auto now = m_state->clock->localtime();
+            const auto calendar_day = m_state->calendar_month->month().get();
+            const auto begin = DateTime::is_same_day(now, calendar_day)
+                ? now.start_of_minute()
+                : calendar_day.start_of_day();
+            
+            //~ auto menu_item = g_menu_item_new (_("View Alarms…"), "indicator.phone.open-alarm-app");
+            auto menu_item = g_menu_item_new (begin.format(_("%A, %e %B %Y - %F %T"))), "indicator.phone.open-alarm-app");
             g_menu_item_set_attribute_value (menu_item, G_MENU_ATTRIBUTE_ICON, get_serialized_alarm_icon());
             g_menu_append_item (menu, menu_item);
             g_object_unref (menu_item);
