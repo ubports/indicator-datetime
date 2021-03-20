@@ -238,12 +238,13 @@ protected:
             ? now.start_of_minute()
             : calendar_day.start_of_day();
 
-        auto upcoming = get_display_appointments(
-            m_state->calendar_upcoming->appointments().get(),
-            begin,
-            //~ 5,
-            m_state->settings->show_alarms.get()
-        );
+        //~ auto upcoming = get_display_appointments(
+            //~ m_state->calendar_upcoming->appointments().get(),
+            //~ begin,
+            5,
+            //~ m_state->settings->show_alarms.get()
+        //~ );
+        auto upcoming = m_state->calendar_upcoming->appointments().get();
 
         if (m_upcoming != upcoming)
         {
@@ -412,8 +413,8 @@ private:
         for (const auto& appt : m_upcoming)
         {
             // don't show duplicates
-            if (added.count(appt.uid))
-                continue;
+            //~ if (added.count(appt.uid))
+                //~ continue;
 
             // don't show too many
             // Max + 1 for the Clock menu item
