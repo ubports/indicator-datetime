@@ -115,7 +115,7 @@ Menu::get_display_appointments(const std::vector<Appointment>& appointments_in,
 
             return false;
         };
-        //~ std::sort(appointments.begin(), appointments.end(), compare);
+        std::sort(appointments.begin(), appointments.end(), compare);
         //~ appointments.resize(max_items);
     //~ }
 
@@ -137,7 +137,7 @@ Menu::get_display_appointments(const std::vector<Appointment>& appointments_in,
         return a.summary < b.summary;
     };
     //~ std::sort(appointments.begin(), appointments.end(), compare);
-    //~ std::sort(appointments.begin(), appointments.end(), compare2);
+    std::sort(appointments.begin(), appointments.end(), compare2);
     return appointments;
 }
 
@@ -241,7 +241,7 @@ protected:
         //~ auto upcoming = get_display_appointments(
             //~ m_state->calendar_upcoming->appointments().get(),
             //~ begin,
-            5,
+            //~ 5,
             //~ m_state->settings->show_alarms.get()
         //~ );
         auto upcoming = m_state->calendar_upcoming->appointments().get();
