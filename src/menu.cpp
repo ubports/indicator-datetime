@@ -396,7 +396,8 @@ private:
 
     void add_appointments(GMenu* menu, Profile profile)
     {
-        const int MAX_APPTS = 5;
+        //~ const int MAX_APPTS = 5;
+        const int MAX_APPTS = 20;
         std::set<std::string> added;
 
         const char * action_name;
@@ -486,7 +487,7 @@ private:
                 : calendar_day.start_of_day();
             
             //~ auto menu_item = g_menu_item_new (_("View Alarms…"), "indicator.phone.open-alarm-app");
-            auto menu_item = g_menu_item_new (begin.format("%A, %e %B %Y - %F %T").c_str(), "indicator.phone.open-alarm-app");
+            auto menu_item = g_menu_item_new (begin.format("%F %T").c_str(), "indicator.phone.open-alarm-app");
             g_menu_item_set_attribute_value (menu_item, G_MENU_ATTRIBUTE_ICON, get_serialized_alarm_icon());
             g_menu_append_item (menu, menu_item);
             g_object_unref (menu_item);
