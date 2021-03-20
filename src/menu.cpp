@@ -68,13 +68,14 @@ GMenuModel* Menu::menu_model()
 std::vector<Appointment>
 Menu::get_display_appointments(const std::vector<Appointment>& appointments_in,
                                const DateTime& now,
-                               unsigned int max_items)
+                               unsigned int max_items,
+                               const bool include_alarms)
 {
     std::vector<Appointment> appointments;
     std::copy_if(appointments_in.begin(),
                  appointments_in.end(),
                  std::back_inserter(appointments),
-                 [now](const Appointment& a){return a.end >= now;});
+                 [now, include_alarms](const Appointment& a){return a.end >= now && (! a.is_ubuntu_alarm() || (a.is_ubuntu_alarm() && include_alarms));});
 
     if (appointments.size() > max_items)
     {
@@ -184,6 +185,9 @@ protected:
         m_state->settings->show_events.changed().connect([this](bool){
             update_section(Appointments); // showing events got toggled
         });
+        m_state->settings->show_alarms.changed().connect([this](bool){
+            update_section(Appointments); // showing alarms got toggled
+        });
         m_state->calendar_upcoming->date().changed().connect([this](const DateTime&){
             update_upcoming(); // our m_upcoming is planner->upcoming() filtered by time
         });
@@ -232,7 +236,9 @@ protected:
 
         auto upcoming = get_display_appointments(
             m_state->calendar_upcoming->appointments().get(),
-            begin
+            begin,
+            5,
+            m_state->settings->show_alarms.get()
         );
 
         if (m_upcoming != upcoming)
@@ -260,10 +266,6 @@ protected:
         return m_serialized_alarm_icon;
     }
 
-    std::vector<Appointment> m_upcoming;
-
-private:
-
     GVariant* get_serialized_calendar_icon()
     {
         if (G_UNLIKELY(m_serialized_calendar_icon == nullptr))
@@ -275,6 +277,10 @@ private:
 
         return m_serialized_calendar_icon;
     }
+
+    std::vector<Appointment> m_upcoming;
+
+private:
 
     void create_gmenu()
     {
@@ -587,21 +593,36 @@ protected:
     {
         // are there alarms?
         bool has_ubuntu_alarms = false;
+        bool has_non_alarm_events = false;
         for(const auto& appointment : m_upcoming)
             if((has_ubuntu_alarms = appointment.is_ubuntu_alarm()))
+            {
                 break;
+            }
+            else
+            {
+                has_non_alarm_events = true;
+            }
 
         GVariantBuilder b;
         g_variant_builder_init(&b, G_VARIANT_TYPE_VARDICT);
         g_variant_builder_add(&b, "{sv}", "title", g_variant_new_string (_("Time and Date")));
         g_variant_builder_add(&b, "{sv}", "visible", g_variant_new_boolean (TRUE));
-        if (has_ubuntu_alarms)
+        if (has_ubuntu_alarms || has_non_alarm_events)
         {
             auto label = m_formatter->header.get();
-            auto a11y = g_strdup_printf(_("%s (has alarms)"), label.c_str());
+            auto a11y = g_strdup_printf(_("%s (has events)"), label.c_str());
             g_variant_builder_add(&b, "{sv}", "label", g_variant_new_string(label.c_str()));
             g_variant_builder_add(&b, "{sv}", "accessible-desc", g_variant_new_take_string(a11y));
-            g_variant_builder_add(&b, "{sv}", "icon", get_serialized_alarm_icon());
+
+            if (has_ubuntu_alarms && m_state->settings->show_alarms.get())
+            {
+                g_variant_builder_add(&b, "{sv}", "icon", get_serialized_alarm_icon());
+            }
+            else
+            {
+                g_variant_builder_add(&b, "{sv}", "icon", get_serialized_calendar_icon());
+            }
         }
         else
         {
