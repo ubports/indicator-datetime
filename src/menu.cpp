@@ -488,10 +488,10 @@ private:
                 : calendar_day.start_of_day();
             
             //~ auto menu_item = g_menu_item_new (_("View Alarms…"), "indicator.phone.open-alarm-app");
-            auto menu_item = g_menu_item_new (begin.format("%F %T").c_str(), "indicator.phone.open-alarm-app");
-            g_menu_item_set_attribute_value (menu_item, G_MENU_ATTRIBUTE_ICON, get_serialized_alarm_icon());
-            g_menu_append_item (menu, menu_item);
-            g_object_unref (menu_item);
+            //~ auto menu_item = g_menu_item_new (begin.format("%F %T").c_str(), "indicator.phone.open-alarm-app");
+            //~ g_menu_item_set_attribute_value (menu_item, G_MENU_ATTRIBUTE_ICON, get_serialized_alarm_icon());
+            //~ g_menu_append_item (menu, menu_item);
+            //~ g_object_unref (menu_item);
             
             const auto b = calendar_day.start_of_day();
             const auto e = b.add_full(0, 1, 0, 0, 0, 0);
