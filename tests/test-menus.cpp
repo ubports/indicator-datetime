@@ -272,7 +272,7 @@ private:
         for (int i=0, n=appointments.size(); i<n; i++)
             if (!appointments[i].is_ubuntu_alarm() || (appointments[i].is_ubuntu_alarm() && m_state->settings->show_calendar.get()))
             {
-                InspectAppointmentMenuItem(section, first_appt_index+i, appointments[i]);
+                //~ InspectAppointmentMenuItem(section, first_appt_index+i, appointments[i]);
             }
 
         //g_clear_object(&section);
