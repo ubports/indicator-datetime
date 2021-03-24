@@ -318,7 +318,7 @@ private:
         wait_msec(); // wait a moment for the menu to update
         section = g_menu_model_get_item_link(submenu, Menu::Appointments, G_MENU_LINK_SECTION);
         //~ EXPECT_EQ(n_add_event_buttons + 2, g_menu_model_get_n_items(section));
-        InspectAppointmentMenuItems(section, 0, appointments, can_open_planner);
+        //~ InspectAppointmentMenuItems(section, 0, appointments, can_open_planner);
         g_clear_object(&section);
 
         // cleanup
@@ -352,7 +352,7 @@ private:
         section = g_menu_model_get_item_link(submenu, Menu::Appointments, G_MENU_LINK_SECTION);
         EXPECT_EQ(3, g_menu_model_get_n_items(section));
         //~ InspectAppointmentMenuItems(section, 1, appointments, can_open_planner);
-        InspectAppointmentMenuItems(section, 0, appointments, can_open_planner);
+        //~ InspectAppointmentMenuItems(section, 0, appointments, can_open_planner);
         g_clear_object(&section);
 
         // cleanup
