@@ -208,9 +208,9 @@ private:
         //  confirm it has the right x-canonical-type
         gchar * str = nullptr;
         g_menu_model_get_item_attribute(section, index, "x-canonical-type", "s", &str);
-        if (appt.is_ubuntu_alarm())
+        //~ if (appt.is_ubuntu_alarm())
             //~ EXPECT_STREQ("com.canonical.indicator.alarm", str);
-        else
+        //~ else
             //~ EXPECT_STREQ("com.canonical.indicator.appointment", str);
         g_clear_pointer(&str, g_free);
 
@@ -272,7 +272,7 @@ private:
         for (int i=0, n=appointments.size(); i<n; i++)
             if (!appointments[i].is_ubuntu_alarm() || (appointments[i].is_ubuntu_alarm() && m_state->settings->show_calendar.get()))
             {
-                //~ InspectAppointmentMenuItem(section, first_appt_index+i, appointments[i]);
+                InspectAppointmentMenuItem(section, first_appt_index+i, appointments[i]);
             }
 
         //g_clear_object(&section);
