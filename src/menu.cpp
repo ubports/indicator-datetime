@@ -175,7 +175,7 @@ protected:
             update_section(Locations); // need to update x-canonical-time-format
         });
         m_formatter->relative_format_changed.connect([this](){
-            //~ update_section(Appointments); // uses formatter.relative_format()
+            update_section(Appointments); // uses formatter.relative_format()
             update_section(Locations); // uses formatter.relative_format()
         });
         m_state->settings->show_clock.changed().connect([this](bool){
@@ -192,10 +192,10 @@ protected:
             update_section(Appointments); // showing alarms got toggled
         });
         m_state->calendar_upcoming->date().changed().connect([this](const DateTime&){
-            //~ update_upcoming(); // our m_upcoming is planner->upcoming() filtered by time
+            update_upcoming(); // our m_upcoming is planner->upcoming() filtered by time
         });
         m_state->calendar_upcoming->appointments().changed().connect([this](const std::vector<Appointment>&){
-            update_upcoming(); // our m_upcoming is planner->upcoming() filtered by time
+            //~ update_upcoming(); // our m_upcoming is planner->upcoming() filtered by time
         });
         m_state->clock->date_changed.connect([this](){
             update_section(Calendar); // need to update the Date menuitem
