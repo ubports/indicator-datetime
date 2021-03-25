@@ -255,7 +255,7 @@ void Actions::update_calendar_state()
 
 void Actions::set_calendar_date(const DateTime& date)
 {
-    m_state->calendar_month->month().set(date);
+    //~ m_state->calendar_month->month().set(date);
     m_state->calendar_upcoming->date().set(date);
 }
 

@@ -75,7 +75,7 @@ void SimpleRangePlanner::rebuild_now()
 void SimpleRangePlanner::rebuild_soon()
 {
     //~ static const int ARBITRARY_BATCH_MSEC = 200;
-    static const int ARBITRARY_BATCH_MSEC = 1000;
+    static const int ARBITRARY_BATCH_MSEC = 500;
 
     if (m_rebuild_tag == 0)
         m_rebuild_tag = g_timeout_add(ARBITRARY_BATCH_MSEC, rebuild_now_static, this);
