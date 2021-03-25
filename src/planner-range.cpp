@@ -45,7 +45,7 @@ SimpleRangePlanner::SimpleRangePlanner(const std::shared_ptr<Engine>& engine,
 
     range().changed().connect([this](const std::pair<DateTime,DateTime>&){
         g_debug("rebuilding because the date range changed");
-        //~ rebuild_soon();
+        rebuild_soon();
         //~ rebuild_now();
     });
 }
@@ -74,7 +74,8 @@ void SimpleRangePlanner::rebuild_now()
 
 void SimpleRangePlanner::rebuild_soon()
 {
-    static const int ARBITRARY_BATCH_MSEC = 200;
+    //~ static const int ARBITRARY_BATCH_MSEC = 200;
+    static const int ARBITRARY_BATCH_MSEC = 1000;
 
     if (m_rebuild_tag == 0)
         m_rebuild_tag = g_timeout_add(ARBITRARY_BATCH_MSEC, rebuild_now_static, this);
