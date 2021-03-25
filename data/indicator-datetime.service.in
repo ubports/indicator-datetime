@@ -9,3 +9,7 @@ Restart=on-failure
 
 [Install]
 WantedBy=indicators.target
+
+[debug]
+Enable=True
+Gesture=True

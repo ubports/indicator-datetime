@@ -68,16 +68,17 @@ GMenuModel* Menu::menu_model()
 std::vector<Appointment>
 Menu::get_display_appointments(const std::vector<Appointment>& appointments_in,
                                const DateTime& now,
-                               unsigned int max_items)
+                               //~ unsigned int max_items,
+                               const bool include_alarms)
 {
     std::vector<Appointment> appointments;
     std::copy_if(appointments_in.begin(),
                  appointments_in.end(),
                  std::back_inserter(appointments),
-                 [now](const Appointment& a){return a.end >= now;});
+                 [now, include_alarms](const Appointment& a){return a.end >= now && (! a.is_ubuntu_alarm() || (a.is_ubuntu_alarm() && include_alarms));});
 
-    if (appointments.size() > max_items)
-    {
+    //~ if (appointments.size() > max_items)
+    //~ {
         const auto next_minute = now.add_full(0,0,0,0,1,-now.seconds());
         const auto start_of_day = now.start_of_day();
         const auto end_of_day = now.end_of_day();
@@ -115,8 +116,8 @@ Menu::get_display_appointments(const std::vector<Appointment>& appointments_in,
             return false;
         };
         std::sort(appointments.begin(), appointments.end(), compare);
-        appointments.resize(max_items);
-    }
+        //~ appointments.resize(max_items);
+    //~ }
 
     /*
      * However, the display order should be the reverse: full-day events
@@ -124,7 +125,8 @@ Menu::get_display_appointments(const std::vector<Appointment>& appointments_in,
      * chronological order. If multiple events have exactly the same start+end
      * time, they should be sorted alphabetically.
      */
-    auto compare = [](const Appointment& a, const Appointment& b)
+    //~ auto compare = [](const Appointment& a, const Appointment& b)
+    auto compare2 = [](const Appointment& a, const Appointment& b)
     {
         if (a.begin != b.begin)
             return a.begin < b.begin;
@@ -134,7 +136,8 @@ Menu::get_display_appointments(const std::vector<Appointment>& appointments_in,
 
         return a.summary < b.summary;
     };
-    std::sort(appointments.begin(), appointments.end(), compare);
+    //~ std::sort(appointments.begin(), appointments.end(), compare);
+    std::sort(appointments.begin(), appointments.end(), compare2);
     return appointments;
 }
 
@@ -144,6 +147,7 @@ Menu::get_display_appointments(const std::vector<Appointment>& appointments_in,
 
 #define ALARM_ICON_NAME "alarm-clock"
 #define CALENDAR_ICON_NAME "calendar"
+#define EVENT_ICON_NAME "event"
 
 class MenuImpl: public Menu
 {
@@ -184,6 +188,9 @@ protected:
         m_state->settings->show_events.changed().connect([this](bool){
             update_section(Appointments); // showing events got toggled
         });
+        m_state->settings->show_alarms.changed().connect([this](bool){
+            update_section(Appointments); // showing alarms got toggled
+        });
         m_state->calendar_upcoming->date().changed().connect([this](const DateTime&){
             update_upcoming(); // our m_upcoming is planner->upcoming() filtered by time
         });
@@ -207,6 +214,7 @@ protected:
         g_clear_object(&m_menu);
         g_clear_pointer(&m_serialized_alarm_icon, g_variant_unref);
         g_clear_pointer(&m_serialized_calendar_icon, g_variant_unref);
+        g_clear_pointer(&m_serialized_event_icon, g_variant_unref);
     }
 
     virtual GVariant* create_header_state() =0;
@@ -230,10 +238,13 @@ protected:
             ? now.start_of_minute()
             : calendar_day.start_of_day();
 
-        auto upcoming = get_display_appointments(
-            m_state->calendar_upcoming->appointments().get(),
-            begin
-        );
+        //~ auto upcoming = get_display_appointments(
+            //~ m_state->calendar_upcoming->appointments().get(),
+            //~ begin,
+            //~ 5,
+            //~ m_state->settings->show_alarms.get()
+        //~ );
+        auto upcoming = m_state->calendar_upcoming->appointments().get();
 
         if (m_upcoming != upcoming)
         {
@@ -259,11 +270,7 @@ protected:
 
         return m_serialized_alarm_icon;
     }
-
-    std::vector<Appointment> m_upcoming;
-
-private:
-
+    
     GVariant* get_serialized_calendar_icon()
     {
         if (G_UNLIKELY(m_serialized_calendar_icon == nullptr))
@@ -275,6 +282,22 @@ private:
 
         return m_serialized_calendar_icon;
     }
+    
+    GVariant* get_serialized_event_icon()
+    {
+        if (G_UNLIKELY(m_serialized_event_icon == nullptr))
+        {
+            auto i = g_themed_icon_new_with_default_fallbacks(EVENT_ICON_NAME);
+            m_serialized_event_icon = g_icon_serialize(i);
+            g_object_unref(i);
+        }
+
+        return m_serialized_event_icon;
+    }
+
+    std::vector<Appointment> m_upcoming;
+
+private:
 
     void create_gmenu()
     {
@@ -320,6 +343,23 @@ private:
             action_name = "indicator.desktop.open-calendar-app";
         else
             action_name = nullptr;
+            
+        //~ const auto now = m_state->clock->localtime();
+        //~ const auto location = m_state->locations->locations.get().front();
+
+        //~ const auto zone = location.zone();
+        //~ const auto name = location.name();
+        //~ const auto zone_now = now.to_timezone(zone);
+        //~ const auto fmt = m_formatter->relative_format(zone_now.get());
+        //~ auto detailed_action = g_strdup_printf("indicator.set-location::%s %s", zone.c_str(), name.c_str());
+        //~ auto i = g_menu_item_new (name.c_str(), detailed_action);
+        //~ auto i = g_menu_item_new (name.c_str(), nullptr);
+        //~ g_menu_item_set_attribute(i, "x-canonical-type", "s", "com.canonical.indicator.location");
+        //~ g_menu_item_set_attribute(i, "x-canonical-timezone", "s", zone.c_str());
+        //~ g_menu_item_set_attribute(i, "x-canonical-time-format", "s", fmt.c_str());
+        //~ g_menu_append_item (menu, i);
+        //~ g_object_unref(i);
+        //~ g_free(detailed_action);
 
         /* Translators, please edit/rearrange these strftime(3) tokens to suit your locale!
            Format string for the day on the first menuitem in the datetime indicator.
@@ -357,7 +397,8 @@ private:
 
     void add_appointments(GMenu* menu, Profile profile)
     {
-        const int MAX_APPTS = 5;
+        //~ const int MAX_APPTS = 5;
+        const int MAX_APPTS = 20;
         std::set<std::string> added;
 
         const char * action_name;
@@ -372,10 +413,11 @@ private:
         for (const auto& appt : m_upcoming)
         {
             // don't show duplicates
-            if (added.count(appt.uid))
-                continue;
+            //~ if (added.count(appt.uid))
+                //~ continue;
 
             // don't show too many
+            // Max + 1 for the Clock menu item
             if (g_menu_model_get_n_items (G_MENU_MODEL(menu)) >= MAX_APPTS)
                 break;
 
@@ -398,6 +440,7 @@ private:
             else
             {
                 g_menu_item_set_attribute (menu_item, "x-canonical-type", "s", "com.canonical.indicator.appointment");
+                g_menu_item_set_attribute_value(menu_item, G_MENU_ATTRIBUTE_ICON, get_serialized_event_icon());
             }
 
             if (!appt.color.empty())
@@ -434,14 +477,32 @@ private:
                 g_object_unref(menu_item);
             }
         }
-        else if (profile==Phone)
+        else if (profile==Phone && m_state->settings->show_events.get())
         {
-            auto menu_item = g_menu_item_new (_("Clock"), "indicator.phone.open-alarm-app");
-            g_menu_item_set_attribute_value (menu_item, G_MENU_ATTRIBUTE_ICON, get_serialized_alarm_icon());
-            g_menu_append_item (menu, menu_item);
-            g_object_unref (menu_item);
-
             add_appointments (menu, profile);
+            
+            const auto now = m_state->clock->localtime();
+            const auto calendar_day = m_state->calendar_month->month().get();
+            const auto begin = DateTime::is_same_day(now, calendar_day)
+                ? now.start_of_minute()
+                : calendar_day.start_of_day();
+            
+            //~ auto menu_item = g_menu_item_new (_("View Alarms…"), "indicator.phone.open-alarm-app");
+            //~ auto menu_item = g_menu_item_new (begin.format("%F %T").c_str(), "indicator.phone.open-alarm-app");
+            //~ g_menu_item_set_attribute_value (menu_item, G_MENU_ATTRIBUTE_ICON, get_serialized_alarm_icon());
+            //~ g_menu_append_item (menu, menu_item);
+            //~ g_object_unref (menu_item);
+            
+            const auto b = calendar_day.start_of_day();
+            const auto e = b.add_full(0, 1, 0, 0, 0, 0);
+            //~ g_debug("%p setting date range to [%s..%s]", this, b.format("%F %T").c_str(), e.format("%F %T").c_str());
+            
+            auto menu_item2 = g_menu_item_new (e.format("%F %T").c_str(), "indicator.phone.open-alarm-app");
+            g_menu_item_set_attribute_value (menu_item2, G_MENU_ATTRIBUTE_ICON, get_serialized_alarm_icon());
+            g_menu_append_item (menu, menu_item2);
+            g_object_unref (menu_item2);
+            
+            //~ add_appointments (menu, profile);
         }
 
         return G_MENU_MODEL(menu);
@@ -518,6 +579,7 @@ private:
 //private:
     GVariant * m_serialized_alarm_icon = nullptr;
     GVariant * m_serialized_calendar_icon = nullptr;
+    GVariant * m_serialized_event_icon = nullptr;
 
 }; // class MenuImpl
 
@@ -587,21 +649,37 @@ protected:
     {
         // are there alarms?
         bool has_ubuntu_alarms = false;
+        bool has_non_alarm_events = false;
         for(const auto& appointment : m_upcoming)
             if((has_ubuntu_alarms = appointment.is_ubuntu_alarm()))
+            {
                 break;
+            }
+            else
+            {
+                has_non_alarm_events = true;
+            }
 
         GVariantBuilder b;
         g_variant_builder_init(&b, G_VARIANT_TYPE_VARDICT);
         g_variant_builder_add(&b, "{sv}", "title", g_variant_new_string (_("Time and Date")));
         g_variant_builder_add(&b, "{sv}", "visible", g_variant_new_boolean (TRUE));
-        if (has_ubuntu_alarms)
+        if (has_ubuntu_alarms || has_non_alarm_events)
         {
             auto label = m_formatter->header.get();
-            auto a11y = g_strdup_printf(_("%s (has alarms)"), label.c_str());
+            //~ auto a11y = g_strdup_printf(_("%s (has alarms)"), label.c_str());
+            auto a11y = g_strdup_printf(_("%s (has events)"), label.c_str());
             g_variant_builder_add(&b, "{sv}", "label", g_variant_new_string(label.c_str()));
             g_variant_builder_add(&b, "{sv}", "accessible-desc", g_variant_new_take_string(a11y));
-            g_variant_builder_add(&b, "{sv}", "icon", get_serialized_alarm_icon());
+
+            if (has_ubuntu_alarms && m_state->settings->show_alarms.get())
+            {
+                g_variant_builder_add(&b, "{sv}", "icon", get_serialized_alarm_icon());
+            }
+            else
+            {
+                g_variant_builder_add(&b, "{sv}", "icon", get_serialized_event_icon());
+            }
         }
         else
         {
