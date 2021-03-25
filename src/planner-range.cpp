@@ -46,7 +46,7 @@ SimpleRangePlanner::SimpleRangePlanner(const std::shared_ptr<Engine>& engine,
     range().changed().connect([this](const std::pair<DateTime,DateTime>&){
         g_debug("rebuilding because the date range changed");
         //~ rebuild_soon();
-        rebuild_now_static();
+        rebuild_now();
     });
 }
 
