@@ -250,7 +250,7 @@ protected:
         {
             m_upcoming.swap(upcoming);
             update_header(); // show an 'alarm' icon if there are upcoming alarms
-            //~ update_section(Appointments); // "upcoming" is the list of Appointments we show
+            update_section(Appointments); // "upcoming" is the list of Appointments we show
         }
     }
 
