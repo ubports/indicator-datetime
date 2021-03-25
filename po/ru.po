@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: indicator-datetime\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-09 12:28-0500\n"
-"PO-Revision-Date: 2021-01-15 07:25+0000\n"
-"Last-Translator: ierihon <idekovets@mail.ru>\n"
+"PO-Revision-Date: 2021-03-25 07:08+0000\n"
+"Last-Translator: vokaliz <vokaliz@protonmail.com>\n"
 "Language-Team: Russian <https://translate.ubports.com/projects/ubports/"
 "indicator-datetime/ru/>\n"
 "Language: ru\n"
@@ -79,7 +79,7 @@ msgstr "Событие %s"
 
 #: ../src/snap.cpp:162 ../src/snap.cpp:166
 msgid "OK"
-msgstr "ОК"
+msgstr "Да"
 
 #: ../src/snap.cpp:163
 msgid "Snooze"
