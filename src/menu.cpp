@@ -195,7 +195,7 @@ protected:
             update_upcoming(); // our m_upcoming is planner->upcoming() filtered by time
         });
         m_state->calendar_upcoming->appointments().changed().connect([this](const std::vector<Appointment>&){
-            //~ update_upcoming(); // our m_upcoming is planner->upcoming() filtered by time
+            update_upcoming(); // our m_upcoming is planner->upcoming() filtered by time
         });
         m_state->clock->date_changed.connect([this](){
             update_section(Calendar); // need to update the Date menuitem
@@ -250,7 +250,7 @@ protected:
         {
             m_upcoming.swap(upcoming);
             update_header(); // show an 'alarm' icon if there are upcoming alarms
-            update_section(Appointments); // "upcoming" is the list of Appointments we show
+            //~ update_section(Appointments); // "upcoming" is the list of Appointments we show
         }
     }
 
