@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-datetime\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-09 12:28-0500\n"
-"PO-Revision-Date: 2020-11-12 14:00+0000\n"
+"PO-Revision-Date: 2021-03-31 05:24+0000\n"
 "Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
 "Language-Team: Dutch <https://translate.ubports.com/projects/ubports/"
 "indicator-datetime/nl/>\n"
@@ -52,7 +52,7 @@ msgstr "Datum en tijd"
 #: ../src/menu.cpp:601
 #, c-format
 msgid "%s (has alarms)"
-msgstr "%s (met alarmen)"
+msgstr "%s (met wekkers)"
 
 #. * strftime(3) format for abbreviated weekday,
 #. hours, minutes in a 12h locale; e.g. Wed, 2:00 PM
