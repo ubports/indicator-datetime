@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-datetime\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-09 12:28-0500\n"
-"PO-Revision-Date: 2020-11-01 12:04+0000\n"
+"PO-Revision-Date: 2021-04-22 10:44+0000\n"
 "Last-Translator: Milan Korecký <milan.korecky@gmail.com>\n"
 "Language-Team: Czech <https://translate.ubports.com/projects/ubports/"
 "indicator-datetime/cs/>\n"
@@ -78,7 +78,7 @@ msgstr "Událost %s"
 
 #: ../src/snap.cpp:162 ../src/snap.cpp:166
 msgid "OK"
-msgstr "OK"
+msgstr "Přijmout"
 
 #: ../src/snap.cpp:163
 msgid "Snooze"
